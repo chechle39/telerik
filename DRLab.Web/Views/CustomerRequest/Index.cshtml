@@ -1,0 +1,138 @@
+﻿<!-- Button trigger modal -->
+@addTagHelper *, Kendo.Mvc
+@section Scripts{
+
+    <script src="~/app/Customer/index.js" asp-append-version="true"></script>
+    <script>
+        var userObj = new customerController();
+        userObj.initialize();
+    </script>
+}
+@*<button id="showModel" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        Launch demo modal
+    </button>*@
+
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">Home</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">New Request</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        @*<div class="col-12 row">
+            <div class="col-2">
+                <span>Request No: RQ2020.001</span>
+
+            </div>
+            <div>
+                <span class="mr-left">Receive Day: 12/4/2020 5:30</span>
+                <span class="mr-left">Return Day: 12/4/2020 5:30</span>
+            </div>
+
+        </div>
+        <div class="row col-12">
+            <div class="col-2">
+                <span>Công ty TNHH Hoàn Vũ</span>
+            </div>
+            <div>
+                <span class="mr-left">Lê thị Quỳnh Như, nhuquynh@gmail.com</span>
+            </div>
+        </div>
+        <div class="col-12">
+            <span>Sample List</span><span>|< < 1  2  3  4  5 > >|</span>
+        </div>*@
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <!-- left column -->
+                    <div class="col-md-12">
+                        <!-- general form elements -->
+                        <div class="card card-success">
+                            <div class="card-header">
+                                <h3 class="card-title">New Request</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <!-- form start -->
+                            <form role="form">
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <div class="col-2">
+                                            <span>Request No: RQ2020.001</span>
+
+                                        </div>
+                                        <div>
+                                            <span class="mr-left">Receive Day: 12/4/2020 5:30</span>
+                                            <span class="mr-left">Return Day: 12/4/2020 5:30</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-2">
+                                            <span>Công ty TNHH Hoàn Vũ</span>
+                                        </div>
+                                        <div>
+                                            <span class="mr-left">Lê thị Quỳnh Như, nhuquynh@gmail.com</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-1">
+                                            <span>Sample List</span>
+                                        </div>
+                                       
+                                        <ul class="pagination pagination-sm m-0 float-right">
+                                            <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <span>Sample Name</span>
+                                        <div class="col-sm-8">
+                                            @(Html.Kendo().TextBox()
+                                            .Name("numOfSam")
+                                            .HtmlAttributes(new { placeholder = "Number Of Sample", required = "required", style = "width: 100%;height: 90%;" })
+                                            )
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                      </div>
+                </div>
+                <!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </section>
+    </div><!-- /.container-fluid -->
+</section>
+
+@Html.Partial("CreateRequest.cshtml")
+
+<style>
+    .mr-left {
+        margin-left: 40px;
+    }
+    .custom-font-weight {
+        font-weight: 500 !important;
+    }
+</style>
