@@ -3,6 +3,7 @@
 @section Scripts{
 
     <script src="~/app/Customer/index.js" asp-append-version="true"></script>
+    <script src="~/app/DrLabBase.js"></script>
     <script>
         var userObj = new customerController();
         userObj.initialize();
@@ -31,28 +32,7 @@
 
 <section class="content">
     <div class="container-fluid">
-        @*<div class="col-12 row">
-            <div class="col-2">
-                <span>Request No: RQ2020.001</span>
-
-            </div>
-            <div>
-                <span class="mr-left">Receive Day: 12/4/2020 5:30</span>
-                <span class="mr-left">Return Day: 12/4/2020 5:30</span>
-            </div>
-
-        </div>
-        <div class="row col-12">
-            <div class="col-2">
-                <span>Công ty TNHH Hoàn Vũ</span>
-            </div>
-            <div>
-                <span class="mr-left">Lê thị Quỳnh Như, nhuquynh@gmail.com</span>
-            </div>
-        </div>
-        <div class="col-12">
-            <span>Sample List</span><span>|< < 1  2  3  4  5 > >|</span>
-        </div>*@
+        
 
         <section class="content">
             <div class="container-fluid">
@@ -91,14 +71,9 @@
                                         <div class="col-1">
                                             <span>Sample List</span>
                                         </div>
-                                       
-                                        <ul class="pagination pagination-sm m-0 float-right">
-                                            <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
-                                        </ul>
+
+                                        <div class="box pagination">
+                                        </div>
                                     </div>
 
                                     <div class="form-group row">
@@ -135,4 +110,42 @@
     .custom-font-weight {
         font-weight: 500 !important;
     }
+    .box {
+	float: left;
+	padding: 0px 0px;
+}
+
+.clearfix::after {
+	clear: both;
+	display: table;
+}
+
+.options {
+	margin: 5px 0px 0px 0px;
+	float: left;
+}
+
+.pagination {
+	float: right;
+}
+
+.pagination a {
+	color: black;
+	float: left;
+	padding: 0px 16px;
+	text-decoration: none;
+	transition: background-color .3s;
+	border: 1px solid #ddd;
+	margin: 0 4px;
+}
+
+.pagination a.active {
+	background-color: #4CAF50;
+	color: white;
+	border: 1px solid #4CAF50;
+}
+
+.pagination a:hover:not(.active) {
+	background-color: #ddd;
+}
 </style>
