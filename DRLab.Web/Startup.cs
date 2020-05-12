@@ -7,6 +7,7 @@ using DRLab.Services.IntegrationServices;
 using DRLab.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,13 +36,25 @@ namespace DRLab.Web
             services.AddScoped<IMapper>(sp => new Mapper(sp.GetRequiredService<AutoMapper.IConfigurationProvider>(), sp.GetService));
             services.AddTransient(typeof(IUnitOfWork), typeof(UnitOfWork));
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
+            services.AddTransient<IE08T_Testing_InfoRepository, E08T_Testing_InfoRepository>();
+            services.AddTransient<IE00T_SampleMatrixRepository, E00T_SampleMatrixRepository>();
             services.AddTransient<IE00T_CustomerRepository, E00T_CustomerRepository>();
             services.AddTransient<IE00T_Customer_ItemRepository, E00T_Customer_ItemRepository>();
             services.AddTransient<IE08T_AnalysisRequest_InfoRepository, E08T_AnalysisRequest_InfoRepository>();
             services.AddTransient<IE00T_CustomerService, E00T_CustomerService>();
             services.AddTransient<IE00T_Customer_ItemService, E00T_Customer_ItemService>();
+            services.AddTransient<ITesting_InfoService, Testing_InfoService>();
+            services.AddTransient<ITesting_DataService, Testing_DataService>();
+            services.AddTransient<ISpecificationService, SpecificationService>();
+            services.AddTransient<IE00T_Customer_ItemService, E00T_Customer_ItemService>();
             services.AddTransient<IE08T_AnalysisRequest_InfoService, E08T_AnalysisRequest_InfoService>();
+            services.AddTransient<IE00T_SampleMatrixService, E00T_SampleMatrixService>();
             services.AddScoped<DbContext, DataBaseContext>();
+            services.AddControllers().AddJsonOptions(jsonOptions =>
+            {
+                jsonOptions.JsonSerializerOptions.PropertyNamingPolicy = null;
+            })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0); ;
             services.AddControllersWithViews();
             services.AddKendo();
         }

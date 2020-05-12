@@ -74,8 +74,16 @@ namespace DRLab.Data.Base
 
             Entities.Remove(entity);
         }
+        public void RemoveStringID(string id)
+        {
+            var entity = GetById(id);
+            if (entity == null)
+                throw new ItemNotFoundException();
 
-        
+            Entities.Remove(entity);
+        }
+
+
 
         public int SaveChanges()
         {

@@ -11,14 +11,17 @@ namespace DRLab.Data.Entities
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+
     public partial class E08T_Testing_Info
     {
-        public E08T_Testing_Info() { 
-
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public E08T_Testing_Info() {
+          
         }
-
-        public E08T_Testing_Info(string analysisCode, int? specID1, string specification, string method, string unit, float? turnAroundTime, bool? reformTestResult)
+       
+        public E08T_Testing_Info(string analysisCode, long? specID, string specification, string method, string unit, double turnAroundTime, bool reformTestResult, string note)
         {
             this.analysisCode = analysisCode;
             this.specID = specID;
@@ -27,17 +30,19 @@ namespace DRLab.Data.Entities
             this.unit = unit;
             this.turnAroundTime = turnAroundTime;
             this.reformTestResult = reformTestResult;
+            this.note = note;
         }
-
+        [Key]
         public string analysisCode { get; set; }
-        public Nullable<int> specID { get; set; }
+        public Nullable<long> specID { get; set; }
         public string specification { get; set; }
         public string method { get; set; }
         public string unit { get; set; }
-        public Nullable<double> turnAroundTime { get; set; }
-        public Nullable<bool> reformTestResult { get; set; }
+        public double turnAroundTime { get; set; }
+        public bool reformTestResult { get; set; }
         public string note { get; set; }
-    
-        public virtual E00T_Specification E00T_Specification { get; set; }
+        [ForeignKey("specID")]
+        public virtual E00T_Specification Specif { get; set; }
+
     }
 }

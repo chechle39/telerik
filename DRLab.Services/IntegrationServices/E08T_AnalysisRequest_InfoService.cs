@@ -19,14 +19,14 @@ namespace DRLab.Services.IntegrationServices
         public async Task<bool> SaveAnalysisRequestInfo(E08T_AnalysisRequest_InfoViewModel SaveAnalysisRequestInforequest)
         {
             await _e08T_AnalysisRequest_InfoRepository.SaveAnalysisRequestInfo(SaveAnalysisRequestInforequest);
-            try
-            {
-                _uow.SaveChanges();
+            _uow.SaveChanges();
+            return await Task.FromResult(true);
+        }
 
-            } catch (Exception ex)
-            {
-
-            }
+        public async Task<bool> UpdateAnalysisRequestInfo(E08T_AnalysisRequest_InfoViewModel SaveAnalysisRequestInforequest)
+        {
+            await _e08T_AnalysisRequest_InfoRepository.UpdateAnalysisRequestInfo(SaveAnalysisRequestInforequest);
+            _uow.SaveChanges();
             return await Task.FromResult(true);
         }
     }

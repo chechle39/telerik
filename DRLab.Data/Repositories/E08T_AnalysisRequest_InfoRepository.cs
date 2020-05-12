@@ -20,5 +20,13 @@ namespace DRLab.Data.Repositories
             Entities.Add(saveAnalysisRequestInforequest);
             return await Task.FromResult(true);
         }
+
+        public async Task<bool> UpdateAnalysisRequestInfo(E08T_AnalysisRequest_InfoViewModel SaveAnalysisRequestInforequest)
+        {
+            var saveAnalysisRequestInforequest = Mapper.Map<E08T_AnalysisRequest_InfoViewModel, E08T_AnalysisRequest_Info>(SaveAnalysisRequestInforequest);
+
+            Entities.Update(saveAnalysisRequestInforequest);
+            return await Task.FromResult(true);
+        }
     }
 }

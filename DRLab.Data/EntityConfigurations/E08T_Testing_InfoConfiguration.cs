@@ -11,7 +11,7 @@ namespace DRLab.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<E08T_Testing_Info> builder)
         {
-            builder.HasKey(e => new { e.analysisCode});
+            builder.Property(e => e.analysisCode).ValueGeneratedNever();
         }
     }
 }

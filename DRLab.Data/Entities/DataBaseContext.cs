@@ -14,8 +14,9 @@ namespace DRLab.Data.Entities
                 .ApplyConfiguration(new E08T_AnalysisRequest_ItemConfiguration())
                 .ApplyConfiguration(new E00T_CustomerConfiguration())
                 .ApplyConfiguration(new E08T_Testing_DataConfiguration())
-                .ApplyConfiguration(new E00T_Customer_ItemConfiguration())
-                .ApplyConfiguration(new E08T_Testing_InfoConfiguration());
+                .ApplyConfiguration(new E00T_SpecificationConfiguration())
+                .ApplyConfiguration(new E08T_Testing_InfoConfiguration())
+                .ApplyConfiguration(new E00T_Customer_ItemConfiguration());            
             base.OnModelCreating(modelBuilder);
         }
         public DbSet<E08T_AnalysisRequest_Data> E08T_AnalysisRequest_Data { get; set; }
@@ -25,5 +26,6 @@ namespace DRLab.Data.Entities
         public DbSet<E08T_Testing_Data> E08T_Testing_Data { get; set; }
         public DbSet<E00T_Customer_Item> E00T_Customer_Item { get; set; }
         public DbSet<E08T_Testing_Info> E08T_Testing_Info { get; set; }
+        public DbSet<E00T_Specification> E00T_Specification { get; set; }
     }
 }

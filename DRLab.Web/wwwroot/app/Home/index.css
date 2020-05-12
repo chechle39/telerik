@@ -1,0 +1,49 @@
+﻿
+.home__chart-container {
+    display: flex;
+    flex-flow: wrap;
+    justify-content: space-around;
+    position: absolute;
+    height: 83vh;
+    align-items: center;
+}
+
+.home__chart__inner {
+    position: absolute;
+    height: 90%;
+    top: 10%;
+    width: 100%;
+    padding: 10px;  
+}
+
+.home__chart__inner canvas{
+    position: relative;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.home__chart {
+    position: relative;
+    width: 35vw;
+    height: 37vh;
+    padding: 0;
+}
+
+.home__chart .card-header {
+    background: #429246;
+    color: #FFF;
+    font-size: 1.1rem;
+}
+
+.home__chart .k-dropdown {
+    width: auto;
+    float: right;
+}
+    .home__chart .k-dropdown .k-dropdown-wrap, .k-popup.k-list-container {
+        font-size: 0.8rem !important;
+    }
+    .home__chart .k-dropdown .k-input, .home__chart .k-dropdown .k-select {
+        height: auto;
+        padding-top: 0;
+        padding-bottom: 0;
+    }

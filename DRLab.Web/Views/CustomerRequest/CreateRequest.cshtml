@@ -106,6 +106,7 @@
 
                             <div class="row">
                                 <label for="txtNameM" class="col-sm-4 custom-font-weight control-label no-padding-right">Request No.</label>
+                                <input type="hidden" id="requestNoId" value="" />
                                 <div class="col-sm-4">
                                     @(Html.Kendo().TextBox()
                               .Name("requestNo")
@@ -202,11 +203,13 @@
 
 <script>
     var selected;
+    var itemSelected;
     function onChange() {
     }
     function onSelect(e) {
         var dataItem = this.dataItem(e.item.index());
         selected = dataItem.customerCode;
+        itemSelected = dataItem;
         var comboboxContact = $("#contact").data("kendoComboBox");
         comboboxContact.select(comboboxContact.dataSource._pristineData.indexOf(comboboxContact.dataSource._pristineData.filter(x => x.customerCode === selected)[0]));
     }

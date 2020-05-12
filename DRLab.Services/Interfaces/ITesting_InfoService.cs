@@ -8,6 +8,11 @@ namespace DRLab.Services.Interfaces
 {
     public interface ITesting_InfoService
     {
-         Task<List<E08T_Testing_InfoViewModel>> GetAllTesting_Info();
+       Task<IEnumerable<E08T_Testing_InfoViewModel>> GetAllTesting_Info();
+        public Task<E08T_Testing_InfoViewModel> Create(E08T_Testing_InfoViewModel Data);
+        public Task<E08T_Testing_InfoViewModel> Update(E08T_Testing_InfoViewModel Data);
+        public void Destroy(string id);
+        Task<List<E08T_Testing_InfoViewModel>> GetE08TTestingInfoCombobox(string text);
+        Task<List<E00T_CustomerGridViewModel>> GetE08TTestingInfoBySpecId(long specId);
     }
 }

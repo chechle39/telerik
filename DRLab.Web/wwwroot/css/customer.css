@@ -1,0 +1,85 @@
+﻿   
+@media (max-width: 1296px) {
+    #descriptionCustomer {
+        margin-left: 0px !important;
+    }
+    #simpleName {
+        margin-left: 0px !important;
+    }
+    #simpleCode {
+        margin-left: 0px !important;
+    }
+    #innerCode {
+        margin-left: 0px !important;
+    }
+    #weight {
+        margin-left: 0px !important;
+    }
+    #sampleMatrix {
+        margin-left: 0px !important;
+    }
+}
+
+.span-underline {
+    text-decoration: underline;
+    color: blue;
+    cursor: pointer;
+}
+.pd-left-52 {
+    padding-left: 52px;
+}
+
+.mr-left {
+    margin-left: 40px;
+}
+
+.pd-left-35 {
+    padding-left: 35px;
+}
+
+.pd-left-30 {
+    padding-left: 30px;
+}
+
+.custom-font-weight {
+    font-weight: 500 !important;
+}
+
+.box {
+    float: left;
+    padding: 0px 0px;
+}
+
+.clearfix::after {
+    clear: both;
+    display: table;
+}
+
+.options {
+    margin: 5px 0px 0px 0px;
+    float: left;
+}
+
+.pagination {
+    float: right;
+}
+
+    .pagination a {
+        color: black;
+        float: left;
+        padding: 0px 16px;
+        text-decoration: none;
+        transition: background-color .3s;
+        border: 1px solid #ddd;
+        margin: 0 4px;
+    }
+
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+            border: 1px solid #4CAF50;
+        }
+
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+        }

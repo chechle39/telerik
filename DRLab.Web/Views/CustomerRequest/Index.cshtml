@@ -3,7 +3,6 @@
 @section Scripts{
 
     <script src="~/app/Customer/index.js" asp-append-version="true"></script>
-    <script src="~/app/DrLabBase.js"></script>
     <script>
         var userObj = new customerController();
         userObj.initialize();
@@ -14,25 +13,11 @@
     </button>*@
 
 
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0 text-dark">Home</h1>
-            </div><!-- /.col -->
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">New Request</li>
-                </ol>
-            </div><!-- /.col -->
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-</div>
 
-<section class="content">
+
+<section id="isCheck" style="" class="content">
     <div class="container-fluid">
-        
+
 
         <section class="content">
             <div class="container-fluid">
@@ -40,60 +25,314 @@
                     <!-- left column -->
                     <div class="col-md-12">
                         <!-- general form elements -->
-                        <div class="card card-success">
-                            <div class="card-header">
-                                <h3 class="card-title">New Request</h3>
-                            </div>
-                            <!-- /.card-header -->
-                            <!-- form start -->
+                        <div class="card">
                             <form role="form">
+                                <div class="card-header row" style="margin-left: 0px;">
+
+                                    <div class="col-4">
+                                        <h3 class="card-title" style="font-size: 25px">New Request</h3>
+
+
+                                    </div>
+                                    <div class="col-3">
+                                        @(Html.Kendo().DropDownList()
+                                        .Name("color")
+                                        .DataTextField("Text")
+                                        .DataValueField("Value")
+                                        .Events(e => e.Change("change"))
+                                        .BindTo(new List<SelectListItem>() {
+                                        new SelectListItem() {
+                                            Text = "Print Request",
+                                            Value = "1"
+                                        },
+                                        new SelectListItem() {
+                                                Text = "Export For Lab",
+                                                Value = "2"
+                                        },
+                                        })
+                                    .Value("1")
+                                    .HtmlAttributes(new { style = "width: 100%" })
+                                    )
+                                    </div>
+                                    <div class="col-5">
+                                        <div style="float:right">
+                                            <button type="submit" class="btn btn-raised">Save</button>
+                                            <button class="btn btn-cancel">Cancel</button>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <!-- /.card-header -->
+                                <!-- form start -->
                                 <div class="card-body">
+                                    <div id="tbl-content">
+
+                                    </div>
+                                    @*<div class="info-custummer">
+                                            <div class="form-group row">
+                                                <div class="col-3">
+                                                    <span onclick=xx() class="span-underline">Request No: RQ2020.001</span>
+
+                                                </div>
+                                                <div class="col-9">
+                                                    <span style="color: orange;" class="mr-left">Receive Day:12/4/2020 5:30</span>
+                                                    <span style="color: orange;" class="mr-left">Return Day: 12/4/2020 5:30</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <div class="col-3">
+                                                    <span>Công ty TNHH Hoàn Vũ</span>
+                                                </div>
+                                                <div class="col-9">
+                                                    <span style="color: orange;" class="mr-left">Lê thị Quỳnh Như, nhuquynh@gmail.com</span>
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                    <div class="form-group row">
+
+                                    </div>
                                     <div class="form-group row">
                                         <div class="col-2">
-                                            <span>Request No: RQ2020.001</span>
-
-                                        </div>
-                                        <div>
-                                            <span class="mr-left">Receive Day: 12/4/2020 5:30</span>
-                                            <span class="mr-left">Return Day: 12/4/2020 5:30</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <div class="col-2">
-                                            <span>Công ty TNHH Hoàn Vũ</span>
-                                        </div>
-                                        <div>
-                                            <span class="mr-left">Lê thị Quỳnh Như, nhuquynh@gmail.com</span>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-1">
-                                            <span>Sample List</span>
+                                            <span style="color: #922999">Sample List</span>
                                         </div>
 
                                         <div class="box pagination">
                                         </div>
                                     </div>
 
-                                    <div class="form-group row">
-                                        <span>Sample Name</span>
-                                        <div class="col-sm-8">
-                                            @(Html.Kendo().TextBox()
-                                            .Name("numOfSam")
-                                            .HtmlAttributes(new { placeholder = "Number Of Sample", required = "required", style = "width: 100%;height: 90%;" })
+                                    <div class="form-group row margin-left-0">
+                                        <div class="col-5 row">
+                                            <span>Sample Name</span>
+
+                                            <div class="col-sm-9">
+                                                @(Html.Kendo().TextBox()
+                                            .Name("simpleName")
+                                            .HtmlAttributes(new { placeholder = "Sample Name", required = "required", style = "width: 100%;height: 90%;margin-left: 8px" })
                                             )
+                                            </div>
                                         </div>
+
+                                        <div class="row col-5">
+                                            <span>Sample Code</span>
+                                            <div class="col-sm-9">
+                                                @(Html.Kendo().TextBox()
+                                                .Name("simpleCode")
+                                                .HtmlAttributes(new { placeholder = "Sample Code", required = "required", style = "width: 50%;height: 90%;margin-left: 8px" })
+                                                )
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group row margin-left-0">
+
+                                        <div class="col-5 row">
+                                            <span>Description</span>
+                                            <div class="col-sm-9">
+                                                @(Html.Kendo().TextBox()
+                                            .Name("descriptionCustomer")
+                                            .HtmlAttributes(new { placeholder = "Description", required = "required", style = "width: 100%;height: 90%;margin-left: 24px" })
+                                            )
+                                            </div>
+                                        </div>
+
+                                        <div class="row col-5">
+                                            <span>Inner Code</span>
+                                            <div class="col-sm-9">
+                                                @(Html.Kendo().TextBox()
+                                                .Name("innerCode")
+                                                .HtmlAttributes(new { placeholder = "Inner Code", required = "required", style = "width: 50%;height: 90%;margin-left: 23px" })
+                                                )
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+
+
+                                    <div class="form-group row margin-left-0">
+
+                                        <div class="col-5 row">
+                                            <span>Remark To Lab</span>
+                                            <div class="col-sm-9">
+                                                @(Html.Kendo().TextBox()
+                                            .Name("remarkToLab")
+                                            .HtmlAttributes(new { placeholder = "Remark To Lab", required = "required", style = "width: 100%;height: 90%;" })
+                                            )
+                                            </div>
+                                        </div>
+
+                                        <div class="row col-5">
+                                            <span>Weight</span>
+                                            <div class="col-sm-9">
+                                                @(Html.Kendo().TextBox()
+                                                .Name("weight")
+                                                .HtmlAttributes(new { placeholder = "Weight", required = "required", style = "width: 50%;height: 90%;margin-left: 50px", })
+                                                )
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row margin-left-0">
+
+                                        <div class="col-4 row">
+                                            <span>Sample Matrix</span>
+                                            <div class="col-sm-9">
+                                                @(Html.Kendo().ComboBox()
+                                                .Name("sampleMatrix")
+                                                .Placeholder("Select Sample Matrix")
+                                                .DataTextField("sampleMatrix")
+                                                .DataValueField("matrixID")
+                                                .HtmlAttributes(new { style = "width:100%; height:90%;margin-left: 5px" })
+                                                .AutoBind(false)
+                                                .DataSource(source =>
+                                                {
+                                                    source.Read(read =>
+                                                    {
+                                                        read.Action("GetSampleMatrix", "SampleMatrix");
+                                                    })
+                                                    .ServerFiltering(true);
+                                                })
+                                                 .Filter("startswith")
+                                                )
+                                            </div>
+                                        </div>
+
+                                        <div class="row col-5">
+                                            <span>Add Specification</span>
+                                            <div class="col-sm-9">
+                                                @(Html.Kendo().ComboBox()
+                                                .Name("addSpecification")
+                                                .Placeholder("Select Specification")
+                                                .DataTextField("specification")
+                                                .DataValueField("analysisCode")
+                                                .HtmlAttributes(new { style = "width:73%; height:90%;margin-left: 5px" })
+                                                 .Events(e =>
+                                                 {
+                                                    e.Select("onSelectaddSpecification");
+                                                 })
+                                                .Filter(FilterType.Contains)
+                                                .AutoBind(false)
+                                                .DataSource(source =>
+                                                {
+                                                    source.Read(read =>
+                                                    {
+                                                        read.Action("GetTestingInfoCombobox", "Testing_Info");
+                                                    })
+                                                    .ServerFiltering(true);
+                                                })
+                                                )
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group row margin-left-0">
+
+                                        <div class="col-5 row">
+                                            <span>Template Mark</span>
+                                            <div class="col-sm-5">
+                                                @(Html.Kendo().TextBox()
+                                            .Name("templateMark")
+                                            .HtmlAttributes(new { placeholder = "Template Mark", required = "required", style = "width: 100%;height: 90%;" })
+                                            )
+                                            </div>
+                                            <span>Save</span>
+                                            <span class="pd-left-30">Get</span>
+                                        </div>
+
+                                        <div class="col-5 row">
+                                            <span>TAT (+/-)</span>
+                                            <div class="col-sm-2">
+                                                @(Html.Kendo().TextBox()
+                                            .Name("tat")
+                                            .HtmlAttributes(new { placeholder = "TAT", required = "required", style = "width: 80%;height: 90%;" })
+                                            )
+                                            </div>
+                                            <span>Done</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+
+                                        @(Html.Kendo().Grid<DRLab.Data.ViewModels.E00T_CustomerGridViewModel>()
+                                        .Name("Grid")
+    .HtmlAttributes(new { style = "height:auto;" })
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.specification).Title("Specification");
+        columns.Bound(p => p.Mark).Title("Mark");
+        columns.Bound(p => p.method).Title("Method");
+        columns.Bound(p => p.LOD).Title("LOD");
+        columns.Bound(p => p.unit).Title("Unit");
+        columns.Bound(p => p.Price).Title("Price");
+        columns.Bound(p => p.Urgent).Title("% Urgent");
+        columns.Bound(p => p.TAT).Title("TAT");
+        columns.Command(command => { command.Edit(); command.Destroy(); }).Width(200);
+    })
+
+    .Editable(editable => editable.Mode(GridEditMode.InLine))
+    .Pageable()
+    .Sortable()
+    .Scrollable()
+    .DataSource(dataSource => dataSource
+        .Custom()
+        .PageSize(20)
+        .Schema(schema =>
+        {
+            schema.Model(model =>
+            {
+                model.Id(p => p.analysisCode);
+                model.Field(p => p.analysisCode).Editable(false).From("analysisCode");
+                model.Field(p => p.specification).From("specification");
+                model.Field(p => p.Mark).From("Mark");
+                model.Field(p => p.method).From("method");
+                model.Field(p => p.LOD).From("LOD");
+                model.Field(p => p.unit).From("unit");
+                model.Field(p => p.Price).From("Price");
+                model.Field(p => p.Urgent).From("Urgent");
+                model.Field(p => p.TAT).From("TAT");
+            })
+            .Data(d => "schemaData")
+            .Total(t => "schemaTotal");
+        })
+    //.Transport(transport => transport
+    //    .Create(r => r
+    //        .Url("https://demos.telerik.com/aspnet-core/service/api/graphql/")
+    //        .ContentType("application/json")
+    //        .Type(HttpVerbs.Post)
+    //        .Data("additionalDataOnCreate")
+    //    )
+
+    //    .Update(r => r
+    //        .Url("https://demos.telerik.com/aspnet-core/service/api/graphql/")
+    //        .ContentType("application/json")
+    //        .Type(HttpVerbs.Post)
+    //        .Data("additionalDataOnUpdate")
+    //    )
+    //    .Destroy(r => r
+    //        .Url("https://demos.telerik.com/aspnet-core/service/api/graphql/")
+    //        .ContentType("application/json")
+    //        .Type(HttpVerbs.Post)
+    //        .Data("additionalDataOnDestroy")
+    //    )
+    //    .ParameterMap("parameterMap")
+    //)
+    )
+)
                                     </div>
                                 </div>
                                 <!-- /.card-body -->
 
-                                <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </div>
+
                             </form>
                         </div>
-                      </div>
+                    </div>
                 </div>
                 <!-- /.row -->
             </div><!-- /.container-fluid -->
@@ -103,49 +342,210 @@
 
 @Html.Partial("CreateRequest.cshtml")
 
+<script>
+    var data = [];
+    function onSelectaddSpecification(e) {
+        var dataItem = this.dataItem(e.item.index());
+        $.ajax({
+            type: "GET",
+            url: "/Testing_Info/GetTestingInfoBySpecId",
+            data: { id: dataItem.specID },
+            dataType: "json",
+
+            success: function (response) {
+                data = [];
+                data = response;
+                console.log(data);
+                schemaTotal(data);
+                var dataSource = new kendo.data.DataSource({
+                    data: data,
+                    pageSize: 20,
+                    
+                });
+                var grid = $("#Grid").data("kendoGrid");
+                grid.setDataSource(dataSource);
+                
+            },
+            error: function () {
+
+            }
+        });
+    }
+    function schemaData() {
+
+        return data;
+
+    }
+    function schemaTotal(response) {
+        return data.length;
+    }
+    function checkClass(classList) {
+        var a = [];
+        for (var i = 0; i < classList.length; i++) {
+            if (classList[i].className.split(' ').join('') === 'active') {
+                a.push(classList[i]);
+            }
+        }
+
+        return a;
+    }
+    function render_table_rows(rows, req_per_page, page_no) {
+        const response = JSON.parse(window.atob(rows));
+        const resp = response.slice(req_per_page * (page_no - 1), req_per_page * page_no)
+        $('#request-table').empty()
+        $('#request-table').append('<tr><th>Index</th><th>Request No</th><th>Title</th></tr>');
+        resp.forEach(function (element, index) {
+            if (Object.keys(element).length > 0) {
+                const { req_no, title } = element;
+                const td = `<tr><td>${++index}</td><td>${req_no}</td><td>${title}</td></tr>`;
+                $('#request-table').append(td)
+            }
+        });
+    }
+    // load data and style for active page
+    function active_page(element, rows, req_per_page) {
+
+        var current_page = checkClass(document.getElementsByClassName('active'));
+        var next_link = document.getElementById('next_link');
+        var prev_link = document.getElementById('prev_link');
+        var next_tab = current_page[0].nextSibling;
+        var prev_tab = current_page[0].previousSibling;
+        current_page[0].className = current_page[0].className.replace("active", "");
+        if (element === "next") {
+            if (parseInt(next_tab.text).toString() === 'NaN') {
+                next_tab.previousSibling.className += " active";
+                next_tab.setAttribute("onclick", "return false");
+            } else {
+                next_tab.className += " active"
+                render_table_rows(rows, parseInt(req_per_page), parseInt(next_tab.text));
+                if (prev_link.getAttribute("onclick") === "return false") {
+                    prev_link.setAttribute("onclick", `active_page('prev',\"${rows}\",${req_per_page})`);
+                }
+                if (next_tab.style.display === "none") {
+                    next_tab.style.display = "block";
+                    hide_from_beginning(prev_link.nextSibling)
+                }
+            }
+        } else if (element === "prev") {
+            if (parseInt(prev_tab.text).toString() === 'NaN') {
+                prev_tab.nextSibling.className += " active";
+                prev_tab.setAttribute("onclick", "return false");
+            } else {
+                prev_tab.className += " active";
+                render_table_rows(rows, parseInt(req_per_page), parseInt(prev_tab.text));
+                if (next_link.getAttribute("onclick") === "return false") {
+                    next_link.setAttribute("onclick", `active_page('next',\"${rows}\",${req_per_page})`);
+                }
+                if (prev_tab.style.display === "none") {
+                    prev_tab.style.display = "block";
+                    hide_from_end(next_link.previousSibling)
+                }
+            }
+        } else {
+            element.className += "active";
+            render_table_rows(rows, parseInt(req_per_page), parseInt(element.text));
+            if (prev_link.getAttribute("onclick") === "return false") {
+                prev_link.setAttribute("onclick", `active_page('prev',\"${rows}\",${req_per_page})`);
+            }
+            if (next_link.getAttribute("onclick") === "return false") {
+                next_link.setAttribute("onclick", `active_page('next',\"${rows}\",${req_per_page})`);
+            }
+        }
+    }
+</script>
+<script type="x/kendo-template" id="page-template">
+    <div class="page-template">
+        <div class="header">
+            <div style="float: right">Page #: pageNum # of #: totalPages #</div>
+            Multi-page grid with automatic page breaking
+        </div>
+        <div class="footer">
+            Page #: pageNum # of #: totalPages #
+        </div>
+    </div>
+</script>
 <style>
-    .mr-left {
-        margin-left: 40px;
+    .k-pager-info {
+        display: inherit !important;
     }
-    .custom-font-weight {
-        font-weight: 500 !important;
+    .k-grid-content {
+        height: auto !important;
     }
-    .box {
-	float: left;
-	padding: 0px 0px;
-}
 
-.clearfix::after {
-	clear: both;
-	display: table;
-}
+    .k-grid tbody tr {
+        line-height: 14px;
+    }
 
-.options {
-	margin: 5px 0px 0px 0px;
-	float: left;
-}
+    .k-button {
+        height: 30px;
+    }
 
-.pagination {
-	float: right;
-}
+    .btn-raised {
+        background-color: #92d050 !important;
+        color: #fff !important;
+        border-color: #92d050;
+    }
 
-.pagination a {
-	color: black;
-	float: left;
-	padding: 0px 16px;
-	text-decoration: none;
-	transition: background-color .3s;
-	border: 1px solid #ddd;
-	margin: 0 4px;
-}
+    .btn-cancel {
+        color: #fff;
+        background-color: #868e96;
+        border-color: #868e96;
+    }
 
-.pagination a.active {
-	background-color: #4CAF50;
-	color: white;
-	border: 1px solid #4CAF50;
-}
+    .k-grid-update {
+        height: 30px !important;
+        width: 76px;
+    }
 
-.pagination a:hover:not(.active) {
-	background-color: #ddd;
-}
+    .k-grid-cancel {
+        height: 30px !important;
+    }
+
+    .info-custummer {
+        background: #47478c;
+    }
+
+    .margin-left-0 {
+        margin-left: 0px;
+    }
 </style>
+
+<script id="table-template" type="x-tmpl-mustache">
+    <div class="info-custummer">
+        <div class="form-group row">
+            <div class="col-3">
+                <span onclick=xx() class="span-underline">Request No: {{requestNo}}</span>
+
+            </div>
+            <div class="col-9">
+                <span style="color: orange;" class="mr-left">Receive Day: {{receivceDate}}</span>
+                <span style="color: orange;" class="mr-left">Return Day: {{dateOfSendingResult}}</span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-3">
+                <span>Công ty TNHH Hoàn Vũ</span>
+            </div>
+            <div class="col-9">
+                <span style="color: orange;" class="mr-left">{{contactName}}, {{contactEmail}}</span>
+            </div>
+        </div>
+    </div>
+
+</script>
+<script>
+
+    function change() {
+        var value = $("#color").val();
+        $("#cap")
+            .toggleClass("black-cap", value == 1)
+            .toggleClass("orange-cap", value == 2)
+            .toggleClass("grey-cap", value == 3);
+    };
+
+    function xx() {
+        $('#exampleModal').modal('show');
+    }
+
+</script>

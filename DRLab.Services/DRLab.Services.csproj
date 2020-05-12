@@ -5,12 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="IntegrationServices\Testing_DataService.cs" />
-    <Compile Remove="Interfaces\ITesting_DataService.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="6.1.1" />
+    <PackageReference Include="SSH.NET" Version="2016.1.0" />
   </ItemGroup>
 
   <ItemGroup>

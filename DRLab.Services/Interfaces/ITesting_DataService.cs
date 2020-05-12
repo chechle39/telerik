@@ -8,6 +8,6 @@ namespace DRLab.Services.Interfaces
 {
     public interface ITesting_DataService
     {
-        Task<List<E08T_Testing_DataViewModel>> GetAllTesting_Data();
+        Task<IEnumerable<E08T_Testing_DataViewModel>> GetAllTesting_Data();
     }
 }

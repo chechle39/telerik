@@ -25,15 +25,9 @@ namespace DRLab.Data.Repositories
             }
             else
             {
-                try
-                {
-                    return await Entities.ProjectTo<E00T_Customer_ItemViewModel>().ToListAsync();
 
-                } catch (Exception e)
-                {
+                return await Entities.ProjectTo<E00T_Customer_ItemViewModel>().ToListAsync();
 
-                }
-                return null;
             }
         }
     }

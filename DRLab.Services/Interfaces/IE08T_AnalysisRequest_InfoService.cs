@@ -6,5 +6,6 @@ namespace DRLab.Services.Interfaces
     public interface IE08T_AnalysisRequest_InfoService
     {
         Task<bool> SaveAnalysisRequestInfo(E08T_AnalysisRequest_InfoViewModel SaveAnalysisRequestInforequest);
+        Task<bool> UpdateAnalysisRequestInfo(E08T_AnalysisRequest_InfoViewModel SaveAnalysisRequestInforequest);
     }
 }

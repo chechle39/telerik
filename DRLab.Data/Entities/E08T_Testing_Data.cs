@@ -15,11 +15,12 @@ namespace DRLab.Data.Entities
 
     public partial class E08T_Testing_Data
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public E08T_Testing_Data() { 
 
         }
 
-        public E08T_Testing_Data(int? iD, string lOD, long? matrixID, float? max, float? min, float? precision, int? specID)
+        public E08T_Testing_Data(long? iD, string lOD, long? matrixID, double max, double min, double precision, long? specID)
         {
             this.iD = iD;
             LOD = lOD;
@@ -30,14 +31,13 @@ namespace DRLab.Data.Entities
             this.specID = specID;
         }
         [Key]
-        public Nullable<int> iD { get; set; }
+        public Nullable<long> iD { get; set; }
         public Nullable<long> matrixID { get; set; }
-        public Nullable<int> specID { get; set; }
-        public Nullable<float> min { get; set; }
-        public Nullable<float> max { get; set; }
-        public Nullable<float> precision { get; set; }
-        public string LOD { get; set; }
-    
+        public Nullable<long> specID { get; set; }
+        public double min { get; set; }
+        public double max { get; set; }
+        public double precision { get; set; }
+        public string LOD { get; set; }    
         public virtual E00T_SampleMatrix E00T_SampleMatrix { get; set; }
         public virtual E00T_Specification E00T_Specification { get; set; }
     }

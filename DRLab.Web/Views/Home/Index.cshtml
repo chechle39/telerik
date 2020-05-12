@@ -1,44 +1,137 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-<div class="content-header">
+<!-- <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
                 <h1 class="m-0 text-dark">Home</h1>
-            </div><!-- /.col -->
+            </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
                     <li class="breadcrumb-item active">Dashboard v1</li>
                 </ol>
-            </div><!-- /.col -->
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-</div>
+            </div>
+        </div>
+    </div>
+</div> -->
 
 <section class="content">
     <div class="container-fluid">
-
-        <div class="text-center">
-            <h1 class="display-4">Welcome</h1>
-            <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-            @(Html.Kendo().DatePicker()
-              .Name("datepicker")
-              .Value("10/10/2011")
-              .HtmlAttributes(new { style = "width: 100%", title = "datepicker" })
-        )
-            <h4 style="margin-top: 2em;">Add to archive mail from:</h4>
-            @(Html.Kendo().DatePicker()
-              .Name("monthpicker")
-              .Start(CalendarView.Year)
-              .Depth(CalendarView.Year)
-              .Format("MMMM yyyy")
-              .Value("November 2011")
-              .DateInput()
-              .HtmlAttributes(new { style = "width: 100%", title = "monthpicker" })
-        )
+        <div class="home__chart-container">
+            <div class="home__chart card p-0">
+                <h5 class="card-header px-3 py-2">
+                    Featured
+                    @(Html.Kendo().DropDownList()
+                      .Name("chart1")
+                      .DataTextField("Text")
+                      .DataValueField("Value")
+                      .BindTo(new List<SelectListItem>() {
+                          new SelectListItem() {
+                              Text = "View by month",
+                              Value = "1"
+                          },
+                          new SelectListItem() {
+                              Text = "View by week",
+                              Value = "2"
+                          }
+                      })
+                      .Value("1")
+    )
+                </h5>
+                <div class="card-body position-relative p-0">
+                    <div class="home__chart__inner">
+                        <canvas id="home__chart1"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="home__chart card p-0">
+                <h5 class="card-header px-3 py-2">
+                    Request
+                    @(Html.Kendo().DropDownList()
+                      .Name("chart2")
+                      .DataTextField("Text")
+                      .DataValueField("Value")
+                      .BindTo(new List<SelectListItem>() {
+                          new SelectListItem() {
+                              Text = "View by month",
+                              Value = "1"
+                          },
+                          new SelectListItem() {
+                              Text = "View by week",
+                              Value = "2"
+                          }
+                      })
+                      .Value("1")
+    )
+                </h5>
+                <div class="card-body position-relative p-0">
+                    <div class="home__chart__inner">
+                        <canvas id="home__chart2"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="home__chart card p-0">
+                <h5 class="card-header px-3 py-2">
+                    Featured
+                    @(Html.Kendo().DropDownList()
+                      .Name("chart3")
+                      .DataTextField("Text")
+                      .DataValueField("Value")
+                      .BindTo(new List<SelectListItem>() {
+                          new SelectListItem() {
+                              Text = "View by month",
+                              Value = "1"
+                          },
+                          new SelectListItem() {
+                              Text = "View by week",
+                              Value = "2"
+                          }
+                      })
+                      .Value("1")
+    )
+                </h5>
+                <div class="card-body position-relative p-0">
+                    <div class="home__chart__inner">
+                        <canvas id="home__chart3"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="home__chart card p-0">
+                <h5 class="card-header px-3 py-2">
+                    Working on lab
+                    @(Html.Kendo().DropDownList()
+                      .Name("chart4")
+                      .DataTextField("Text")
+                      .DataValueField("Value")
+                      .BindTo(new List<SelectListItem>() {
+                          new SelectListItem() {
+                              Text = "View by month",
+                              Value = "1"
+                          },
+                          new SelectListItem() {
+                              Text = "View by week",
+                              Value = "2"
+                          }
+                      })
+                      .Value("1")
+    )
+                </h5>
+                <div class="card-body position-relative p-0">
+                    <div class="home__chart__inner">
+                        <canvas id="home__chart4"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
     </div><!-- /.container-fluid -->
 </section>
 
+@section scripts {
+    <script src="~/app/Home/index.js" asp-append-version="true"></script>
+}
+
+@section styles {
+    <link href="~/app/Home/index.css" rel="stylesheet" asp-append-version="true" />
+}
