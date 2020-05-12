@@ -1,5 +1,4 @@
-﻿<!-- Button trigger modal -->
-@addTagHelper *, Kendo.Mvc
+﻿@addTagHelper *, Kendo.Mvc
 @section Scripts{
 
     <script src="~/app/Customer/index.js" asp-append-version="true"></script>
@@ -8,9 +7,6 @@
         userObj.initialize();
     </script>
 }
-@*<button id="showModel" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-        Launch demo modal
-    </button>*@
 
 
 
@@ -389,23 +385,34 @@
 
         return a;
     }
-    function render_table_rows(rows, req_per_page, page_no) {
-        const response = JSON.parse(window.atob(rows));
-        const resp = response.slice(req_per_page * (page_no - 1), req_per_page * page_no)
-        $('#request-table').empty()
-        $('#request-table').append('<tr><th>Index</th><th>Request No</th><th>Title</th></tr>');
-        resp.forEach(function (element, index) {
-            if (Object.keys(element).length > 0) {
-                const { req_no, title } = element;
-                const td = `<tr><td>${++index}</td><td>${req_no}</td><td>${title}</td></tr>`;
-                $('#request-table').append(td)
-            }
-        });
+    function render_table_rows(rows, req_per_page, page_no, curent) {
+        const response = rows;
+ 
+        response[curent - 1].simpleName = $('#simpleName').val();
+        response[curent - 1].simpleCode = $('#simpleCode').val();
+        response[curent - 1].descriptionCustomer = $('#descriptionCustomer').val();
+        response[curent - 1].innerCode = $('#innerCode').val();
+        response[curent - 1].remarkToLab = $('#remarkToLab').val();
+        const resp = response.slice(req_per_page * (page_no - 1), req_per_page * page_no);
+        $('#simpleName').val(response[page_no - 1].simpleName);
+        $('#simpleCode').val(response[page_no - 1].simpleCode) ;
+        $('#descriptionCustomer').val(response[page_no - 1].descriptionCustomer);
+        $('#innerCode').val(response[page_no - 1].innerCode);
+        $('#remarkToLab').val(response[page_no - 1].remarkToLab);
     }
     // load data and style for active page
+    myData = [];
+    var curent;
     function active_page(element, rows, req_per_page) {
-
+        if (myData.length === 0) {
+            for (var i = 0; i < JSON.parse(window.atob(rows)).length; i++) {
+                const a = { simpleName: i, simpleCode: '', descriptionCustomer: '', innerCode: '', remarkToLab: '', weight: '', sampleMatrix: '', addSpecification: '', templateMark: '', tat: '' };
+                    myData.push(a);
+            }
+        }
+        
         var current_page = checkClass(document.getElementsByClassName('active'));
+        var curent = parseInt(current_page[0].innerText)
         var next_link = document.getElementById('next_link');
         var prev_link = document.getElementById('prev_link');
         var next_tab = current_page[0].nextSibling;
@@ -417,9 +424,9 @@
                 next_tab.setAttribute("onclick", "return false");
             } else {
                 next_tab.className += " active"
-                render_table_rows(rows, parseInt(req_per_page), parseInt(next_tab.text));
+                render_table_rows(myData, parseInt(req_per_page), parseInt(next_tab.text));
                 if (prev_link.getAttribute("onclick") === "return false") {
-                    prev_link.setAttribute("onclick", `active_page('prev',\"${rows}\",${req_per_page})`);
+                    prev_link.setAttribute("onclick", `active_page('prev',\"${myData}\",${req_per_page})`);
                 }
                 if (next_tab.style.display === "none") {
                     next_tab.style.display = "block";
@@ -432,9 +439,9 @@
                 prev_tab.setAttribute("onclick", "return false");
             } else {
                 prev_tab.className += " active";
-                render_table_rows(rows, parseInt(req_per_page), parseInt(prev_tab.text));
+                render_table_rows(myData, parseInt(req_per_page), parseInt(prev_tab.text));
                 if (next_link.getAttribute("onclick") === "return false") {
-                    next_link.setAttribute("onclick", `active_page('next',\"${rows}\",${req_per_page})`);
+                    next_link.setAttribute("onclick", `active_page('next',\"${myData}\",${req_per_page})`);
                 }
                 if (prev_tab.style.display === "none") {
                     prev_tab.style.display = "block";
@@ -443,12 +450,12 @@
             }
         } else {
             element.className += "active";
-            render_table_rows(rows, parseInt(req_per_page), parseInt(element.text));
+            render_table_rows(myData, parseInt(req_per_page), parseInt(element.text), curent);
             if (prev_link.getAttribute("onclick") === "return false") {
-                prev_link.setAttribute("onclick", `active_page('prev',\"${rows}\",${req_per_page})`);
+                prev_link.setAttribute("onclick", `active_page('prev',\"${myData}\",${req_per_page})`);
             }
             if (next_link.getAttribute("onclick") === "return false") {
-                next_link.setAttribute("onclick", `active_page('next',\"${rows}\",${req_per_page})`);
+                next_link.setAttribute("onclick", `active_page('next',\"${myData}\",${req_per_page})`);
             }
         }
     }
