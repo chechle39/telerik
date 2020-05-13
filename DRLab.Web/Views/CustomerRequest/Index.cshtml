@@ -1,5 +1,4 @@
-﻿<!-- Button trigger modal -->
-@addTagHelper *, Kendo.Mvc
+﻿@addTagHelper *, Kendo.Mvc
 @section Scripts{
 
     <script src="~/app/Customer/index.js" asp-append-version="true"></script>
@@ -8,9 +7,6 @@
         userObj.initialize();
     </script>
 }
-@*<button id="showModel" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-        Launch demo modal
-    </button>*@
 
 @{
     var messages = new Dictionary<string, string>() { { "custom", "Please choose another Start Time." } };
@@ -388,6 +384,37 @@
             response = myData;
         }
 
+<<<<<<< HEAD
+=======
+        return a;
+    }
+    function render_table_rows(rows, req_per_page, page_no, curent) {
+        const response = rows;
+ 
+        response[curent - 1].simpleName = $('#simpleName').val();
+        response[curent - 1].simpleCode = $('#simpleCode').val();
+        response[curent - 1].descriptionCustomer = $('#descriptionCustomer').val();
+        response[curent - 1].innerCode = $('#innerCode').val();
+        response[curent - 1].remarkToLab = $('#remarkToLab').val();
+        const resp = response.slice(req_per_page * (page_no - 1), req_per_page * page_no);
+        $('#simpleName').val(response[page_no - 1].simpleName);
+        $('#simpleCode').val(response[page_no - 1].simpleCode) ;
+        $('#descriptionCustomer').val(response[page_no - 1].descriptionCustomer);
+        $('#innerCode').val(response[page_no - 1].innerCode);
+        $('#remarkToLab').val(response[page_no - 1].remarkToLab);
+    }
+    // load data and style for active page
+    myData = [];
+    var curent;
+    function active_page(element, rows, req_per_page) {
+        if (myData.length === 0) {
+            for (var i = 0; i < JSON.parse(window.atob(rows)).length; i++) {
+                const a = { simpleName: i, simpleCode: '', descriptionCustomer: '', innerCode: '', remarkToLab: '', weight: '', sampleMatrix: '', addSpecification: '', templateMark: '', tat: '' };
+                    myData.push(a);
+            }
+        }
+        
+>>>>>>> d66340be738e7ed04ca3c94f07a9a3fbd86cdb85
         var current_page = checkClass(document.getElementsByClassName('active'));
         var curent = parseInt(current_page[0].innerText)
         var next_link = document.getElementById('next_link');
@@ -401,7 +428,11 @@
                 next_tab.setAttribute("onclick", "return false");
             } else {
                 next_tab.className += " active"
+<<<<<<< HEAD
                 render_table_rows(myData, parseInt(req_per_page), parseInt(next_tab.text), curent);
+=======
+                render_table_rows(myData, parseInt(req_per_page), parseInt(next_tab.text));
+>>>>>>> d66340be738e7ed04ca3c94f07a9a3fbd86cdb85
                 if (prev_link.getAttribute("onclick") === "return false") {
                     prev_link.setAttribute("onclick", `active_page('prev',\"${myData}\",${req_per_page})`);
                 }
@@ -416,7 +447,11 @@
                 prev_tab.setAttribute("onclick", "return false");
             } else {
                 prev_tab.className += " active";
+<<<<<<< HEAD
                 render_table_rows(myData, parseInt(req_per_page), parseInt(prev_tab.text), curent);
+=======
+                render_table_rows(myData, parseInt(req_per_page), parseInt(prev_tab.text));
+>>>>>>> d66340be738e7ed04ca3c94f07a9a3fbd86cdb85
                 if (next_link.getAttribute("onclick") === "return false") {
                     next_link.setAttribute("onclick", `active_page('next',\"${myData}\",${req_per_page})`);
                 }
@@ -433,6 +468,7 @@
             }
             if (next_link.getAttribute("onclick") === "return false") {
                 next_link.setAttribute("onclick", `active_page('next',\"${myData}\",${req_per_page})`);
+<<<<<<< HEAD
             }
         }
     }
@@ -520,6 +556,8 @@
                     data: response[i].data
                 }
                 saveRequest.push(object);
+=======
+>>>>>>> d66340be738e7ed04ca3c94f07a9a3fbd86cdb85
             }
         }
     }

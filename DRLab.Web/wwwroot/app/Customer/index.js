@@ -3,7 +3,7 @@ var customerController = function () {
     this.initialize = function () {
     }
     var sampleListCount;
- 
+
     $("#btnCancel").on('click', function () {
         $('#exampleModal').modal('hide');
         $('#exampleModal').css('display', 'none');
@@ -226,7 +226,7 @@ function render_table_rows(rows, req_per_page, page_no) {
 // Pagination logic implementation
 function pagination(data, lenth) {
     for (var i = 0; i < lenth; i++) {
-        const a = { simpleName: '', simpleCode: '', descriptionCustomer: '', innerCode: '', remarkToLab: '', weight: '', sampleMatrix: '', addSpecification: '', templateMark: '', tat: '' };
+        const a = { simpleName: i, simpleCode: '', descriptionCustomer: '', innerCode: '', remarkToLab: '', weight: '', sampleMatrix: '', addSpecification: '', templateMark: '', tat: '' };
         myarr.push(a);
     }
     const all_data = window.btoa(JSON.stringify(myarr));
