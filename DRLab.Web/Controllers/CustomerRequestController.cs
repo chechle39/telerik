@@ -29,7 +29,17 @@ namespace DRLab.Web.Controllers
         {
             return View();
         }
-
+        [HttpPost]
+        public async Task<IActionResult> SaveEntityxxx([FromBody] List<CreateCustomeRequest> request)
+        {
+            if (!ModelState.IsValid)
+            {
+                IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
+                return new BadRequestObjectResult(allErrors);
+            }
+            await _e00T_CustomerService.CreateAnalysisRequestData(request);
+            return new OkObjectResult(request);
+        }
         [HttpPost]
         public async Task<IActionResult> SaveEntity(E08T_AnalysisRequest_InfoViewModel req)
         {

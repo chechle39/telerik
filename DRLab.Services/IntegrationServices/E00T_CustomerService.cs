@@ -17,10 +17,12 @@ namespace DRLab.Services.IntegrationServices
         private readonly IE00T_CustomerRepository _e00T_CustomerRepository;
         private readonly IRepository<E00T_Customer> _test;
         private readonly IUnitOfWork _uow;
-        public E00T_CustomerService(IUnitOfWork uow,IE00T_CustomerRepository e00T_CustomerRepository)
+        private readonly IE08T_AnalysisRequest_DataRepository _e08T_AnalysisRequest_DataRepository;
+        public E00T_CustomerService(IUnitOfWork uow,IE00T_CustomerRepository e00T_CustomerRepository, IE08T_AnalysisRequest_DataRepository e08T_AnalysisRequest_DataRepository)
         {
             _e00T_CustomerRepository = e00T_CustomerRepository;           
             _uow = uow;
+            _e08T_AnalysisRequest_DataRepository = e08T_AnalysisRequest_DataRepository;
         }
 
         public async Task<bool> Create(E00T_CustomerViewModel Data)
@@ -77,6 +79,13 @@ namespace DRLab.Services.IntegrationServices
                 _test.RemoveStringID(id);
                 _uow.SaveChanges();
             }
+        }
+
+        public async Task<bool> CreateAnalysisRequestData(List<CreateCustomeRequest> request)
+        {
+            var x = await _e08T_AnalysisRequest_DataRepository.CreateAnalysisRequestData(request);
+            _uow.SaveChanges();
+            return x;
         }
     }
 }

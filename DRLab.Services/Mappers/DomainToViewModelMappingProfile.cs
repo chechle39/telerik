@@ -15,6 +15,7 @@ namespace DRLab.Services.Mappers
             CreateMap<E00T_Customer, E00T_CustomerViewModel>();
             CreateMap<E00T_Customer_Item, E00T_Customer_ItemViewModel>();
             CreateMap<E00T_SampleMatrix, E00T_SampleMatrixViewModel>();
+            CreateMap<E08T_AnalysisRequest_Item, E08T_AnalysisRequest_ItemViewModel>();
         }
     }
 }

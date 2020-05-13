@@ -13,5 +13,6 @@ namespace DRLab.Services.Interfaces
         Task<bool> Create(E00T_CustomerViewModel Data);
         Task<bool> Update(E00T_CustomerViewModel Data);
         public void Destroy(string id);
+        public Task<bool> CreateAnalysisRequestData(List<CreateCustomeRequest> request);
     }
 }

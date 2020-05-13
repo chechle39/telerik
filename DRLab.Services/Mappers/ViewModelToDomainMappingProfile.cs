@@ -16,6 +16,7 @@ namespace DRLab.Services.Mappers
             CreateMap<E00T_Customer_ItemViewModel, E00T_Customer_Item>().ConstructUsing(x => new E00T_Customer_Item(x.contactID, x.address, x.contactName, x.customerCode, x.email, x.note));
             CreateMap<E00T_SampleMatrixViewModel, E00T_SampleMatrix>().ConstructUsing(x => new E00T_SampleMatrix(x.matrixID, x.sampleMatrix));
             CreateMap<E00T_SpecificationViewModel, E00T_Specification>().ConstructUsing(x => new E00T_Specification(x.specID, x.specification));
+            CreateMap<E08T_AnalysisRequest_ItemViewModel, E08T_AnalysisRequest_Item>().ConstructUsing(x => new E08T_AnalysisRequest_Item(x.detected, x.LVNCode,x.remarkToLab,x.requestNo,x.sampleCode,x.sampleDescription,x.sampleName,x.weight));
         }
     }
 }

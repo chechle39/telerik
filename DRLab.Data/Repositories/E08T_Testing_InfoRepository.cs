@@ -31,11 +31,11 @@ namespace DRLab.Data.Repositories
                     LOD = "",
                     Mark = "",
                     method = item.method,   
-                    Price = "",
+                    Price = 0,
                     specification = item.specification,
                     TAT = "",
                     unit = item.unit,
-                    Urgent = ""
+                    Urgent = 0
                 };
                 lisE00T_CustomerGrid.Add(obj);
             }

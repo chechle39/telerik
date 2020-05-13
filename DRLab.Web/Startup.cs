@@ -42,6 +42,8 @@ namespace DRLab.Web
             services.AddScoped<IMapper>(sp => new Mapper(sp.GetRequiredService<AutoMapper.IConfigurationProvider>(), sp.GetService));
             services.AddTransient(typeof(IUnitOfWork), typeof(UnitOfWork));
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
+            services.AddTransient<IE08T_AnalysisRequest_DataRepository, E08T_AnalysisRequest_DataRepository>();
+            services.AddTransient<IE08T_AnalysisRequest_ItemRepository, E08T_AnalysisRequest_ItemRepository>();
             services.AddTransient<IE00T_SampleMatrixRepository, E00T_SampleMatrixRepository>();
             services.AddTransient<IE00T_CustomerRepository, E00T_CustomerRepository>();
             services.AddTransient<IE00T_Customer_ItemRepository, E00T_Customer_ItemRepository>();
@@ -50,6 +52,7 @@ namespace DRLab.Web
             services.AddTransient<IE00T_Customer_ItemService, E00T_Customer_ItemService>();
             services.AddTransient<IE08T_AnalysisRequest_InfoService, E08T_AnalysisRequest_InfoService>();
             services.AddTransient<IE00T_SampleMatrixService, E00T_SampleMatrixService>();
+            services.AddTransient<IE08T_AnalysisRequest_DataService, E08T_AnalysisRequest_DataService>();
             services.AddScoped<DbContext, DataBaseContext>();
             services.AddControllersWithViews();
             services.AddKendo();
