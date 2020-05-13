@@ -1,4 +1,7 @@
-﻿@{
+﻿
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
     ViewData["Title"] = "Home Page";
 }
 <!-- <div class="content-header">
@@ -16,7 +19,7 @@
         </div>
     </div>
 </div> -->
-
+@Localizer["Hello"]
 <section class="content">
     <div class="container-fluid">
         <div class="home__chart-container">

@@ -7,13 +7,13 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="6.1.1" />
+    <PackageReference Include="Askmethat.Aspnet.JsonLocalizer" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Telerik.UI.for.AspNet.Core" Version="2020.1.114" />
 	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="3.1.0" />
-	  <PackageReference Include="KendoQsBoilerplate" Version="1.0.3" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
 	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.3" />
 	  <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.2" />
@@ -34,5 +34,4 @@
     <ProjectReference Include="..\DRLab.Data\DRLab.Data.csproj" />
     <ProjectReference Include="..\DRLab.Services\DRLab.Services.csproj" />
   </ItemGroup>
-
 </Project>

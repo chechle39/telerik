@@ -12,7 +12,10 @@
         Launch demo modal
     </button>*@
 
-
+@{
+    var messages = new Dictionary<string, string>() { { "custom", "Please choose another Start Time." } };
+    var rules = new Dictionary<string, string>() { { "custom", "customFunction" } };
+}
 
 
 <section id="isCheck" style="" class="content">
@@ -26,7 +29,7 @@
                     <div class="col-md-12">
                         <!-- general form elements -->
                         <div class="card">
-                            <form role="form">
+                            <form id="ticketsForm" class="k-form k-form-vertical" kendo-validator="true">
                                 <div class="card-header row" style="margin-left: 0px;">
 
                                     <div class="col-4">
@@ -56,7 +59,7 @@
                                     </div>
                                     <div class="col-5">
                                         <div style="float:right">
-                                            <button type="submit" class="btn btn-raised">Save</button>
+                                            <button onclick="SaveEntity()" type="submit" class="btn btn-raised">Save</button>
                                             <button class="btn btn-cancel">Cancel</button>
                                         </div>
 
@@ -106,11 +109,8 @@
                                         <div class="col-5 row">
                                             <span>Sample Name</span>
 
-                                            <div class="col-sm-9">
-                                                @(Html.Kendo().TextBox()
-                                            .Name("simpleName")
-                                            .HtmlAttributes(new { placeholder = "Sample Name", required = "required", style = "width: 100%;height: 90%;margin-left: 8px" })
-                                            )
+                                            <div class="col-sm-9 ">
+                                                <textarea id="simpleName" required = "required" placeholder = "Sample Name" class="k-textbox" style="margin-left: 8px;width: 100%;height: calc(1.42857143em + 10px)"></textarea>
                                             </div>
                                         </div>
 
@@ -119,8 +119,9 @@
                                             <div class="col-sm-9">
                                                 @(Html.Kendo().TextBox()
                                                 .Name("simpleCode")
-                                                .HtmlAttributes(new { placeholder = "Sample Code", required = "required", style = "width: 50%;height: 90%;margin-left: 8px" })
+                                                .HtmlAttributes(new { placeholder = "Sample Code", style = "width: 50%;height: calc(1.42857143em + 10px);margin-left: 8px" })
                                                 )
+
                                             </div>
 
                                         </div>
@@ -131,10 +132,7 @@
                                         <div class="col-5 row">
                                             <span>Description</span>
                                             <div class="col-sm-9">
-                                                @(Html.Kendo().TextBox()
-                                            .Name("descriptionCustomer")
-                                            .HtmlAttributes(new { placeholder = "Description", required = "required", style = "width: 100%;height: 90%;margin-left: 24px" })
-                                            )
+                                                <textarea id="descriptionCustomer" placeholder="Description" class="k-textbox" style="width: 100%;margin-left: 24px;height: calc(1.42857143em + 10px)"></textarea>
                                             </div>
                                         </div>
 
@@ -143,7 +141,7 @@
                                             <div class="col-sm-9">
                                                 @(Html.Kendo().TextBox()
                                                 .Name("innerCode")
-                                                .HtmlAttributes(new { placeholder = "Inner Code", required = "required", style = "width: 50%;height: 90%;margin-left: 23px" })
+                                                .HtmlAttributes(new { placeholder = "Inner Code", style = "width: 50%;height: calc(1.42857143em + 10px);margin-left: 23px" })
                                                 )
                                             </div>
 
@@ -158,10 +156,8 @@
                                         <div class="col-5 row">
                                             <span>Remark To Lab</span>
                                             <div class="col-sm-9">
-                                                @(Html.Kendo().TextBox()
-                                            .Name("remarkToLab")
-                                            .HtmlAttributes(new { placeholder = "Remark To Lab", required = "required", style = "width: 100%;height: 90%;" })
-                                            )
+                                                <textarea id="remarkToLab" placeholder="Remark To Lab" class="k-textbox" style="width: 100%;height: calc(1.42857143em + 10px)"></textarea>
+
                                             </div>
                                         </div>
 
@@ -170,7 +166,7 @@
                                             <div class="col-sm-9">
                                                 @(Html.Kendo().TextBox()
                                                 .Name("weight")
-                                                .HtmlAttributes(new { placeholder = "Weight", required = "required", style = "width: 50%;height: 90%;margin-left: 50px", })
+                                                .HtmlAttributes(new { placeholder = "Weight", style = "width: 50%;height: calc(1.42857143em + 10px);margin-left: 50px", })
                                                 )
                                             </div>
 
@@ -187,7 +183,8 @@
                                                 .Placeholder("Select Sample Matrix")
                                                 .DataTextField("sampleMatrix")
                                                 .DataValueField("matrixID")
-                                                .HtmlAttributes(new { style = "width:100%; height:90%;margin-left: 5px" })
+                                                .HtmlAttributes(new { style = "width:100%; height:calc(1.42857143em + 10px);margin-left: 5px" })
+
                                                 .AutoBind(false)
                                                 .DataSource(source =>
                                                 {
@@ -210,7 +207,7 @@
                                                 .Placeholder("Select Specification")
                                                 .DataTextField("specification")
                                                 .DataValueField("analysisCode")
-                                                .HtmlAttributes(new { style = "width:73%; height:90%;margin-left: 5px" })
+                                                .HtmlAttributes(new { style = "width:73%; height:calc(1.42857143em + 10px);margin-left: 5px" })
                                                  .Events(e =>
                                                  {
                                                     e.Select("onSelectaddSpecification");
@@ -239,7 +236,7 @@
                                             <div class="col-sm-5">
                                                 @(Html.Kendo().TextBox()
                                             .Name("templateMark")
-                                            .HtmlAttributes(new { placeholder = "Template Mark", required = "required", style = "width: 100%;height: 90%;" })
+                                            .HtmlAttributes(new { placeholder = "Template Mark", style = "width: 100%;height: calc(1.42857143em + 10px);" })
                                             )
                                             </div>
                                             <span>Save</span>
@@ -251,7 +248,7 @@
                                             <div class="col-sm-2">
                                                 @(Html.Kendo().TextBox()
                                             .Name("tat")
-                                            .HtmlAttributes(new { placeholder = "TAT", required = "required", style = "width: 80%;height: 90%;" })
+                                            .HtmlAttributes(new { placeholder = "TAT", style = "width: 80%;height: calc(1.42857143em + 10px);" })
                                             )
                                             </div>
                                             <span>Done</span>
@@ -262,69 +259,46 @@
 
                                         @(Html.Kendo().Grid<DRLab.Data.ViewModels.E00T_CustomerGridViewModel>()
                                         .Name("Grid")
-    .HtmlAttributes(new { style = "height:auto;" })
-    .Columns(columns =>
-    {
-        columns.Bound(p => p.specification).Title("Specification");
-        columns.Bound(p => p.Mark).Title("Mark");
-        columns.Bound(p => p.method).Title("Method");
-        columns.Bound(p => p.LOD).Title("LOD");
-        columns.Bound(p => p.unit).Title("Unit");
-        columns.Bound(p => p.Price).Title("Price");
-        columns.Bound(p => p.Urgent).Title("% Urgent");
-        columns.Bound(p => p.TAT).Title("TAT");
-        columns.Command(command => { command.Edit(); command.Destroy(); }).Width(200);
-    })
+                                        .HtmlAttributes(new { style = "height:auto;" })
+                                        .Columns(columns =>
+                                        {
+                                            columns.Bound(p => p.specification).Title("Specification");
+                                            columns.Bound(p => p.Mark).Title("Mark");
+                                            columns.Bound(p => p.method).Title("Method");
+                                            columns.Bound(p => p.LOD).Title("LOD");
+                                            columns.Bound(p => p.unit).Title("Unit");
+                                            columns.Bound(p => p.Price).Title("Price");
+                                            columns.Bound(p => p.Urgent).Title("% Urgent");
+                                            columns.Bound(p => p.TAT).Title("TAT");
+                                            columns.Command(command => { command.Destroy(); }).Width(100);
+                                        })
 
-    .Editable(editable => editable.Mode(GridEditMode.InLine))
-    .Pageable()
-    .Sortable()
-    .Scrollable()
-    .DataSource(dataSource => dataSource
-        .Custom()
-        .PageSize(20)
-        .Schema(schema =>
-        {
-            schema.Model(model =>
-            {
-                model.Id(p => p.analysisCode);
-                model.Field(p => p.analysisCode).Editable(false).From("analysisCode");
-                model.Field(p => p.specification).From("specification");
-                model.Field(p => p.Mark).From("Mark");
-                model.Field(p => p.method).From("method");
-                model.Field(p => p.LOD).From("LOD");
-                model.Field(p => p.unit).From("unit");
-                model.Field(p => p.Price).From("Price");
-                model.Field(p => p.Urgent).From("Urgent");
-                model.Field(p => p.TAT).From("TAT");
-            })
-            .Data(d => "schemaData")
-            .Total(t => "schemaTotal");
-        })
-    //.Transport(transport => transport
-    //    .Create(r => r
-    //        .Url("https://demos.telerik.com/aspnet-core/service/api/graphql/")
-    //        .ContentType("application/json")
-    //        .Type(HttpVerbs.Post)
-    //        .Data("additionalDataOnCreate")
-    //    )
-
-    //    .Update(r => r
-    //        .Url("https://demos.telerik.com/aspnet-core/service/api/graphql/")
-    //        .ContentType("application/json")
-    //        .Type(HttpVerbs.Post)
-    //        .Data("additionalDataOnUpdate")
-    //    )
-    //    .Destroy(r => r
-    //        .Url("https://demos.telerik.com/aspnet-core/service/api/graphql/")
-    //        .ContentType("application/json")
-    //        .Type(HttpVerbs.Post)
-    //        .Data("additionalDataOnDestroy")
-    //    )
-    //    .ParameterMap("parameterMap")
-    //)
-    )
-)
+                                        .Editable(editable => editable.Mode(GridEditMode.InCell))
+                                        .Pageable()
+                                        .Sortable()
+                                        .Scrollable()
+                                        .DataSource(dataSource => dataSource
+                                        .Custom()
+                                        .PageSize(20)
+                                        .Batch(true)
+                                        .Schema(schema =>
+                                        {
+                                            schema.Model(model =>
+                                            {
+                                                model.Id(p => p.analysisCode);
+                                                model.Field(p => p.analysisCode).Editable(false).From("analysisCode");
+                                                model.Field(p => p.specification).From("specification");
+                                                model.Field(p => p.Mark).From("Mark");
+                                                model.Field(p => p.method).From("method");
+                                                model.Field(p => p.LOD).From("LOD");
+                                                model.Field(p => p.unit).From("unit");
+                                                model.Field(p => p.Price).From("Price");
+                                                model.Field(p => p.Urgent).From("Urgent");
+                                                model.Field(p => p.TAT).From("TAT");
+                                            })
+                                            .Data(d => "schemaData")
+                                            .Total(t => "schemaTotal");
+                                        })))
                                     </div>
                                 </div>
                                 <!-- /.card-body -->
@@ -341,10 +315,44 @@
 </section>
 
 @Html.Partial("CreateRequest.cshtml")
-
 <script>
     var data = [];
+    myData = [];
+    var curent;
+    function customFunction(input) {
+
+        if (input.attr('name') === "time" && input.val() == "14:00") {
+            return false;
+        }
+
+        return true;
+    }
+
+    $(function () {
+        var validator = $("#ticketsForm").data("kendoValidator");
+        var validationSummary = $("#validation-summary");
+
+        $("form").submit(function (event) {
+            event.preventDefault();
+
+            if (validator.validate()) {
+                validationSummary.html("<div class='k-messagebox k-messagebox-success'>Hooray! Your tickets has been booked!</div>");
+            } else {
+                validationSummary.html("<div class='k-messagebox k-messagebox-error'>Oops! There is invalid data in the form.</div>");
+            }
+        });
+    });
+    function schemaData() {
+
+        return data;
+
+    }
+    function schemaTotal(response) {
+        return data.length;
+    }
     function onSelectaddSpecification(e) {
+        var grid = $("#Grid").data("kendoGrid");
+        //grid.bind("save", grid_save);
         var dataItem = this.dataItem(e.item.index());
         $.ajax({
             type: "GET",
@@ -360,52 +368,28 @@
                 var dataSource = new kendo.data.DataSource({
                     data: data,
                     pageSize: 20,
-                    
                 });
-                var grid = $("#Grid").data("kendoGrid");
                 grid.setDataSource(dataSource);
-                
+
             },
             error: function () {
 
             }
         });
     }
-    function schemaData() {
+    // load data and style for active page
 
-        return data;
-
-    }
-    function schemaTotal(response) {
-        return data.length;
-    }
-    function checkClass(classList) {
-        var a = [];
-        for (var i = 0; i < classList.length; i++) {
-            if (classList[i].className.split(' ').join('') === 'active') {
-                a.push(classList[i]);
+    function active_page(element, rows, req_per_page) {
+        if (myData.length === 0) {
+            for (var i = 0; i < JSON.parse(window.atob(rows)).length; i++) {
+                const a = { simpleName: '', simpleCode: '', descriptionCustomer: '', innerCode: '', remarkToLab: '', weight: '', sampleMatrix: -1, addSpecification: -1, templateMark: '', tat: '', data: [] };
+                myData.push(a);
             }
+            response = myData;
         }
 
-        return a;
-    }
-    function render_table_rows(rows, req_per_page, page_no) {
-        const response = JSON.parse(window.atob(rows));
-        const resp = response.slice(req_per_page * (page_no - 1), req_per_page * page_no)
-        $('#request-table').empty()
-        $('#request-table').append('<tr><th>Index</th><th>Request No</th><th>Title</th></tr>');
-        resp.forEach(function (element, index) {
-            if (Object.keys(element).length > 0) {
-                const { req_no, title } = element;
-                const td = `<tr><td>${++index}</td><td>${req_no}</td><td>${title}</td></tr>`;
-                $('#request-table').append(td)
-            }
-        });
-    }
-    // load data and style for active page
-    function active_page(element, rows, req_per_page) {
-
         var current_page = checkClass(document.getElementsByClassName('active'));
+        var curent = parseInt(current_page[0].innerText)
         var next_link = document.getElementById('next_link');
         var prev_link = document.getElementById('prev_link');
         var next_tab = current_page[0].nextSibling;
@@ -417,9 +401,9 @@
                 next_tab.setAttribute("onclick", "return false");
             } else {
                 next_tab.className += " active"
-                render_table_rows(rows, parseInt(req_per_page), parseInt(next_tab.text));
+                render_table_rows(myData, parseInt(req_per_page), parseInt(next_tab.text), curent);
                 if (prev_link.getAttribute("onclick") === "return false") {
-                    prev_link.setAttribute("onclick", `active_page('prev',\"${rows}\",${req_per_page})`);
+                    prev_link.setAttribute("onclick", `active_page('prev',\"${myData}\",${req_per_page})`);
                 }
                 if (next_tab.style.display === "none") {
                     next_tab.style.display = "block";
@@ -432,9 +416,9 @@
                 prev_tab.setAttribute("onclick", "return false");
             } else {
                 prev_tab.className += " active";
-                render_table_rows(rows, parseInt(req_per_page), parseInt(prev_tab.text));
+                render_table_rows(myData, parseInt(req_per_page), parseInt(prev_tab.text), curent);
                 if (next_link.getAttribute("onclick") === "return false") {
-                    next_link.setAttribute("onclick", `active_page('next',\"${rows}\",${req_per_page})`);
+                    next_link.setAttribute("onclick", `active_page('next',\"${myData}\",${req_per_page})`);
                 }
                 if (prev_tab.style.display === "none") {
                     prev_tab.style.display = "block";
@@ -443,16 +427,104 @@
             }
         } else {
             element.className += "active";
-            render_table_rows(rows, parseInt(req_per_page), parseInt(element.text));
+            render_table_rows(myData, parseInt(req_per_page), parseInt(element.text), curent);
             if (prev_link.getAttribute("onclick") === "return false") {
-                prev_link.setAttribute("onclick", `active_page('prev',\"${rows}\",${req_per_page})`);
+                prev_link.setAttribute("onclick", `active_page('prev',\"${myData}\",${req_per_page})`);
             }
             if (next_link.getAttribute("onclick") === "return false") {
-                next_link.setAttribute("onclick", `active_page('next',\"${rows}\",${req_per_page})`);
+                next_link.setAttribute("onclick", `active_page('next',\"${myData}\",${req_per_page})`);
+            }
+        }
+    }
+
+    function checkClass(classList) {
+        var a = [];
+        for (var i = 0; i < classList.length; i++) {
+            if (classList[i].className.split(' ').join('') === 'active') {
+                a.push(classList[i]);
+            }
+        }
+
+        return a;
+    }
+    var response = [];
+    function render_table_rows(rows, req_per_page, page_no, curent) {
+        var grid = $("#Grid").data("kendoGrid");
+        response = rows;
+        var comboboxsampleMatrix = $("#sampleMatrix").data("kendoComboBox");
+        var comboAddSpecification = $("#addSpecification").data("kendoComboBox");
+        response[curent - 1].simpleName = $('#simpleName').val();
+        response[curent - 1].simpleCode = $('#simpleCode').val();
+        response[curent - 1].descriptionCustomer = $('#descriptionCustomer').val();
+        response[curent - 1].innerCode = $('#innerCode').val();
+        response[curent - 1].remarkToLab = $('#remarkToLab').val();
+        response[curent - 1].sampleMatrix = comboboxsampleMatrix._oldIndex;
+        response[curent - 1].weight = $('#weight').val();
+        response[curent - 1].addSpecification = comboAddSpecification._oldIndex;
+        response[curent - 1].templateMark = $('#templateMark').val();
+        response[curent - 1].tat = $('#tat').val();
+        // var hander = handerDataGrid()
+        response[curent - 1].data = handerDataGrid();
+        const resp = response.slice(req_per_page * (page_no - 1), req_per_page * page_no);
+        $('#simpleName').val(response[page_no - 1].simpleName);
+        $('#simpleCode').val(response[page_no - 1].simpleCode);
+        $('#descriptionCustomer').val(response[page_no - 1].descriptionCustomer);
+        $('#innerCode').val(response[page_no - 1].innerCode);
+        $('#remarkToLab').val(response[page_no - 1].remarkToLab);
+        $('#sampleMatrix').val(response[page_no - 1].sampleMatrix);
+        $('#weight').val(response[page_no - 1].weight);
+        $('#templateMark').val(response[page_no - 1].templateMark);
+        $('#tat').val(response[page_no - 1].tat);
+        comboboxsampleMatrix.select(parseInt(response[page_no - 1].sampleMatrix));
+        comboAddSpecification.select(parseInt(response[page_no - 1].addSpecification));
+        var dataSource = new kendo.data.DataSource({
+            data: response[page_no - 1].data,
+            pageSize: 20,
+        });
+        grid.setDataSource(dataSource);
+    }
+
+    function handerDataGrid(request) {
+        var myGrid = [];
+        var grid = $("#Grid").data("kendoGrid");
+        for (var i = 0; i < grid._data.length; i++) {
+            var object = {
+                analysisCode: grid._data[i].analysisCode,
+                lOD: grid._data[i].LOD,
+                mark: grid._data[i].Mark,
+                method: grid._data[i].method,
+                price: grid._data[i].Price,
+                specification: grid._data[i].specification,
+                tAT: grid._data[i].TAT,
+                unit: grid._data[i].unit,
+                urgent: grid._data[i].Urgent,
+            };
+            myGrid.push(object);
+        }
+        return myGrid;
+    }
+
+    function SaveEntity() {
+        var saveRequest = [];
+        console.log(response)
+        if (response.length > 0) {
+            for (var i = 0; i < response.length; i++) {
+                const object = {
+                    requestNo: document.getElementById("requestNo").innerHTML,
+                    lVNCode: response[i].innerCode,
+                    sampleCode: response[i].simpleCode,
+                    sampleName: response[i].simpleName,
+                    sampleDescription: response[i].descriptionCustomer,
+                    weight: response[i].weight,
+                    remarkToLab: response[i].remarkToLab,
+                    data: response[i].data
+                }
+                saveRequest.push(object);
             }
         }
     }
 </script>
+
 <script type="x/kendo-template" id="page-template">
     <div class="page-template">
         <div class="header">
@@ -468,6 +540,7 @@
     .k-pager-info {
         display: inherit !important;
     }
+
     .k-grid-content {
         height: auto !important;
     }
@@ -508,13 +581,16 @@
     .margin-left-0 {
         margin-left: 0px;
     }
+    .form-group {
+        margin-bottom: 5px;
+    }
 </style>
 
 <script id="table-template" type="x-tmpl-mustache">
     <div class="info-custummer">
         <div class="form-group row">
             <div class="col-3">
-                <span onclick=xx() class="span-underline">Request No: {{requestNo}}</span>
+                <span onclick=xx() class="span-underline">Request No: <span id="requestNo">{{requestNo}}</span></span>
 
             </div>
             <div class="col-9">

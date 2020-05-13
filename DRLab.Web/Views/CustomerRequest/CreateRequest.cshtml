@@ -22,10 +22,11 @@
                                 <input type="hidden" id="hidIdM" value="0" />
                                 <label for="txtNameM" class="col-sm-4 custom-font-weight control-label no-padding-right">Number Of Sample</label>
                                 <div class="col-sm-8">
-                                    @(Html.Kendo().TextBox()
-                              .Name("numOfSam")
-                              .HtmlAttributes(new { placeholder = "Number Of Sample", required = "required", style = "width: 100%;margin-left: -20px; height: 90%;" })
-                                )
+                                    @(Html.Kendo().NumericTextBox<int>()
+                                    .Format("n0")
+                                    .Name("numOfSam")
+                                    .HtmlAttributes(new { placeholder = "Number Of Sample", style = "width: 100%; height: 90%;" })
+                                    )
                                 </div>
                             </div>
 
@@ -245,6 +246,10 @@
 
     .mr-left-24 {
         margin-left: -24px;
+    }
+    .k-numeric-wrap {
+        margin-left: -19px !important;
+        width: 89% !important;
     }
 </style>
 
