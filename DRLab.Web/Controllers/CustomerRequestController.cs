@@ -30,7 +30,7 @@ namespace DRLab.Web.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> SaveEntityxxx([FromBody] List<CreateCustomeRequest> request)
+        public async Task<IActionResult> SaveEntityAnalysisRequestData([FromBody] List<CreateCustomeRequest> request)
         {
             if (!ModelState.IsValid)
             {

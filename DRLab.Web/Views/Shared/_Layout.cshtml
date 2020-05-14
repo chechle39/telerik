@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - DRLab.Web</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="~/lib/notifyjs/dist/styles/metro/notify-metro.css" rel="stylesheet" />
     <!-- Font Awesome -->
     <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
     <!-- Ionicons -->
@@ -24,7 +25,8 @@
     <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
     <!-- summernote -->
     <link rel="stylesheet" href="plugins/summernote/summernote-bs4.css">
-    <link href="~/css/customer.css" rel="stylesheet" />
+
+
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <link href="https://kendo.cdn.telerik.com/2020.1.114/styles/kendo.common.min.css" rel="stylesheet" type="text/css" />
@@ -33,6 +35,8 @@
     <script src="https://kendo.cdn.telerik.com/2020.1.406/js/jquery.min.js"></script>
     <script src="https://kendo.cdn.telerik.com/2020.1.406/js/kendo.all.min.js"></script>
     <script src="https://kendo.cdn.telerik.com/2020.1.406/js/kendo.aspnetmvc.min.js"></script>
+    <link href="~/lib/notifyjs/dist/styles/metro/notify-metro.css" rel="stylesheet" />
+    <link href="~/css/customer.css" rel="stylesheet" />
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
@@ -227,6 +231,10 @@
     <script src="dist/js/demo.js"></script>
 
     <script src="~/lib/mustache/mustache.js"></script>
+    <script src="~/lib/notifyjs/dist/notify.js"></script>
+    <script src="~/lib/notifyjs/dist/styles/metro/notify-metro.js"></script>
+    <script src="~/lib/bootbox/bootbox.js"></script>
+    <script src="~/app/Customer/index.js"></script>
     <script src="~/Shared/DrLab.js"></script>
     @RenderSection("Scripts", required: false)
 </body>

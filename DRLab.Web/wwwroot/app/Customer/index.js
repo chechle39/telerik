@@ -43,6 +43,11 @@ var customerController = function () {
                 dataType: "json",
 
                 success: function (response) {
+                    drlab.notify('Update page successful', 'success');
+                    var notification = $("#notification").data("kendoNotification");
+                    notification.show({
+                        message: "Save Successful"
+                    }, "success");
                     myarr = [];
                     $('#requestNoId').val(response.requestNo);
                     $('#isCheck').show();
