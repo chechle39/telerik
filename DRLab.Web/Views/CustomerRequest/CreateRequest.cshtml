@@ -6,21 +6,214 @@
 
 <!-- Modal -->
 <div class="modal fade show" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="display: block;" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">New Request</h5>
-                <button id="closeModel" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New Request</h5>
+                    <button id="closeModel" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="horizontal-form">
+                        <form class="form-horizontal" role="form" id="frmMaintainance">
+                            <div class="form-group">
+                                <div class="row">
+                                    <input type="hidden" id="hidIdM" value="0" />
+                                    <label for="txtNameM" class="col-sm-4 custom-font-weight control-label no-padding-right">Number Of Sample</label>
+                                    <div class="col-sm-8">
+                                        @(Html.Kendo().NumericTextBox<int>()
+                                        .Format("n0")
+                                        .Name("numOfSam")
+                                        .HtmlAttributes(new { placeholder = "Number Of Sample", style = "width: 100%; height: 90%;" })
+                                        )
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-4 custom-font-weight control-label no-padding-right">Customer</label>
+                                    <div class="col-sm-8 cus">
+                                        @(Html.Kendo().ComboBox()
+                                        .Name("customers")
+                                        .Placeholder("Select customer")
+                                        .DataTextField("companyName")
+                                        .DataValueField("customerCode")
+                                        .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
+                                        .Events(e =>
+                                        {
+                                            e.Change("onChange").Select("onSelect");
+                                        })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetCustomers", "CustomerRequest");
+                                            }).ServerFiltering(true);
+                                        })
+                                        .Filter("startswith")
+                                        .Height(300)
+                                        .HeaderTemplate("<div class=\"dropdown-header k-widget k-header\">" +
+                                            "<span>Contact info</span>" +
+                                                "</div>")
+                                        .Template(
+                                        "<span class=\"k-state-default\"><h6>#: data.contactName #</h6><p>#: data.companyName #</p></span>")
+                                        )
+
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-4 custom-font-weight control-label no-padding-right">Contact</label>
+                                    <div class="col-sm-8 cus">
+                                        @(Html.Kendo().ComboBox()
+                                        .Name("contact")
+                                        .Placeholder("Select contact")
+                                        .DataTextField("contactName")
+                                        .DataValueField("contactID")
+                                        .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
+                                        .Events(e =>
+                                        {
+                                            e.Open("onOpenContact");
+                                        })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetCustomersItem", "CustomerRequest");
+                                            }).ServerFiltering(true);
+                                        })
+                                        .Filter("startswith")
+                                        .Height(300)
+                                        .HeaderTemplate("<div class=\"dropdown-header k-widget k-header\">" +
+                                            "<span>Contact info</span>" +
+                                                "</div>")
+                                        .Template(
+                                        "<span class=\"k-state-default\"><h6>#: data.contactName #</h6><p>#: data.email #</p></span>")
+                                    )
+
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <div class="row">
+                                    <label for="txtNameM" class="col-sm-4 custom-font-weight control-label no-padding-right">Request No.</label>
+                                    <input type="hidden" id="requestNoId" value="" />
+                                    <div class="col-sm-4">
+                                        @(Html.Kendo().TextBox()
+                                  .Name("requestNo")
+                                  .HtmlAttributes(new { placeholder = "Request No", required = "required", style = "width: 100%;height: 90%;margin-left: -21px" })
+                                    )
+
+                                    </div>
+                                    <label for="txtNameM" class="col-sm-2 mr-left-24 custom-font-weight control-label no-padding-right">VAT %</label>
+                                    <div class="col-sm-2">
+                                        @(Html.Kendo().TextBox()
+                                  .Name("vat")
+                                  .HtmlAttributes(new { placeholder = "VAT", required = "required", style = "margin-left: -28px;width: 147%;height: 90%;" })
+                                    )
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="txtNameM" class="col-sm-4 custom-font-weight control-label no-padding-right">Receive Time</label>
+                                    <div class="col-sm-8 cus">
+                                        @(Html.Kendo().DateTimePicker()
+                                        .Name("datetimepicker")
+                                        .Value(DateTime.Now)
+                                        .HtmlAttributes(new { style = "width: 72%;height: 90%;", title = "datetimepicker" })
+                                        .DateInput()
+                                        )
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="txtNameM" class="col-sm-4 custom-font-weight control-label no-padding-right">Return</label>
+                                    <div class="col-sm-8 cus">
+                                        @(Html.Kendo().DateTimePicker()
+                                        .Name("datetimepickerReturn")
+                                        .Value(DateTime.Now)
+                                        .HtmlAttributes(new { style = "width: 72%; height: 90%;", title = "datetimepicker" })
+                                        .DateInput()
+                                        )
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-4 custom-font-weight control-label no-padding-right">Price List</label>
+                                    <div class="col-sm-8 cus">
+                                        @(Html.Kendo().ComboBox()
+                                        .Name("piceList")
+                                        .Placeholder("Select price")
+                                        .DataTextField("contactName")
+                                        .DataValueField("customerID")
+                                        .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("GetCustomers", "CustomerRequest");
+                                            }).ServerFiltering(true);
+                                        })
+                                        .Filter("startswith")
+                                        .Height(300)
+                                        .HeaderTemplate("<div class=\"dropdown-header k-widget k-header\">" +
+                                            "<span>Contact info</span>" +
+                                                "</div>")
+                                        .Template(
+                                        "<span class=\"k-state-default\"><h6>#: data.contactName #</h6><p>#: data.companyName #</p></span>")
+                                    )
+
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-12">
+                                    <button type="button" id="btnCancel" data-dismiss="modal" class="btn btn-danger">Cancel</button>
+                                    <button type="button" id="btnSave" class="btn btn-success">Save</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="modal-body">
+        </div>
+    </div>
+
+    @*<div id="window">
+        <div style="height: 100%;">
+            <div style="overflow: auto; height: calc(100% - 70px); padding: 10px">
                 <div id="horizontal-form">
                     <form class="form-horizontal" role="form" id="frmMaintainance">
                         <div class="form-group">
                             <div class="row">
-                                <input type="hidden" id="hidIdM" value="0" />
-                                <label for="txtNameM" class="col-sm-4 custom-font-weight control-label no-padding-right">Number Of Sample</label>
+                                <div>
+                                    <input type="hidden" id="hidIdM" value="0" />
+                                    <label for="txtNameM" class="col-sm-4 custom-font-weight control-label no-padding-right">Number Of Sample</label>
+                                </div>
+                                
                                 <div class="col-sm-8">
                                     @(Html.Kendo().NumericTextBox<int>()
                                     .Format("n0")
@@ -31,178 +224,41 @@
                             </div>
 
                         </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <label class="col-sm-4 custom-font-weight control-label no-padding-right">Customer</label>
-                                <div class="col-sm-8 cus">
-                                    @(Html.Kendo().ComboBox()
-                                    .Name("customers")
-                                    .Placeholder("Select customer")
-                                    .DataTextField("companyName")
-                                    .DataValueField("customerCode")
-                                    .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
-                                    .Events(e =>
-                                    {
-                                        e.Change("onChange").Select("onSelect");
-                                    })
-                                    .DataSource(source =>
-                                    {
-                                        source.Read(read =>
-                                        {
-                                            read.Action("GetCustomers", "CustomerRequest");
-                                        }).ServerFiltering(true);
-                                    })
-                                    .Filter("startswith")
-                                    .Height(300)
-                                    .HeaderTemplate("<div class=\"dropdown-header k-widget k-header\">" +
-                                        "<span>Contact info</span>" +
-                                            "</div>")
-                                    .Template(
-                                    "<span class=\"k-state-default\"><h6>#: data.contactName #</h6><p>#: data.companyName #</p></span>")
-                                    )
-
-
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label class="col-sm-4 custom-font-weight control-label no-padding-right">Contact</label>
-                                <div class="col-sm-8 cus">
-                                    @(Html.Kendo().ComboBox()
-                                    .Name("contact")
-                                    .Placeholder("Select contact")
-                                    .DataTextField("contactName")
-                                    .DataValueField("contactID")
-                                    .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
-                                    .Events(e =>
-                                    {
-                                        e.Open("onOpenContact");
-                                    })
-                                    .DataSource(source =>
-                                    {
-                                        source.Read(read =>
-                                        {
-                                            read.Action("GetCustomersItem", "CustomerRequest");
-                                        }).ServerFiltering(true);
-                                    })
-                                    .Filter("startswith")
-                                    .Height(300)
-                                    .HeaderTemplate("<div class=\"dropdown-header k-widget k-header\">" +
-                                        "<span>Contact info</span>" +
-                                            "</div>")
-                                    .Template(
-                                    "<span class=\"k-state-default\"><h6>#: data.contactName #</h6><p>#: data.email #</p></span>")
-                                )
-
-
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <div class="row">
-                                <label for="txtNameM" class="col-sm-4 custom-font-weight control-label no-padding-right">Request No.</label>
-                                <input type="hidden" id="requestNoId" value="" />
-                                <div class="col-sm-4">
-                                    @(Html.Kendo().TextBox()
-                              .Name("requestNo")
-                              .HtmlAttributes(new { placeholder = "Request No", required = "required", style = "width: 100%;height: 90%;margin-left: -21px" })
-                                )
-
-                                </div>
-                                <label for="txtNameM" class="col-sm-2 mr-left-24 custom-font-weight control-label no-padding-right">VAT %</label>
-                                <div class="col-sm-2">
-                                    @(Html.Kendo().TextBox()
-                              .Name("vat")
-                              .HtmlAttributes(new { placeholder = "VAT", required = "required", style = "margin-left: -28px;width: 147%;height: 90%;" })
-                                )
-
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="txtNameM" class="col-sm-4 custom-font-weight control-label no-padding-right">Receive Time</label>
-                                <div class="col-sm-8 cus">
-                                    @(Html.Kendo().DateTimePicker()
-                                    .Name("datetimepicker")
-                                    .Value(DateTime.Now)
-                                    .HtmlAttributes(new { style = "width: 72%;height: 90%;", title = "datetimepicker" })
-                                    .DateInput()
-                                    )
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="txtNameM" class="col-sm-4 custom-font-weight control-label no-padding-right">Return</label>
-                                <div class="col-sm-8 cus">
-                                    @(Html.Kendo().DateTimePicker()
-                                    .Name("datetimepickerReturn")
-                                    .Value(DateTime.Now)
-                                    .HtmlAttributes(new { style = "width: 72%; height: 90%;", title = "datetimepicker" })
-                                    .DateInput()
-                                    )
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="form-group">
-                            <div class="row">
-                                <label class="col-sm-4 custom-font-weight control-label no-padding-right">Price List</label>
-                                <div class="col-sm-8 cus">
-                                    @(Html.Kendo().ComboBox()
-                                    .Name("piceList")
-                                    .Placeholder("Select price")
-                                    .DataTextField("contactName")
-                                    .DataValueField("customerID")
-                                    .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
-                                    .DataSource(source =>
-                                    {
-                                        source.Read(read =>
-                                        {
-                                            read.Action("GetCustomers", "CustomerRequest");
-                                        }).ServerFiltering(true);
-                                    })
-                                    .Filter("startswith")
-                                    .Height(300)
-                                    .HeaderTemplate("<div class=\"dropdown-header k-widget k-header\">" +
-                                        "<span>Contact info</span>" +
-                                            "</div>")
-                                    .Template(
-                                    "<span class=\"k-state-default\"><h6>#: data.contactName #</h6><p>#: data.companyName #</p></span>")
-                                )
-
-
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-12">
-                                <button type="button" id="btnCancel" data-dismiss="modal" class="btn btn-danger">Cancel</button>
-                                <button type="button" id="btnSave" class="btn btn-success">Save</button>
-                            </div>
-                        </div>
                     </form>
                 </div>
+                        
+                </div>
+                <div style="width: 100%; height: 60px; background-color: #e3e3e3; border-top: solid #C5C5C5 1px">
+                    <div style="float: right; margin: 10px">
+                        <button id="okayButton" style="background-color: green">Okay</button>
+                        <button id="cancelButton" style="background-color: red">Cancel</button>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
+    </div>*@
 
 <script>
+   $(document).ready(function() {
+            var window = $("#window");
+ 
+            $("#okayButton").kendoButton({
+                click: function(e) {
+                    window.data("kendoWindow").close();
+                }
+            });
+ 
+            $("#cancelButton").kendoButton();
+ 
+            window.kendoWindow({
+                title: "Title",
+                actions: [],
+                modal: true,
+                width: "28%",
+                height: "auto"
+            });
+ 
+            window.data("kendoWindow").center();
+        });
     var selected;
     var itemSelected;
     function onChange() {
@@ -216,9 +272,38 @@
     }
     function onOpenContact(e) {
     }
- 
-</script>
+    function close() {
+        $("#undo").fadeIn(300);
+    }
 
+    $("#undo")
+        .bind("click", function () {
+            $("#window").data("kendoWindow").open();
+            $("#undo").fadeOut(300);
+        });
+</script>
+<style scoped>
+    .armchair {
+        overflow: auto;
+        height: calc(100% - 90px);
+        padding: 10px
+    }
+    #window {
+            padding: 0px;
+            overflow: hidden;
+        }
+    .window-footer {
+        position: absolute;
+        bottom: 0;
+        display: block;
+        width: 95%;
+        margin-top: 150px;
+        padding: 19px 0 20px;
+        text-align: right;
+        border-top: 1px solid #e5e5e5;
+    }
+
+</style>
 <style>
     #btnSave {
         background: #92d050;
@@ -247,6 +332,7 @@
     .mr-left-24 {
         margin-left: -24px;
     }
+
     .k-numeric-wrap {
         margin-left: -19px !important;
         width: 89% !important;

@@ -12,7 +12,7 @@
     var messages = new Dictionary<string, string>() { { "custom", "Please choose another Start Time." } };
     var rules = new Dictionary<string, string>() { { "custom", "customFunction" } };
 }
-
+<span id="undo" style="display:none" class="k-button hidden-on-narrow">Click here to open the window.</span>
 @(Html.Kendo().Notification()
     .Name("notification")
     .Position(p => p.Pinned(true).Top(30).Right(30))
@@ -20,6 +20,7 @@
     .Templates(t =>
     {
         t.Add().Type("success").ClientTemplateID("successTemplate");
+        t.Add().Type("error").ClientTemplateID("errorTemplate");
     })
 )
 <section id="isCheck" style="" class="content">
@@ -82,7 +83,7 @@
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-2">
-                                            <span style="color: #922999">Sample List</span>
+                                            <span style="color: #922999; text-decoration: underline;text-decoration-style: double;">Sample List</span>
                                         </div>
 
                                         <div class="box pagination">
@@ -543,7 +544,7 @@
     }
 
     function SaveAnalysisRequestData(SaveRq) {
-        //var check = verify(SaveRq);
+        var check = verify(SaveRq);
         $.ajax({
             type: "POST",
             url: "/CustomerRequest/SaveEntityAnalysisRequestData",
@@ -561,7 +562,28 @@
         });
 
     }
-  
+    function verify(SaveRq) {
+        var string = '';
+        var string1= '';
+        for (var i = 0; i < SaveRq.length; i++) {
+            if (SaveRq[i].data.length > 0 && SaveRq[i].sampleMatrix === '' || SaveRq[i].sampleMatrix === undefined) {
+                var a = i;
+                a++;
+                string += a + ',';
+                string1 += a;
+            }
+        }
+        if (string1.length > 0) {
+            var notification = $("#notification").data("kendoNotification");
+                    notification.show({
+                        title: "Wrong Save",
+                        message: "Save error check requestNo"
+                    }, "error");
+            return false
+        } else {
+            return true
+        }
+    }
 
 
 
@@ -660,7 +682,7 @@
     /* Success template */
     .upload-success {
         width: 300px;
-        height: 100px;
+        height: 50px;
     }
 
 
@@ -701,6 +723,13 @@
     <div class="upload-success">
         <img src="@Url.Content("~/Shared/success-icon.png")" />
         <h3>#= message #</h3>
+    </div>
+</script>
+<script id="errorTemplate" type="text/x-kendo-template">
+    <div class="wrong-pass">
+        <img src="@Url.Content("~/Shared/error-icon.png")" />
+        <h3>#= title #</h3>
+        <p>#= message #</p>
     </div>
 </script>
 <script id="table-template" type="x-tmpl-mustache">

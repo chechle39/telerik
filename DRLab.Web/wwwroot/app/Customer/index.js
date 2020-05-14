@@ -16,7 +16,15 @@ var customerController = function () {
         $('#exampleModal').modal('show');
 
     });
+    function close() {
+        $("#undo").fadeIn(300);
+    }
 
+    $("#undo")
+        .bind("click", function () {
+            $("#window").data("kendoWindow").open();
+            $("#undo").fadeOut(300);
+        });
     $("#btnSave").on('click', function () {
         var numOfSam = $('#numOfSam').val();
         var customers = $('#customers').val();
@@ -43,7 +51,6 @@ var customerController = function () {
                 dataType: "json",
 
                 success: function (response) {
-                    drlab.notify('Update page successful', 'success');
                     var notification = $("#notification").data("kendoNotification");
                     notification.show({
                         message: "Save Successful"
@@ -67,11 +74,14 @@ var customerController = function () {
                     });
                     if (render !== undefined) {
                         $('#tbl-content').html(render);
-
                     }
                 },
                 error: function () {
-                    console.log('error');
+                    var notification = $("#notification").data("kendoNotification");
+                    notification.show({
+                        title: "Wrong Save",
+                        message: "Save error check requestNo"
+                    }, "error");
                 }
             });
         } else {
