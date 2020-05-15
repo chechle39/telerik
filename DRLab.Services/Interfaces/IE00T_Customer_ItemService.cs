@@ -9,5 +9,6 @@ namespace DRLab.Services.Interfaces
     public interface IE00T_Customer_ItemService
     {
         Task<List<E00T_Customer_ItemViewModel>> GetCustomerItem(string text);
+        Task<List<E00T_Customer_ItemViewModel>> GetE00T_Customer_ItemByCode(string code);
     }
 }

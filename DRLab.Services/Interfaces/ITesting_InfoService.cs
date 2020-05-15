@@ -13,6 +13,6 @@ namespace DRLab.Services.Interfaces
         public Task<E08T_Testing_InfoViewModel> Update(E08T_Testing_InfoViewModel Data);
         public void Destroy(string id);
         Task<List<E08T_Testing_InfoViewModel>> GetE08TTestingInfoCombobox(string text);
-        Task<List<E00T_CustomerGridViewModel>> GetE08TTestingInfoBySpecId(long specId);
+        Task<List<E00T_CustomerGridViewModel>> GetE08TTestingInfoBySpecId(string analysisCode);
     }
 }

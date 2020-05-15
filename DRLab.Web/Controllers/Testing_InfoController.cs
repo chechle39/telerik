@@ -108,7 +108,7 @@ namespace DRLab.Web.Controllers
             return await _testDataService.GetE08TTestingInfoCombobox(text);
         }
         [HttpGet]
-        public async Task<List<E00T_CustomerGridViewModel>> GetTestingInfoBySpecId(long id)
+        public async Task<List<E00T_CustomerGridViewModel>> GetTestingInfoBySpecId(string id)
         {
             return await _testDataService.GetE08TTestingInfoBySpecId(id);
         }

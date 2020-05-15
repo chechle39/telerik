@@ -83,9 +83,9 @@ namespace DRLab.Services.IntegrationServices
 
         public async Task<bool> CreateAnalysisRequestData(List<CreateCustomeRequest> request)
         {
-            var x = await _e08T_AnalysisRequest_DataRepository.CreateAnalysisRequestData(request);
+            var save = await _e08T_AnalysisRequest_DataRepository.CreateAnalysisRequestData(request);
             _uow.SaveChanges();
-            return x;
+             return save;
         }
     }
 }

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using DRLab.Data.ViewModels;
+﻿using DRLab.Data.ViewModels;
 using DRLab.Services.Interfaces;
-using Kendo.Mvc.Extensions;
-using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DRLab.Web.Controllers
 {
@@ -71,74 +67,10 @@ namespace DRLab.Web.Controllers
         {
             return await _e00T_Customer_ItemService.GetCustomerItem(text);
         }
-    }
-
-    public class ProductViewModel
-    {
-        // We removed ID field so WebApi demo works correctly
-        [ScaffoldColumn(false)]
-        public int ProductID
+        [HttpGet]
+        public async Task<List<E00T_Customer_ItemViewModel>> GetCustomersItemByCode(string id)
         {
-            get;
-            set;
+            return await _e00T_Customer_ItemService.GetE00T_Customer_ItemByCode(id);
         }
-
-        [Required]
-        [Display(Name = "Product name")]
-        public string ProductName
-        {
-            get;
-            set;
-        }
-
-        [Display(Name = "Unit price")]
-        [DataType(DataType.Currency)]
-        [Range(0, int.MaxValue)]
-        public decimal UnitPrice
-        {
-            get;
-            set;
-        }
-
-        [Display(Name = "Units in stock")]
-        [DataType("Integer")]
-        [Range(0, int.MaxValue)]
-        public int UnitsInStock
-        {
-            get;
-            set;
-        }
-
-        public bool Discontinued
-        {
-            get;
-            set;
-        }
-
-        [Display(Name = "Last supply")]
-        [DataType(DataType.Date)]
-        public DateTime LastSupply
-        {
-            get;
-            set;
-        }
-
-        [DataType("Integer")]
-        public int UnitsOnOrder
-        {
-            get;
-            set;
-        }
-
-        //[UIHint("ClientCategory")]
-        //public CategoryViewModel Category
-        //{
-        //    get;
-        //    set;
-        //}
-
-        public int? CategoryID { get; set; }
-
-        public string QuantityPerUnit { get; set; }
     }
 }

@@ -12,7 +12,7 @@
     var messages = new Dictionary<string, string>() { { "custom", "Please choose another Start Time." } };
     var rules = new Dictionary<string, string>() { { "custom", "customFunction" } };
 }
-<span id="undo" style="display:none" class="k-button hidden-on-narrow">Click here to open the window.</span>
+
 @(Html.Kendo().Notification()
     .Name("notification")
     .Position(p => p.Pinned(true).Top(30).Right(30))
@@ -25,8 +25,6 @@
 )
 <section id="isCheck" style="" class="content">
     <div class="container-fluid">
-
-
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
@@ -83,7 +81,7 @@
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-2">
-                                            <span style="color: #922999; text-decoration: underline;text-decoration-style: double;">Sample List</span>
+                                            <span style="color: #922999">Sample List</span>
                                         </div>
 
                                         <div class="box pagination">
@@ -345,7 +343,7 @@
         $.ajax({
             type: "GET",
             url: "/Testing_Info/GetTestingInfoBySpecId",
-            data: { id: dataItem.specID },
+            data: { id: dataItem.analysisCode },
             dataType: "json",
 
             success: function (response) {
@@ -496,12 +494,27 @@
     }
 
     function SaveEntity() {
-        //drlab.confirm('Are you sure to delete?', function () {
-        //    console.log('confirm');
-        //});
-        
+       
         var saveRequest = [];
         if (response.length > 0) {
+            var x = checkClass(document.getElementsByClassName('active'))
+            var cr = parseInt(x[0].innerText);
+            var grid = $("#Grid").data("kendoGrid");
+            var comboboxsampleMatrix = $("#sampleMatrix").data("kendoComboBox");
+            var comboAddSpecification = $("#addSpecification").data("kendoComboBox");
+            response[cr - 1].simpleName = $('#simpleName').val();
+            response[cr - 1].simpleCode = $('#simpleCode').val();
+            response[cr - 1].descriptionCustomer = $('#descriptionCustomer').val();
+            response[cr - 1].innerCode = $('#innerCode').val();
+            response[cr - 1].remarkToLab = $('#remarkToLab').val();
+            response[cr - 1].sampleMatrix = comboboxsampleMatrix._oldIndex;
+            response[cr - 1].weight = $('#weight').val();
+            response[cr - 1].addSpecification = comboAddSpecification._oldIndex;
+            response[cr - 1].templateMark = $('#templateMark').val();
+            response[cr - 1].tat = $('#tat').val();
+            response[cr - 1].sampleMatrixValue = comboboxsampleMatrix._prev;
+            response[cr - 1].addSpecificationValue = comboAddSpecification._prev;
+            response[cr - 1].data = handerDataGrid();
             for (var i = 0; i < response.length; i++) {
                 var arr = [];
                 if (response[i].data !== undefined) {
@@ -545,28 +558,39 @@
 
     function SaveAnalysisRequestData(SaveRq) {
         var check = verify(SaveRq);
-        $.ajax({
-            type: "POST",
-            url: "/CustomerRequest/SaveEntityAnalysisRequestData",
-            data: JSON.stringify(SaveRq),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                console.log(response);
-                drlab.notify('yyyy')
+        if (check === true) {
+            $.ajax({
+                type: "POST",
+                url: "/CustomerRequest/SaveEntityAnalysisRequestData",
+                data: JSON.stringify(SaveRq),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    var notification = $("#notification").data("kendoNotification");
+                    notification.show({
+                        message: "Save Successful"
+                    }, "success");
 
-            },
-            error: function () {
-                drlab.notify('xxxxx')
-            }
-        });
+                },
+                error: function () {
+                    var notification = $("#notification").data("kendoNotification");
+                    notification.show({
+                        title: "Wrong Save",
+                        message: "Save error"
+                    }, "error");
+                }
+            });
+        }
+        
 
     }
+  
+
     function verify(SaveRq) {
         var string = '';
-        var string1= '';
+        var string1 = '';
         for (var i = 0; i < SaveRq.length; i++) {
-            if (SaveRq[i].data.length > 0 && SaveRq[i].sampleMatrix === '' || SaveRq[i].sampleMatrix === undefined) {
+            if (SaveRq[i].data.length > 0 && (SaveRq[i].sampleMatrix === '' || SaveRq[i].sampleMatrix === undefined)) {
                 var a = i;
                 a++;
                 string += a + ',';
@@ -574,25 +598,24 @@
             }
         }
         if (string1.length > 0) {
+            var mess = 'Save error samplematrix of sample lisst' + string.substring(0, x.length - 1);
             var notification = $("#notification").data("kendoNotification");
-                    notification.show({
-                        title: "Wrong Save",
-                        message: "Save error check requestNo"
-                    }, "error");
+            notification.show({
+                title: "Wrong Save",
+                message: mess
+            }, "error");
             return false
         } else {
             return true
         }
     }
 
-
-
 </script>
 
 <style>
-    .k-invalid-msg {
+    /*.k-invalid-msg {
         // display: inline !important;
-    }
+    }*/
 
     .k-pager-info {
         display: inherit !important;
@@ -606,9 +629,9 @@
         line-height: 14px;
     }
 
-    .k-button {
+    /*.k-button {
         height: 30px;
-    }
+    }*/
 
     .btn-raised {
         background-color: #92d050 !important;
@@ -640,7 +663,7 @@
     }
 
     .form-group {
-        margin-bottom: 5px;
+        margin-bottom: 5px !important;
     }
 
 
@@ -719,17 +742,17 @@
         height: 70px;
     }
 </style>
-<script id="successTemplate" type="text/x-kendo-template">
-    <div class="upload-success">
-        <img src="@Url.Content("~/Shared/success-icon.png")" />
-        <h3>#= message #</h3>
-    </div>
-</script>
 <script id="errorTemplate" type="text/x-kendo-template">
     <div class="wrong-pass">
         <img src="@Url.Content("~/Shared/error-icon.png")" />
         <h3>#= title #</h3>
         <p>#= message #</p>
+    </div>
+</script>
+<script id="successTemplate" type="text/x-kendo-template">
+    <div class="upload-success">
+        <img src="@Url.Content("~/Shared/success-icon.png")" />
+        <h3>#= message #</h3>
     </div>
 </script>
 <script id="table-template" type="x-tmpl-mustache">
@@ -747,7 +770,7 @@
 
         <div class="form-group row">
             <div class="col-3">
-                <span>Công ty TNHH Hoàn Vũ</span>
+                <span>{{companyName}}</span>
             </div>
             <div class="col-9">
                 <span style="color: orange;" class="mr-left">{{contactName}}, {{contactEmail}}</span>

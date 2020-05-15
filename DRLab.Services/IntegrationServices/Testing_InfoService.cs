@@ -114,9 +114,9 @@ namespace DRLab.Services.IntegrationServices
             return await _e08T_Testing_InfoRepository.GetE08TTestingInfoCombobox(text);
         }
 
-        public async Task<List<E00T_CustomerGridViewModel>> GetE08TTestingInfoBySpecId(long specId)
+        public async Task<List<E00T_CustomerGridViewModel>> GetE08TTestingInfoBySpecId(string analysisCode)
         {
-            return await _e08T_Testing_InfoRepository.GetE08TTestingInfoBySpecId(specId);
+            return await _e08T_Testing_InfoRepository.GetE08TTestingInfoBySpecId(analysisCode);
         }
 
               

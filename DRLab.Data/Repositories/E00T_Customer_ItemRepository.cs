@@ -30,5 +30,17 @@ namespace DRLab.Data.Repositories
 
             }
         }
+
+        public async Task<List<E00T_Customer_ItemViewModel>> GetCustomerItemById(long? id)
+        {
+            var data = await Entities.ProjectTo<E00T_Customer_ItemViewModel>().Where(x => x.contactID == id).ToListAsync();
+            return data;
+        }
+
+        public async Task<List<E00T_Customer_ItemViewModel>> GetE00T_Customer_ItemByCode(string code)
+        {
+            var data = await Entities.ProjectTo< E00T_Customer_ItemViewModel>().Where(x => x.customerCode == code).ToListAsync();
+            return data;
+        }
     }
 }

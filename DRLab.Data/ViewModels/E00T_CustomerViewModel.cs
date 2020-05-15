@@ -30,8 +30,12 @@ namespace DRLab.Data.ViewModels
         [Display(Name = "Unit")]
         public string unit { get; set; }
         [Display(Name = "Price")]
-        public Nullable<double> Price { get; set; }
+        [DataType("Integer")]
+        [Range(0, int.MaxValue)]
+        public Nullable<int> Price { get; set; }
         [Display(Name = "Urgent")]
+        [DataType("Integer")]
+        [Range(0, int.MaxValue)]
         public Nullable<int> Urgent { get; set; }
         [Display(Name = "TAT")]
         public string TAT { get; set; }

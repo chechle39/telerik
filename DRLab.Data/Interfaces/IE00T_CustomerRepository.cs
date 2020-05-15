@@ -9,5 +9,6 @@ namespace DRLab.Data.Interfaces
     public interface IE00T_CustomerRepository
     {
         Task<List<E00T_CustomerViewModel>> GetCustomer(string text);
+        Task<List<E00T_CustomerViewModel>> GetCustomerById(string id);
     }
 }

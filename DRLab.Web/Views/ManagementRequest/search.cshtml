@@ -1,0 +1,102 @@
+﻿@addTagHelper *, Kendo.Mvc
+
+<div id="example">
+    <kendo-dialog name="dialog" title="Software Update" width="400" modal="false" on-close="onClose" on-open="onOpen">
+        <content>
+            <form>
+                <div class="form-group row">
+                    <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
+                    <div class="col-sm-11">
+                        @(Html.Kendo().DropDownList()
+                                        .Name("colorx")
+                                        .DataTextField("Text")
+                                        .DataValueField("Value")
+                                        .BindTo(new List<SelectListItem>() {
+                                        new SelectListItem() {
+                                            Text = "Bulk Actions",
+                                            Value = "0"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Set Confirm",
+                                            Value = "1"
+                                        },
+                                        new SelectListItem() {
+                                                Text = "Export to Lab",
+                                                Value = "2"
+                                        },
+                                        new SelectListItem() {
+                                                Text = "Send Email",
+                                                Value = "3"
+                                        },
+                                        new SelectListItem() {
+                                                Text = "Remove Confirm",
+                                                Value = "4"
+                                        },
+                                        new SelectListItem() {
+                                                Text = "Delete Request",
+                                                Value = "5"
+                                        },
+                                        })
+                                    .Value("0")
+                                    .HtmlAttributes(new { style = "width: 100%" })
+                                    )
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+                    <div class="col-sm-11">
+                        @(Html.Kendo().TextBox()
+                                                .Name("xxx")
+                                                .HtmlAttributes(new { placeholder = "Sample Code", style = "width: 100%;height: calc(1.42857143em + 10px)" })
+                                                )
+                    </div>
+                </div>
+            </form>
+        </content>
+        <actions>
+
+            <action text="Remind me later">
+            </action>
+            <action action="installUpdate" primary="true" text="Install update" title="Install Update">
+            </action>
+        </actions>
+        <popup-animation>
+            <open duration="500" effects="fade:in" />
+            <close duration="500" effects="fade:out" />
+        </popup-animation>
+    </kendo-dialog>
+
+    <kendo-button name="showDialogBtn"
+                  class="hide-on-narrow"
+                  style="display:none;"
+                  on-click="showDialog">
+        Click here to open the dialog
+    </kendo-button>
+</div>
+
+<script>
+    function installUpdate() {
+        kendo.alert("Installing Update ...");
+    }
+
+    function onClose() {
+        $("#showDialogBtn").fadeIn();
+    }
+
+    function onOpen() {
+        $("#showDialogBtn").fadeOut();
+    }
+
+    function showDialog() {
+        $('#dialog').data("kendoDialog").open();
+    }
+</script>
+
+<style>
+    #example {
+        min-height: 350px;
+    }
+    .form-group {
+        margin-bottom: 0!important
+    }
+</style>

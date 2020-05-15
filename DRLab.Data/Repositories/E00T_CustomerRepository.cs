@@ -27,5 +27,10 @@ namespace DRLab.Data.Repositories
             }
 
         }
+
+        public async Task<List<E00T_CustomerViewModel>> GetCustomerById(string id)
+        {
+            return await Entities.Where(x => x.customerCode == id).ProjectTo<E00T_CustomerViewModel>().ToListAsync();
+        }
     }
 }

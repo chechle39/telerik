@@ -16,15 +16,7 @@ var customerController = function () {
         $('#exampleModal').modal('show');
 
     });
-    function close() {
-        $("#undo").fadeIn(300);
-    }
 
-    $("#undo")
-        .bind("click", function () {
-            $("#window").data("kendoWindow").open();
-            $("#undo").fadeOut(300);
-        });
     $("#btnSave").on('click', function () {
         var numOfSam = $('#numOfSam').val();
         var customers = $('#customers').val();
@@ -70,10 +62,12 @@ var customerController = function () {
                         receivceDate: drlab.dateTimeFormatJson(response.receivceDate),
                         dateOfSendingResult: drlab.dateTimeFormatJson(response.dateOfSendingResult),
                         contactName: itemSelected.contactName,
-                        contactEmail: itemSelected.contactEmail
+                        contactEmail: itemSelected.contactEmail,
+                        companyName: itemSelected.companyName
                     });
                     if (render !== undefined) {
                         $('#tbl-content').html(render);
+
                     }
                 },
                 error: function () {
@@ -90,7 +84,7 @@ var customerController = function () {
                 type: "POST",
                 url: "/CustomerRequest/UpdateEntity",
                 data: {
-                    requestNo: requestNo,
+                    requestNo: document.getElementById("requestNo").innerHTML,
                     customerID: customers,
                     receivceDate: datetimepicker,
                     dateOfSendingResult: datetimepickerReturn,
@@ -101,6 +95,10 @@ var customerController = function () {
                 dataType: "json",
 
                 success: function (response) {
+                    var notification = $("#notification").data("kendoNotification");
+                    notification.show({
+                        message: "Update Successful"
+                    }, "success");
                     myarr = [];
                     $('#requestNoId').val(response.requestNo);
                     $('#isCheck').show();
@@ -116,7 +114,8 @@ var customerController = function () {
                         receivceDate: drlab.dateTimeFormatJson(response.receivceDate),
                         dateOfSendingResult: drlab.dateTimeFormatJson(response.dateOfSendingResult),
                         contactName: itemSelected.contactName,
-                        contactEmail: itemSelected.contactEmail
+                        contactEmail: itemSelected.contactEmail,
+                        companyName: itemSelected.companyName
                     });
                     if (render !== undefined) {
                         $('#tbl-content').html(render);
@@ -124,7 +123,11 @@ var customerController = function () {
                     }
                 },
                 error: function () {
-                    console.log('error');
+                    var notification = $("#notification").data("kendoNotification");
+                    notification.show({
+                        title: "Wrong Save",
+                        message: "Uppdate error check requestNo"
+                    }, "error");
                 }
             });
         }
@@ -236,7 +239,7 @@ function render_table_rows(rows, req_per_page, page_no) {
             $('#request-table').append(td)
         }
     });
-}
+}   
 
 // Pagination logic implementation
 function pagination(data, lenth) {

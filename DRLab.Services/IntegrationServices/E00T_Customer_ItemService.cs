@@ -20,5 +20,10 @@ namespace DRLab.Services.IntegrationServices
         {
             return await _e00T_Customer_ItemRepository.GetCustomerItem(text);
         }
+
+        public async Task<List<E00T_Customer_ItemViewModel>> GetE00T_Customer_ItemByCode(string code)
+        {
+            return await _e00T_Customer_ItemRepository.GetE00T_Customer_ItemByCode(code);
+        }
     }
 }

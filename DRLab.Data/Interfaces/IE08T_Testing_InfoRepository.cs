@@ -7,6 +7,6 @@ namespace DRLab.Data.Interfaces
     public interface IE08T_Testing_InfoRepository
     {
         public Task<List<E08T_Testing_InfoViewModel>> GetE08TTestingInfoCombobox(string text);
-        public Task<List<E00T_CustomerGridViewModel>> GetE08TTestingInfoBySpecId(long specId);
+        public Task<List<E00T_CustomerGridViewModel>> GetE08TTestingInfoBySpecId(string analysisCode);
     }
 }

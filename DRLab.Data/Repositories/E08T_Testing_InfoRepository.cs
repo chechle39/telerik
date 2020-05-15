@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,9 +20,10 @@ namespace DRLab.Data.Repositories
 
         }
 
-        public async Task<List<E00T_CustomerGridViewModel>> GetE08TTestingInfoBySpecId(long specId)
+        public async Task<List<E00T_CustomerGridViewModel>> GetE08TTestingInfoBySpecId(string analysisCode)
         {
-            var data = await Entities.Where(x => x.specID == specId).ToListAsync();
+            var analysisCodeData = await Entities.Where(x => x.analysisCode == analysisCode).ToListAsync();
+            var data = analysisCodeData.Where(x => x.method == x.specification);
             var lisE00T_CustomerGrid = new List<E00T_CustomerGridViewModel>();
             foreach(var item in data)
             {

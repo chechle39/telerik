@@ -23,27 +23,56 @@ namespace DRLab.Data.Repositories
         {
             foreach(var item in request)
             {
-               foreach(var iitem in item.Data)
+                if (item.Data.Count() > 0)
                 {
-                    var e08T_AnalysisRequest_Data = new E08T_AnalysisRequest_Data()
+                    foreach (var iitem in item.Data)
                     {
-                        analysisCode = iitem.analysisCode,
-                        LOD = iitem.LOD,
-                        LVNCode = item.LVNCode,
-                        max = null,
-                        method = iitem.method,
-                        min = null,
-                        precision = null,
-                        price = iitem.Price,
-                        requestNo = item.requestNo,
-                        sampleMatrix = item.sampleMatrix,
-                        specification = item.specification,
-                        specMark = null,
-                        turnAroundDay = null,
-                        unit = iitem.unit,
-                        urgentRate = iitem.Urgent
-                    };
-                    Entities.Add(e08T_AnalysisRequest_Data);
+                        var check = Entities.Where(x => x.LVNCode == item.LVNCode && x.requestNo == item.requestNo).AsNoTracking().ToList();
+                        if (check.Count() == 0)
+                        {
+                            var e08T_AnalysisRequest_Data = new E08T_AnalysisRequest_Data()
+                            {
+                                analysisCode = iitem.analysisCode,
+                                LOD = iitem.LOD,
+                                LVNCode = item.LVNCode,
+                                max = null,
+                                method = iitem.method,
+                                min = null,
+                                precision = null,
+                                price = iitem.Price,
+                                requestNo = item.requestNo,
+                                sampleMatrix = item.sampleMatrix,
+                                specification = item.specification,
+                                specMark = null,
+                                turnAroundDay = null,
+                                unit = iitem.unit,
+                                urgentRate = iitem.Urgent
+                            };
+                            Entities.Add(e08T_AnalysisRequest_Data);
+                        } else
+                        {
+                            var e08T_AnalysisRequest_Data = new E08T_AnalysisRequest_Data()
+                            {
+                                analysisCode = iitem.analysisCode,
+                                LOD = iitem.LOD,
+                                LVNCode = item.LVNCode,
+                                max = null,
+                                method = iitem.method,
+                                min = null,
+                                precision = null,
+                                price = iitem.Price,
+                                requestNo = item.requestNo,
+                                sampleMatrix = item.sampleMatrix,
+                                specification = item.specification,
+                                specMark = null,
+                                turnAroundDay = null,
+                                unit = iitem.unit,
+                                urgentRate = iitem.Urgent
+                            };
+                            Entities.Update(e08T_AnalysisRequest_Data);
+                        }
+                        
+                    }
                 }
             }
             await _e08T_AnalysisRequest_ItemRepository.CreatAnalysisRequestItem(request);

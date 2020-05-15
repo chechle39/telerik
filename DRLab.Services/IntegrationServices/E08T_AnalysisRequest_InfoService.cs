@@ -2,7 +2,7 @@
 using DRLab.Data.Interfaces;
 using DRLab.Data.ViewModels;
 using DRLab.Services.Interfaces;
-using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DRLab.Services.IntegrationServices
@@ -16,6 +16,12 @@ namespace DRLab.Services.IntegrationServices
             _e08T_AnalysisRequest_InfoRepository = e08T_AnalysisRequest_InfoRepository;
             _uow = uow;
         }
+
+        public async Task<List<GridManagementViewModel>> GetRequestInfoGrid(SerchGridManagement request)
+        {
+            return await _e08T_AnalysisRequest_InfoRepository.GetRequestInfoGrid(request);
+        }
+
         public async Task<bool> SaveAnalysisRequestInfo(E08T_AnalysisRequest_InfoViewModel SaveAnalysisRequestInforequest)
         {
             await _e08T_AnalysisRequest_InfoRepository.SaveAnalysisRequestInfo(SaveAnalysisRequestInforequest);

@@ -1,0 +1,218 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+@using Kendo.Mvc
+@section Scripts{
+    <script src="~/app/ManagementRequest/ManagementRequest.js" asp-append-version="true"></script>
+    <script>
+        var rq = new ManagementRequestController();
+        rq.initialize();
+    </script>
+}
+<section id="isCheck" class="content">
+    <div class="container-fluid">
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <!-- left column -->
+                    <div class="col-md-12">
+                        <!-- general form elements -->
+                        <div class="card">
+                            <form id="ticketsForm" class="k-form k-form-vertical" kendo-validator="true">
+                                <div class="card-header row" style="margin-left: 0px;">
+
+                                    <div class="col-4">
+                                        <h3 class="card-title" style="font-size: 25px">Request Management</h3>
+
+
+                                    </div>
+                                    <div class="col-3">
+                                        @(Html.Kendo().DropDownList()
+                                        .Name("color")
+                                        .DataTextField("Text")
+                                        .DataValueField("Value")
+                                        .Events(e => e.Change("change"))
+                                        .BindTo(new List<SelectListItem>() {
+                                        new SelectListItem() {
+                                            Text = "Bulk Actions",
+                                            Value = "0"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Set Confirm",
+                                            Value = "1"
+                                        },
+                                        new SelectListItem() {
+                                                Text = "Export to Lab",
+                                                Value = "2"
+                                        },
+                                        new SelectListItem() {
+                                                Text = "Send Email",
+                                                Value = "3"
+                                        },
+                                        new SelectListItem() {
+                                                Text = "Remove Confirm",
+                                                Value = "4"
+                                        },
+                                        new SelectListItem() {
+                                                Text = "Delete Request",
+                                                Value = "5"
+                                        },
+                                        })
+                                    .Value("0")
+                                    .HtmlAttributes(new { style = "width: 100%" })
+                                    )
+                                    </div>
+                                    <div class="col-5">
+                                        <div style="float:right">
+                                            <button onclick="SaveEntity()" type="submit" class="btn btn-raised">Refresh</button>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <!-- /.card-header -->
+                                <!-- form start -->
+                                <div class="card-body">
+
+
+
+
+
+
+
+
+
+
+
+                                    @(Html.Kendo().Grid<DRLab.Data.ViewModels.GridManagementViewModel>()
+                                        .Name("Grid")
+                                        .HtmlAttributes(new { style = "height:auto;" })
+                                        .Columns(columns =>
+                                        {
+                                            columns.Select().Width(75).HtmlAttributes(new { @class = "checkbox-align" }).HeaderHtmlAttributes(new { @class = "checkbox-align" });
+                                            columns.Bound(p => p.requestNo).Title("Request No#");
+                                            columns.Bound(p => p.receivceDate).Title("Receive Date").Format("{0:MM/dd/yyyy}");
+                                            columns.Bound(p => p.companyName).Title("Customer Name");
+                                            columns.Bound(p => p.contactName).Title("Contact Name");
+                                            columns.Bound(p => p.dateOfSendingResult).Format("{0:MM/dd/yyyy}").Title("Expected Date");
+                                            columns.Bound(p => p.status).Title("Request Status");
+                                            columns.Command(command => { command.Destroy(); }).Width(100);
+                                        })
+
+                                        .Pageable()
+                                        .Sortable()
+                                        .Scrollable()
+                                        .DataSource(dataSource => dataSource
+                                        .Custom()
+                                        .PageSize(20)
+                                        .Batch(true)
+                                        .Schema(schema =>
+                                        {
+                                            schema.Model(model =>
+                                            {
+                                                model.Id(p => p.requestNo);
+                                                model.Field(p => p.requestNo).Editable(false).From("requestNo");
+                                                model.Field(p => p.receivceDate).From("receivceDate");
+                                                model.Field(p => p.companyName).From("companyName");
+                                                model.Field(p => p.contactName).From("contactName");
+                                                model.Field(p => p.dateOfSendingResult).From("dateOfSendingResult");
+                                                model.Field(p => p.status).From("status");
+                                            })
+                                            .Data(d => "schemaData")
+                                            .Total(t => "schemaTotal");
+                                        })))
+                                </div>
+                                <!-- /.card-body -->
+
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </div>
+
+</section>
+
+
+@Html.Partial("search.cshtml")
+
+<script type="text/javascript">
+    var data = [];
+    function schemaData() {
+
+        return data;
+    }
+    function schemaTotal(response) {
+        return data.length;
+    }
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+
+    function onDataBound(e) {
+        var grid = this;
+        grid.table.find("tr").each(function () {
+            var dataItem = grid.dataItem(this);
+            var type = dataItem.Discontinued ? 'success' : 'error';
+            var text = dataItem.Discontinued ? 'available' : 'not available';
+
+            $(this).find('script').each(function () {
+                eval($(this).html());
+            });
+
+            $(this).find(".badgeTemplate").kendoBadge({
+                type: type,
+                value: text,
+            });
+
+
+            kendo.bind($(this), dataItem);
+        });
+    }
+
+    function returnFalse() {
+        return false;
+    }
+
+    function change() {
+
+    };
+</script>
+
+
+<style>
+    .k-grid tr .checkbox-align {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .k-grid-content {
+        height: auto !important;
+    }
+
+    .k-grid tbody tr {
+        line-height: 14px !important;
+    }
+
+    .btn-raised {
+        background-color: #92d050 !important;
+        color: #fff !important;
+        border-color: #92d050;
+    }
+</style>
