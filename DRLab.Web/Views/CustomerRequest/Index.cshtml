@@ -23,7 +23,7 @@
         t.Add().Type("error").ClientTemplateID("errorTemplate");
     })
 )
-<section id="isCheck" style="" class="content">
+<section id="isCheck" style="display: none" class="content">
     <div class="container-fluid">
         <section class="content">
             <div class="container-fluid">
@@ -790,7 +790,8 @@
     };
 
     function xx() {
-        $('#exampleModal').modal('show');
+          var dialog = $('#dialog');
+            dialog.data("kendoDialog").open();
     }
 
 </script>

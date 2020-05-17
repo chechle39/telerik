@@ -12,127 +12,12 @@ var customerController = function () {
         $('#exampleModal').modal('hide');
         $('#exampleModal').css('display', 'none');
     });
-    $("#showModel").on('click', function () {
-        $('#exampleModal').modal('show');
+    $("#hahaha").on('click', function () {
+      
 
     });
 
-    $("#btnSave").on('click', function () {
-        var numOfSam = $('#numOfSam').val();
-        var customers = $('#customers').val();
-        var contact = $('#contact').val();
-        var requestNo = $('#requestNo').val();
-        var vat = $('#vat').val();
-        var datetimepicker = $('#datetimepicker').val();
-        var datetimepickerReturn = $('#datetimepickerReturn').val();
-        var piceList = $('#piceList').val();
-        if ($('#requestNoId').val() === '') {
-            sampleListCount = parseInt($('#numOfSam').val());
-            $.ajax({
-                type: "POST",
-                url: "/CustomerRequest/SaveEntity",
-                data: {
-                    requestNo: requestNo,
-                    customerID: customers,
-                    receivceDate: datetimepicker,
-                    dateOfSendingResult: datetimepickerReturn,
-                    contactID: contact,
-                    numberSample: numOfSam,
-                    printVAT: vat,
-                },
-                dataType: "json",
 
-                success: function (response) {
-                    var notification = $("#notification").data("kendoNotification");
-                    notification.show({
-                        message: "Save Successful"
-                    }, "success");
-                    myarr = [];
-                    $('#requestNoId').val(response.requestNo);
-                    $('#isCheck').show();
-                    const data = { "req_per_page": 1, "page_no": 1 };
-                    pagination(data, sampleListCount);
-                    $('#exampleModal').modal('hide');
-                    $('#exampleModal').css('display', 'none');
-                    var template = $('#table-template').html();
-                    var render = "";
-
-                    render += Mustache.render(template, {
-                        requestNo: response.requestNo,
-                        receivceDate: drlab.dateTimeFormatJson(response.receivceDate),
-                        dateOfSendingResult: drlab.dateTimeFormatJson(response.dateOfSendingResult),
-                        contactName: itemSelected.contactName,
-                        contactEmail: itemSelected.contactEmail,
-                        companyName: itemSelected.companyName
-                    });
-                    if (render !== undefined) {
-                        $('#tbl-content').html(render);
-
-                    }
-                },
-                error: function () {
-                    var notification = $("#notification").data("kendoNotification");
-                    notification.show({
-                        title: "Wrong Save",
-                        message: "Save error check requestNo"
-                    }, "error");
-                }
-            });
-        } else {
-            sampleListCount = parseInt($('#numOfSam').val());
-            $.ajax({
-                type: "POST",
-                url: "/CustomerRequest/UpdateEntity",
-                data: {
-                    requestNo: document.getElementById("requestNo").innerHTML,
-                    customerID: customers,
-                    receivceDate: datetimepicker,
-                    dateOfSendingResult: datetimepickerReturn,
-                    contactID: contact,
-                    numberSample: numOfSam,
-                    printVAT: vat,
-                },
-                dataType: "json",
-
-                success: function (response) {
-                    var notification = $("#notification").data("kendoNotification");
-                    notification.show({
-                        message: "Update Successful"
-                    }, "success");
-                    myarr = [];
-                    $('#requestNoId').val(response.requestNo);
-                    $('#isCheck').show();
-                    const data = { "req_per_page": 1, "page_no": 1 };
-                    pagination(data, sampleListCount);
-                    $('#exampleModal').modal('hide');
-                    $('#exampleModal').css('display', 'none');
-                    var template = $('#table-template').html();
-                    var render = "";
-
-                    render += Mustache.render(template, {
-                        requestNo: response.requestNo,
-                        receivceDate: drlab.dateTimeFormatJson(response.receivceDate),
-                        dateOfSendingResult: drlab.dateTimeFormatJson(response.dateOfSendingResult),
-                        contactName: itemSelected.contactName,
-                        contactEmail: itemSelected.contactEmail,
-                        companyName: itemSelected.companyName
-                    });
-                    if (render !== undefined) {
-                        $('#tbl-content').html(render);
-
-                    }
-                },
-                error: function () {
-                    var notification = $("#notification").data("kendoNotification");
-                    notification.show({
-                        title: "Wrong Save",
-                        message: "Uppdate error check requestNo"
-                    }, "error");
-                }
-            });
-        }
-        
-    });
 
     //paging fronent
 
@@ -175,56 +60,7 @@ function checkClass(classList) {
 
     return a;
 }
-// load data and style for active page
-//function active_page(element, rows, req_per_page) {
 
-//    var current_page = checkClass(document.getElementsByClassName('active'));
-//    var next_link = document.getElementById('next_link');
-//    var prev_link = document.getElementById('prev_link');
-//    var next_tab = current_page[0].nextSibling;
-//    var prev_tab = current_page[0].previousSibling;
-//    current_page[0].className = current_page[0].className.replace("active", "");
-//    if (element === "next") {
-//        if (parseInt(next_tab.text).toString() === 'NaN') {
-//            next_tab.previousSibling.className += " active";
-//            next_tab.setAttribute("onclick", "return false");
-//        } else {
-//            next_tab.className += " active"
-//            render_table_rows(rows, parseInt(req_per_page), parseInt(next_tab.text));
-//            if (prev_link.getAttribute("onclick") === "return false") {
-//                prev_link.setAttribute("onclick", `active_page('prev',\"${rows}\",${req_per_page})`);
-//            }
-//            if (next_tab.style.display === "none") {
-//                next_tab.style.display = "block";
-//                hide_from_beginning(prev_link.nextSibling)
-//            }
-//        }
-//    } else if (element === "prev") {
-//        if (parseInt(prev_tab.text).toString() === 'NaN') {
-//            prev_tab.nextSibling.className += " active";
-//            prev_tab.setAttribute("onclick", "return false");
-//        } else {
-//            prev_tab.className += " active";
-//            render_table_rows(rows, parseInt(req_per_page), parseInt(prev_tab.text));
-//            if (next_link.getAttribute("onclick") === "return false") {
-//                next_link.setAttribute("onclick", `active_page('next',\"${rows}\",${req_per_page})`);
-//            }
-//            if (prev_tab.style.display === "none") {
-//                prev_tab.style.display = "block";
-//                hide_from_end(next_link.previousSibling)
-//            }
-//        }
-//    } else {
-//        element.className += "active";
-//        render_table_rows(rows, parseInt(req_per_page), parseInt(element.text));
-//        if (prev_link.getAttribute("onclick") === "return false") {
-//            prev_link.setAttribute("onclick", `active_page('prev',\"${rows}\",${req_per_page})`);
-//        }
-//        if (next_link.getAttribute("onclick") === "return false") {
-//            next_link.setAttribute("onclick", `active_page('next',\"${rows}\",${req_per_page})`);
-//        }
-//    }
-//}
 
 // Render the table's row in table request-table
 function render_table_rows(rows, req_per_page, page_no) {
@@ -282,5 +118,174 @@ pagination(data, myarr);
 function filter_requests() {
     const data = { "req_per_page": 5, "page_no": 1 };
     pagination(data, myarr);
-}
+    }
+
+
+    var dialog = $('#dialog'),
+        undo = $("#undo");
+
+    undo.click(function () {
+        dialog.data("kendoDialog").open();
+        undo.fadeOut();
+    });
+
+    function onClose() {
+        undo.fadeIn();
+    }
+
+    dialog.kendoDialog({
+        width: "450px",
+        title: "New Request",
+        closable: false,
+        modal: false,
+        content: "",
+        actions: [
+            { text: 'Cancel' },
+            {
+                text: 'Save', primary: true,
+                action: onOK,
+                //action: function (e) {
+                
+                //}
+                
+            }
+        ],
+     //   close: onClose
+    });
+
+
+    function onOK(e) {
+        var numOfSam = $('#numOfSam').val();
+
+        var customers = $('#customers').val();
+
+        var contact = $('#contact').val();
+
+        var requestNo = $('#requestNo').val();
+
+        var vat = $('#vat').val();
+
+        var datetimepicker = $('#datetimepicker').val();
+        var datetimepickerReturn = $('#datetimepickerReturn').val();
+        var lenthx;
+                   // var piceList = $('#piceList').val();
+                    if ($('#requestNoId').val() === '') {
+                        sampleListCount = parseInt($('#numOfSam').val());
+                      
+                        $.ajax({
+                            type: "POST",
+                            url: "/CustomerRequest/SaveEntity",
+                            data: {
+                                requestNo: requestNo,
+                                customerID: customers,
+                                receivceDate: datetimepicker,
+                                dateOfSendingResult: datetimepickerReturn,
+                                contactID: contact,
+                                numberSample: numOfSam,
+                                printVAT: vat,
+                            },
+                            dataType: "json",
+
+                            success: function (response) {
+                                lenthx = response;
+                                isCheck = true;
+                                var notification = $("#notification").data("kendoNotification");
+                                notification.show({
+                                    message: "Save Successful"
+                                }, "success");
+                                myarr = [];
+                                $('#requestNoId').val(response.requestNo);
+                                $('#isCheck').show();
+                                const data = { "req_per_page": 1, "page_no": 1 };
+                                pagination(data, sampleListCount);
+                                $('#exampleModal').modal('hide');
+                                $('#exampleModal').css('display', 'none');
+                                var template = $('#table-template').html();
+                                var render = "";
+
+                                render += Mustache.render(template, {
+                                    requestNo: response.requestNo,
+                                    receivceDate: drlab.dateTimeFormatJson(response.receivceDate),
+                                    dateOfSendingResult: drlab.dateTimeFormatJson(response.dateOfSendingResult),
+                                    contactName: itemSelected.contactName,
+                                    contactEmail: itemSelected.contactEmail,
+                                    companyName: itemSelected.companyName
+                                });
+                                if (render !== undefined) {
+                                    $('#tbl-content').html(render);
+
+                                }
+                                isCheck = false;
+                                return true;
+                            },
+                            error: function () {
+                                var notification = $("#notification").data("kendoNotification");
+                                notification.show({
+                                    title: "Wrong Save",
+                                    message: "Save error check requestNo"
+                                }, "error");
+                                var dialog = $('#dialog');
+                                dialog.data("kendoDialog").open();
+                            },
+
+                        })
+                    } else {
+                        sampleListCount = parseInt($('#numOfSam').val());
+                        $.ajax({
+                            type: "POST",
+                            url: "/CustomerRequest/UpdateEntity",
+                            data: {
+                                requestNo: document.getElementById("requestNo").innerHTML,
+                                customerID: customers,
+                                receivceDate: datetimepicker,
+                                dateOfSendingResult: datetimepickerReturn,
+                                contactID: contact,
+                                numberSample: numOfSam,
+                                printVAT: vat,
+                            },
+                            dataType: "json",
+
+                            success: function (response) {
+                                isCheck = true;
+                                var notification = $("#notification").data("kendoNotification");
+                                notification.show({
+                                    message: "Update Successful"
+                                }, "success");
+                                myarr = [];
+                                $('#requestNoId').val(response.requestNo);
+                                $('#isCheck').show();
+                                const data = { "req_per_page": 1, "page_no": 1 };
+                                pagination(data, sampleListCount);
+                                $('#exampleModal').modal('hide');
+                                $('#exampleModal').css('display', 'none');
+                                var template = $('#table-template').html();
+                                var render = "";
+
+                                render += Mustache.render(template, {
+                                    requestNo: response.requestNo,
+                                    receivceDate: drlab.dateTimeFormatJson(response.receivceDate),
+                                    dateOfSendingResult: drlab.dateTimeFormatJson(response.dateOfSendingResult),
+                                    contactName: itemSelected.contactName,
+                                    contactEmail: itemSelected.contactEmail,
+                                    companyName: itemSelected.companyName
+                                });
+                                if (render !== undefined) {
+                                    $('#tbl-content').html(render);
+
+                                }
+                                isCheck = true;
+                            },
+                            error: function () {
+                                var notification = $("#notification").data("kendoNotification");
+                                notification.show({
+                                    title: "Wrong Save",
+                                    message: "Uppdate error check requestNo"
+                                }, "error");
+                                var dialog = $('#dialog');
+                                dialog.data("kendoDialog").open();
+                            }
+                        });
+                    }
+
+    }
 }
