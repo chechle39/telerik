@@ -1,7 +1,7 @@
 ﻿@addTagHelper *, Kendo.Mvc
 
 <div id="example">
-    <kendo-dialog name="dialog" title="Software Update" width="400" modal="false" on-close="onClose" on-open="onOpen">
+    <kendo-dialog name="dialog" title="search" width="400" modal="false" on-close="onClose" on-open="onOpen">
         <content>
             <form>
                 <div class="form-group row">
@@ -13,42 +13,71 @@
                                         .DataValueField("Value")
                                         .BindTo(new List<SelectListItem>() {
                                         new SelectListItem() {
-                                            Text = "Bulk Actions",
+                                            Text = "Tuần này",
                                             Value = "0"
                                         },
                                         new SelectListItem() {
-                                            Text = "Set Confirm",
+                                            Text = "Tháng này",
                                             Value = "1"
                                         },
                                         new SelectListItem() {
-                                                Text = "Export to Lab",
+                                                Text = "Tùy chọn",
                                                 Value = "2"
                                         },
-                                        new SelectListItem() {
-                                                Text = "Send Email",
-                                                Value = "3"
-                                        },
-                                        new SelectListItem() {
-                                                Text = "Remove Confirm",
-                                                Value = "4"
-                                        },
-                                        new SelectListItem() {
-                                                Text = "Delete Request",
-                                                Value = "5"
-                                        },
+
                                         })
                                     .Value("0")
-                                    .HtmlAttributes(new { style = "width: 100%" })
-                                    )
+                                    .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
+                        )
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+                    <div class="col-sm-11 row">
+                        <div class="col-sm-5">
+                            @(Html.Kendo().DatePicker()
+                                .Name("datepicker")
+                                .Value(DateTime.Now)
+                                .Format("dd/MM/yyyy")
+                                .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
+                            )
+                        </div>
+                        <div class="col-sm-5">
+                            @(Html.Kendo().DatePicker()
+                              .Name("datepickerto")
+                              .Value(DateTime.Now)
+                              .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
+                            )
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-group row">
+                    <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
                     <div class="col-sm-11">
-                        @(Html.Kendo().TextBox()
-                                                .Name("xxx")
-                                                .HtmlAttributes(new { placeholder = "Sample Code", style = "width: 100%;height: calc(1.42857143em + 10px)" })
-                                                )
+                        @(Html.Kendo().ComboBox()
+                                .Name("piceList")
+                                .Placeholder("Select price")
+                                .DataTextField("contactName")
+                                .DataValueField("customerID")
+                                .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
+                                .DataSource(source =>
+                                {
+                                    source.Read(read =>
+                                    {
+                                        read.Action("GetCustomers", "CustomerRequest");
+                                    }).ServerFiltering(true);
+                                })
+                                .Filter("startswith")
+                                .Height(300)
+                                .HeaderTemplate("<div class=\"dropdown-header k-widget k-header\">" +
+                                    "<span>Contact info</span>" +
+                                        "</div>")
+                                .Template(
+                                "<span class=\"k-state-default\"><h6>#: data.contactName #</h6><p>#: data.companyName #</p></span>")
+                        )
+
                     </div>
                 </div>
             </form>
