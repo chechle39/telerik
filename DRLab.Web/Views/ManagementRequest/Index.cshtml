@@ -1,11 +1,7 @@
 ﻿
-@{
-    ViewData["Title"] = "Index";
-}
-
 @using Kendo.Mvc
 @section Scripts{
-    <script src="~/app/ManagementRequest/ManagementRequest.js" asp-append-version="true"></script>
+    <script src="~/app/ManagementRequest/index.js" asp-append-version="true"></script>
     <script>
         var rq = new ManagementRequestController();
         rq.initialize();
@@ -87,15 +83,26 @@
                                             columns.Bound(p => p.contactName).Title("Contact Name");
                                             columns.Bound(p => p.dateOfSendingResult).Format("{0:MM/dd/yyyy}").Title("Expected Date");
                                             columns.Bound(p => p.status).Title("Request Status");
-                                            columns.Command(command => { command.Destroy(); }).Width(100);
+                                            columns.Command(command =>
+                  {
+                      command.Edit()
+                          .Text(" ")
+                          .HtmlAttributes(new {style = "width:40%"});
+                      command.Custom("Destroy")
+                          .IconClass("k-icon k-i-close")
+                          .Click("showDeleteConfirmation")
+                          .Text(" ")
+                          .HtmlAttributes(new {style = "width:40%"});
+                  }).Width("15%");
                                         })
-
+                                        .Editable(e => e.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
                                         .Pageable()
                                         .Sortable()
                                         .Scrollable()
                                         .DataSource(dataSource => dataSource
                                         .Custom()
                                         .PageSize(20)
+                                       
                                         .Batch(true)
                                         .Schema(schema =>
                                         {
@@ -111,7 +118,8 @@
                                             })
                                             .Data(d => "schemaData")
                                             .Total(t => "schemaTotal");
-                                        })))
+                                        })).Events(e => e.DataBound("onDataBound")))
+
                                 </div>
                                 <!-- /.card-body -->
 
@@ -131,58 +139,7 @@
 
 @Html.Partial("search.cshtml")
 
-<script type="text/javascript">
-    var data = [];
-    function schemaData() {
 
-        return data;
-    }
-    function schemaTotal(response) {
-        return data.length;
-    }
-    function error_handler(e) {
-        if (e.errors) {
-            var message = "Errors:\n";
-            $.each(e.errors, function (key, value) {
-                if ('errors' in value) {
-                    $.each(value.errors, function () {
-                        message += this + "\n";
-                    });
-                }
-            });
-            alert(message);
-        }
-    }
-
-    function onDataBound(e) {
-        var grid = this;
-        grid.table.find("tr").each(function () {
-            var dataItem = grid.dataItem(this);
-            var type = dataItem.Discontinued ? 'success' : 'error';
-            var text = dataItem.Discontinued ? 'available' : 'not available';
-
-            $(this).find('script').each(function () {
-                eval($(this).html());
-            });
-
-            $(this).find(".badgeTemplate").kendoBadge({
-                type: type,
-                value: text,
-            });
-
-
-            kendo.bind($(this), dataItem);
-        });
-    }
-
-    function returnFalse() {
-        return false;
-    }
-
-    function change() {
-
-    };
-</script>
 
 
 <style>
@@ -205,3 +162,65 @@
         border-color: #92d050;
     }
 </style>
+<script type="text/javascript">
+    var data = [];
+    function schemaData() {
+
+        return data;
+    }
+    function schemaTotal(response) {
+        return data.length;
+    }
+    function showDeleteConfirmation () {
+    }
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+
+    function onDataBound(e) {
+        console.log(e);
+        var grid = this;
+        grid.table.find("tr").each(function () {
+            var dataItem = grid.dataItem(this);
+            var type = dataItem.Discontinued ? 'success' : 'error';
+            var text = dataItem.Discontinued ? 'available' : 'not available';
+            console.log(dataItem.isDeletable);
+            $(this).find('script').each(function () {
+                eval($(this).html());
+            });
+
+            $(this).find(".badgeTemplate").kendoBadge({
+                type: type,
+                value: text,
+            });
+
+
+            kendo.bind($(this), dataItem);
+        });
+        $("#Grid tbody tr .k-grid-delete").each(function () {
+            var currentDataItem = $("#Grid").data("kendoGrid").dataItem($(this).closest("tr"));
+
+            //Check in the current dataItem if the row is deletable
+            if (currentDataItem.isDeletable == true) {
+                console.log(currentDataItem.isDeletable);
+                $(this).remove();
+            }
+        });
+    }
+
+
+
+    function change() {
+
+    };
+</script>
