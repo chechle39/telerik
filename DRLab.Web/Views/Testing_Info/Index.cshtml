@@ -1,0 +1,91 @@
+﻿@(Html.Kendo().Grid<DRLab.Data.ViewModels.E08T_Testing_InfoViewModel>()
+    .Name("Testing_Info")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.analysisCode);
+        //columns.ForeignKey(p => p.specification, (System.Collections.IEnumerable)ViewData["categories"], "specID", "specification").EditorTemplateName("PopulateCategories1")
+        //.Title("Specification").Width(300);
+        columns.Bound(p => p.specification).Width(400);
+        columns.Bound(p => p.method).Width(400);
+
+        columns.Bound(p => p.unit);
+        columns.Bound(p => p.turnAroundTime);
+        columns.Bound(p => p.reformTestResult);
+        columns.Bound(p => p.note);
+        columns.Command(command => command.Destroy()).Width(100);
+    })
+    .ToolBar(toolbar =>
+    {
+
+        toolbar.Create();
+        toolbar.Save();      
+    })
+    .Editable(editable => editable.Mode(GridEditMode.InCell))
+    .Pageable()
+    .Navigatable()
+    .Sortable()
+    .Filterable()
+    .Scrollable()
+    .HtmlAttributes(new { style = "height:430px;" })
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Batch(true)
+        .PageSize(20)
+        .ServerOperation(false)
+        .Events(events => events.Error("error_handler"))
+        .Model(model =>
+        {
+            model.Id(p => p.analysisCode);
+            model.Field(p => p.analysisCode);
+            model.Field(p => p.specification);
+            model.Field(p => p.method);
+            model.Field(p => p.unit);
+            model.Field(p => p.turnAroundTime);
+            model.Field(p => p.reformTestResult);
+            model.Field(p => p.note);
+        })
+        .Create(read => read.Action("TestingInfo_Create", "Testing_Info"))
+        .Read(read => read.Action("Read_Testing_Info", "Testing_Info"))
+        .Update(read => read.Action("TestingInfo_Update", "Testing_Info"))
+        .Destroy(read => read.Action("TestingInfo_Destroy", "Testing_Info"))
+    )
+)
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+</script>
+
+
+<style>
+    .product-photo {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-size: 32px 35px;
+        background-position: center center;
+        vertical-align: middle;
+        line-height: 32px;
+        box-shadow: inset 0 0 1px #999, inset 0 0 10px rgba(0,0,0,.2);
+        margin-left: 5px;
+    }
+
+    .product-name {
+        display: inline-block;
+        vertical-align: middle;
+        line-height: 32px;
+        padding-left: 3px;
+    }
+</style>

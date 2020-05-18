@@ -1,16 +1,28 @@
 ﻿@addTagHelper *, Kendo.Mvc
+@section Scripts{
 
+    <script src="~/app/ManagementRequest/index.js" asp-append-version="true"></script>
+    <script>
+        var management = new ManagementRequestController();
+        management.initialize();
+    </script>
+}
 <div id="example">
-    <kendo-dialog name="dialog" title="search" width="400" modal="false" on-close="onClose" on-open="onOpen">
-        <content>
+    <div id="dialog">
+        <div id="horizontal-form">
+
             <form>
                 <div class="form-group row">
-                    <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
+                    <label for="staticEmail" class="col-sm-4 col-form-label custom-font-weight">Khoảng thời gian</label>
                     <div class="col-sm-11">
                         @(Html.Kendo().DropDownList()
-                                        .Name("colorx")
+                                        .Name("day")
                                         .DataTextField("Text")
                                         .DataValueField("Value")
+                                         .Events(e =>
+                                            {
+                                                e.Change("onChange").Select("onSelect");
+                                            })
                                         .BindTo(new List<SelectListItem>() {
                                         new SelectListItem() {
                                             Text = "Tuần này",
@@ -31,101 +43,150 @@
                         )
                     </div>
                 </div>
+
+
                 <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+                    <div id="hideLabbel" class="col-sm-4">
+
+                    </div>
                     <div class="col-sm-11 row">
                         <div class="col-sm-5">
-                            @(Html.Kendo().DatePicker()
-                                .Name("datepicker")
-                                .Value(DateTime.Now)
-                                .Format("dd/MM/yyyy")
-                                .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
-                            )
+                            <div id="hideFrom">
+
+                            </div>
+
                         </div>
                         <div class="col-sm-5">
-                            @(Html.Kendo().DatePicker()
-                              .Name("datepickerto")
-                              .Value(DateTime.Now)
-                              .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
-                            )
+                            <div id="hideTo">
+
+                            </div>
+
+
                         </div>
                     </div>
 
                 </div>
-
                 <div class="form-group row">
-                    <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
+                    <label for="staticEmail" class="col-sm-4 col-form-label custom-font-weight">Khách hàng</label>
                     <div class="col-sm-11">
-                        @(Html.Kendo().ComboBox()
-                                .Name("piceList")
-                                .Placeholder("Select price")
-                                .DataTextField("contactName")
-                                .DataValueField("customerID")
-                                .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
-                                .DataSource(source =>
-                                {
-                                    source.Read(read =>
-                                    {
-                                        read.Action("GetCustomers", "CustomerRequest");
-                                    }).ServerFiltering(true);
-                                })
-                                .Filter("startswith")
-                                .Height(300)
-                                .HeaderTemplate("<div class=\"dropdown-header k-widget k-header\">" +
-                                    "<span>Contact info</span>" +
-                                        "</div>")
-                                .Template(
-                                "<span class=\"k-state-default\"><h6>#: data.contactName #</h6><p>#: data.companyName #</p></span>")
-                        )
-
+                        @(Html.Kendo().MultiSelect()
+                        .Name("multiselect")
+                        .DataTextField("companyName")
+                        .DataValueField("customerCode")
+                        .DataSource(source =>
+                        {
+                            source.Read(read =>
+                            {
+                                read.Action("GetCustomers", "CustomerRequest");
+                            })
+                            .ServerFiltering(true);
+                        })
+                    )
                     </div>
                 </div>
             </form>
-        </content>
-        <actions>
-
-            <action text="Remind me later">
-            </action>
-            <action action="installUpdate" primary="true" text="Install update" title="Install Update">
-            </action>
-        </actions>
-        <popup-animation>
-            <open duration="500" effects="fade:in" />
-            <close duration="500" effects="fade:out" />
-        </popup-animation>
-    </kendo-dialog>
-
-    <kendo-button name="showDialogBtn"
-                  class="hide-on-narrow"
-                  style="display:none;"
-                  on-click="showDialog">
-        Click here to open the dialog
-    </kendo-button>
+        </div>
+    </div>
 </div>
 
+
 <script>
-    function installUpdate() {
-        kendo.alert("Installing Update ...");
+    var startDate1;
+    var endDate1;
+    var checkDate;
+    function onChange() {
+  
+        var checkDay = $("#day").val();
+        switch (parseInt(checkDay)) {
+            case 0:
+                $('#hideFrom').html("");
+                $('#hideTo').html("");
+                $('#hideLabbel').html("");
+                checkDate = 0;
+                break;
+            case 1:
+                $('#hideFrom').html("");
+                $('#hideTo').html("");
+                $('#hideLabbel').html("");
+
+                var date = new Date();
+                startDate1 = new Date(date.getFullYear(), date.getMonth(), 1);
+                endDate1 = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+                checkDate = 1;
+                break;
+            case 2:
+                var templateFrom = $('#from-template').html();
+                var templateTo = $('#to-template').html();
+                var templateLb = $('#lb-template').html();
+                var renderFrom = "";
+                renderFrom += Mustache.render(templateFrom, {
+
+                });
+                var renderTo = "";
+                renderTo += Mustache.render(templateTo, {
+
+                });
+                var renderLb = "";
+                renderLb += Mustache.render(templateLb, {
+
+                });
+                $('#hideFrom').html(renderFrom);
+                $('#hideTo').html(renderTo);
+                $('#hideLabbel').html(renderLb);
+                checkDate = 2;
+                break;
+            default:
+        }
+    }
+    function onSelect() {
+        
     }
 
-    function onClose() {
-        $("#showDialogBtn").fadeIn();
-    }
+    
+    //$("#movies").kendoMultiSelect({
+    //    placeholder: "Select customer",
+    //    dataTextField: "companyName",
+    //    dataValueField: "customerCode",
+    //    autoBind: false,
+    //    dataSource: {
+    //        serverFiltering: true,
+    //        transport: {
+    //            read: {
+    //                url: "/CustomerRequest/GetCustomers",
+    //                dataType: "jsonp" 
+    //            }
+    //        }
+    //    },
+    //});
 
-    function onOpen() {
-        $("#showDialogBtn").fadeOut();
-    }
-
-    function showDialog() {
-        $('#dialog').data("kendoDialog").open();
-    }
 </script>
 
 <style>
     #example {
         min-height: 350px;
     }
+
     .form-group {
-        margin-bottom: 0!important
+        margin-bottom: 0 !important
     }
 </style>
+<script id="from-template" type="x-tmpl-mustache">
+    @(Html.Kendo().DatePicker()
+    .Name("datepicker")
+    .Value(DateTime.Now)
+    .Format("dd/MM/yyyy")
+    .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
+    )
+</script>
+<script id="to-template" type="x-tmpl-mustache">
+    @(Html.Kendo().DatePicker()
+    .Name("datepickerto")
+    .Value(DateTime.Now)
+    .Format("dd/MM/yyyy")
+    .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
+   )
+</script>
+<script id="lb-template">
+    <label for="inputPassword" class="col-form-label custom-font-weight">Tùy chọn thời gian</label>
+
+</script>

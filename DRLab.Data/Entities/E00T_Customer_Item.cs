@@ -12,9 +12,14 @@ namespace DRLab.Data.Entities
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public partial class E00T_Customer_Item
     {
+        public E00T_Customer_Item()
+        {
+           
+        }
         public E00T_Customer_Item(long contactID, string address, string contactName, string customerCode, string email, string note)
         {
             this.contactID = contactID;
@@ -32,7 +37,7 @@ namespace DRLab.Data.Entities
         public string email { get; set; }
         public string address { get; set; }
         public string note { get; set; }
-    
+        [ForeignKey("customerCode")]
         public virtual E00T_Customer E00T_Customer { get; set; }
     }
 }

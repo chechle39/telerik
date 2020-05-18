@@ -4,6 +4,7 @@ using DRLab.Data.Entities;
 using DRLab.Data.Interfaces;
 using DRLab.Data.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -37,7 +38,8 @@ namespace DRLab.Data.Repositories
                     dateOfSendingResult = item.dateOfSendingResult,
                     receivceDate = item.receivceDate,
                     requestNo = item.requestNo,
-                    status = item.status
+                    status = item.status,
+                    customerCode = cus[0].customerCode
                 };
                 listGridManagementViewModel.Add(objGridManagementViewModel);
             }
@@ -53,8 +55,10 @@ namespace DRLab.Data.Repositories
 
                 listGridManagementViewModel = listGridManagementViewModel.Where(x => x.receivceDate <= end).ToList();
             }
-            if (!string.IsNullOrEmpty(request.Customer))
+            if (request.Customer != null)
             {
+                var rq = JsonConvert.DeserializeObject<string[]>(request.Customer[0]);
+                listGridManagementViewModel = listGridManagementViewModel.Where(t => rq.Contains(t.customerCode)).ToList();
             }
             return listGridManagementViewModel;
         }

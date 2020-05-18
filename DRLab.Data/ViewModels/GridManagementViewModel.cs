@@ -19,12 +19,17 @@ namespace DRLab.Data.ViewModels
         public Nullable<System.DateTime> dateOfSendingResult { get; set; }
         [Display(Name = "Request Status")]
         public Nullable<int> status { get; set; }
+        public string customerCode { get; set; }
     }
 
     public class SerchGridManagement
     {
         public string StartDate { get; set; }
         public string EndDate { get; set; }
-        public string Customer { get; set; }
+        public string[] Customer { get; set; }
+    }
+    public class userCode
+    {
+        public string customerCode { get; set; }
     }
 }

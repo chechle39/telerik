@@ -18,15 +18,19 @@ namespace DRLab.Web.Controllers
         {
             _logger = logger;
             _customerService = customerService;
+
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var result = await _customerService.GetAll();
+            ViewData["categories"] = result.ToList();
             return View();
+           
         }
         public async Task<IActionResult> Read_Customer([DataSourceRequest] DataSourceRequest request)
         {
-
+           
             return Json((await _customerService.GetListCustomer()).ToDataSourceResult(request));
         }
         public async Task<ActionResult> Create_Customer([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<E00T_CustomerViewModel> data_info)
@@ -76,5 +80,8 @@ namespace DRLab.Web.Controllers
 
             return Json(data_info.ToDataSourceResult(request, ModelState));
         }
+       
+      
+
     }
 }

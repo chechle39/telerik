@@ -11,7 +11,7 @@ namespace DRLab.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<E00T_Specification> builder)
         {
-            builder.Property(e => e.specID).ValueGeneratedNever();
+            builder.Property(e => e.specID).ValueGeneratedOnAdd();
         }
     }
 }

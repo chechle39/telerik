@@ -5,12 +5,16 @@ namespace DRLab.Data.ViewModels
 {
     public class E08T_Testing_InfoViewModel
     {
+        
         [Display(Name = "Analysis Code")]
         public string analysisCode { get; set; }
+        [Required]
         [Display(Name = "Spec ID")]
         public Nullable<long> specID { get; set; }
+        [Required]
         [Display(Name = "Specification")]
         public string specification { get; set; }
+        [Required]
         [Display(Name = "Method")]
         public string method { get; set; }
         [Display(Name = "Unit")]

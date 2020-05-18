@@ -28,7 +28,7 @@ namespace DRLab.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-           await PopulateCategories();
+          
             return View();
         }
 
@@ -56,9 +56,16 @@ namespace DRLab.Web.Controllers
             {
                 foreach (var data in data_info)
                 {
-                    if (data != null) {
+                    if (data != null) {                       
+                        var TestingInfoList = await _specificationDataService.GetAll();
+                        for (int i = 0; i < TestingInfoList.Count; i++)
+                        {
+                            if (data.specification == TestingInfoList[i].specification) {
+                                data.specID = TestingInfoList[i].specID;                               
+                            }
+                          
+                        }
                         await _testDataService.Create(data);
-                       
                     }               
                 }
             }
@@ -88,6 +95,7 @@ namespace DRLab.Web.Controllers
                 {
                     if (data != null)
                     {
+
                         _testDataService.Destroy(data.analysisCode);
                     }
                 }

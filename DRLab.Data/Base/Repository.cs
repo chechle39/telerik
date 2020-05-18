@@ -96,5 +96,13 @@ namespace DRLab.Data.Base
             GC.SuppressFinalize(this);
         }
 
+        public void RemoveLong(long id)
+        {
+            var entity = GetById(id);
+            if (entity == null)
+                throw new ItemNotFoundException();
+
+            Entities.Remove(entity);
+        }
     }
 }

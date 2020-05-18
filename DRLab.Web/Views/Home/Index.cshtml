@@ -5,31 +5,52 @@
     ViewData["Title"] = "Home Page";
 }
 
-@Localizer["Hello"]
 <section class="content">
     <div class="container-fluid">
         <div class="home__chart-container">
             <div class="home__chart card p-0">
                 <h5 class="card-header px-3 py-2">
-                    Featured
+                    REQUEST VIEW
                     @(Html.Kendo().DropDownList()
                       .Name("chart1")
                       .DataTextField("Text")
                       .DataValueField("Value")
                       .BindTo(new List<SelectListItem>() {
                           new SelectListItem() {
-                              Text = "View by month",
-                              Value = "1"
+                              Text = "View by day",
+                              Value = "3"
                           },
                           new SelectListItem() {
                               Text = "View by week",
                               Value = "2"
                           }
                       })
-                      .Value("1")
+                      .Events(e => e.Change("chart1OnChange"))
+                      .Value("3")
     )
                 </h5>
+                <script>
+                    function chart1OnChange(e) {
+                        switch (e.sender.value()) {
+                            case "3":
+                                chart1GetByDay();
+                                break;
+                            case "2":
+                                chart1GetByWeek()
+                                break;
+                        }
+                    }
+                </script>
                 <div class="card-body position-relative p-0">
+                    <div>
+                        <a href="#" class="btn home__chart__button">Add new request</a>
+                        <div class="float-right row text-right" style="font-size: 0.7rem">
+                            <div class="col-9 home__color--primary">Total request: </div>
+                            <div class="col-3 home__color--primary">239</div>
+                            <div class="col-9 home__color--secondary">Request in progress: </div>
+                            <div class="col-3 home__color--secondary">99</div>
+                        </div>
+                    </div>
                     <div class="home__chart__inner">
                         <canvas id="home__chart1"></canvas>
                     </div>
@@ -37,25 +58,45 @@
             </div>
             <div class="home__chart card p-0">
                 <h5 class="card-header px-3 py-2">
-                    Request
+                    SAMPLE VIEW
                     @(Html.Kendo().DropDownList()
                       .Name("chart2")
                       .DataTextField("Text")
                       .DataValueField("Value")
                       .BindTo(new List<SelectListItem>() {
                           new SelectListItem() {
-                              Text = "View by month",
+                              Text = "View in a month",
                               Value = "1"
                           },
                           new SelectListItem() {
-                              Text = "View by week",
+                              Text = "View in a week",
                               Value = "2"
                           }
                       })
+                      .Events(e => e.Change("chart2OnChange"))
                       .Value("1")
     )
                 </h5>
+                <script>
+                    function chart2OnChange(e) {
+                        switch (e.sender.value()) {
+                            case "1":
+                                chart2GetByMonth();
+                                break;
+                            case "2":
+                                chart2GetByWeek()
+                                break;
+                        }
+                    }
+                </script>
                 <div class="card-body position-relative p-0">
+                    <div>
+                        <a href="#" class="btn home__chart__button">Open testing report</a>
+                        <div class="float-right row text-right" style="font-size: 0.7rem">
+                            <div class="col-12 home__color--primary">From 13/4/20 to now </div>
+                            <div class="col-12 home__color--primary">Average sample/day: 99</div>
+                        </div>
+                    </div>
                     <div class="home__chart__inner">
                         <canvas id="home__chart2"></canvas>
                     </div>
@@ -63,7 +104,7 @@
             </div>
             <div class="home__chart card p-0">
                 <h5 class="card-header px-3 py-2">
-                    Featured
+                    LAB WOKING
                     @(Html.Kendo().DropDownList()
                       .Name("chart3")
                       .DataTextField("Text")
@@ -78,10 +119,30 @@
                               Value = "2"
                           }
                       })
+                      .Events(e => e.Change("chart3OnChange"))
                       .Value("1")
     )
                 </h5>
+                <script>
+                    function chart3OnChange(e) {
+                        switch (e.sender.value()) {
+                            case "1":
+                                chart3GetByMonth();
+                                break;
+                            case "2":
+                                chart3GetByWeek()
+                                break;
+                        }
+                    }
+                </script>
                 <div class="card-body position-relative p-0">
+                    <div>
+                        <a href="#" class="btn home__chart__button">Record testing value</a>
+                        <div class="float-right row text-right" style="font-size: 0.7rem">
+                            <div class="col-12 home__color--primary">From 13/4/20 to now </div>
+                            <div class="col-12 home__color--primary">Average specification/day: 99</div>
+                        </div>
+                    </div>
                     <div class="home__chart__inner">
                         <canvas id="home__chart3"></canvas>
                     </div>
@@ -89,7 +150,7 @@
             </div>
             <div class="home__chart card p-0">
                 <h5 class="card-header px-3 py-2">
-                    Working on lab
+                    REVENUE
                     @(Html.Kendo().DropDownList()
                       .Name("chart4")
                       .DataTextField("Text")
@@ -100,13 +161,26 @@
                               Value = "1"
                           },
                           new SelectListItem() {
-                              Text = "View by week",
-                              Value = "2"
+                              Text = "View by quarter",
+                              Value = "4"
                           }
                       })
+                      .Events(e => e.Change("chart4OnChange"))
                       .Value("1")
     )
                 </h5>
+                <script>
+                    function chart4OnChange(e) {
+                        switch (e.sender.value()) {
+                            case "1":
+                                chart4GetByMonth();
+                                break;
+                            case "4":
+                                chart4GetByQuarter()
+                                break;
+                        }
+                    }
+                </script>
                 <div class="card-body position-relative p-0">
                     <div class="home__chart__inner">
                         <canvas id="home__chart4"></canvas>
@@ -118,6 +192,7 @@
 </section>
 
 @section scripts {
+    <script src="~/plugins/chart.js/chartjs-plugin-datalabels.js" asp-append-version="true"></script>
     <script src="~/app/Home/index.js" asp-append-version="true"></script>
 }
 

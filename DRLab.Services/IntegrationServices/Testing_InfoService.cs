@@ -57,26 +57,46 @@ namespace DRLab.Services.IntegrationServices
        
         public async Task<E08T_Testing_InfoViewModel> Create(E08T_Testing_InfoViewModel Data)
         {
-         
-                var specifi = new List<E00T_SpecificationViewModel>();
-                 specifi = await _Specifi.GetbyId(Data.specID);
+            if (Data.specID != null)
+            {
                 var client = new E08T_Testing_Info()
                 {
-                    
+
                     analysisCode = Data.analysisCode,
                     specID = Data.specID,
-                    specification = specifi[0].specification,
+                    specification = Data.specification,
                     method = Data.method,
                     unit = Data.unit,
                     turnAroundTime = Data.turnAroundTime,
                     reformTestResult = Data.reformTestResult,
-                    note = Data.note,                  
-                };             
+                    note = Data.note,
+                };
                 _test.Add(client);
                 _uow.SaveChanges();
-              
-         
-
+            }
+            else {
+                var request = new E00T_SpecificationViewModel();
+                {
+                    request.specID = null;
+                    request.specification = Data.specification;
+                }
+                await _Specifi.Create(request);
+                var resultId = new List<E00T_SpecificationViewModel>();
+                resultId = await _Specifi.GetbyName(Data.specification);
+                var client = new E08T_Testing_Info()
+                {
+                    analysisCode = Data.analysisCode,
+                    specID = resultId[0].specID,
+                    specification = Data.specification,
+                    method = Data.method,
+                    unit = Data.unit,
+                    turnAroundTime = Data.turnAroundTime,
+                    reformTestResult = Data.reformTestResult,
+                    note = Data.note,
+                };
+                _test.Add(client);
+                _uow.SaveChanges();
+            }      
             return null;
         }
 

@@ -11,6 +11,8 @@ namespace DRLab.Data.Interfaces
         Task<List<E00T_Customer_ItemViewModel>> GetCustomerItem(string text);
         Task<List<E00T_Customer_ItemViewModel>> GetE00T_Customer_ItemByCode(string code);
         Task<List<E00T_Customer_ItemViewModel>> GetCustomerItemById(long? id);
+        Task<bool> SaveCustomerItem(E00T_Customer_ItemViewModel SaveSpecificationrequest);
+        Task<bool> UpdateCustomerItem(E00T_Customer_ItemViewModel SaveSpecificationrequest);
 
     }
 }

@@ -22,6 +22,7 @@ namespace DRLab.Data.Base
         void Update(IEnumerable<TEntity> entities);
 
         void Remove(int id);
+        void RemoveLong(long id);
         void RemoveStringID(string id);
 
     }

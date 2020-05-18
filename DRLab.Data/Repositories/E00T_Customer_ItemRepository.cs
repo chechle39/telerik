@@ -1,4 +1,5 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using DRLab.Data.Base;
 using DRLab.Data.Entities;
 using DRLab.Data.Interfaces;
@@ -39,8 +40,24 @@ namespace DRLab.Data.Repositories
 
         public async Task<List<E00T_Customer_ItemViewModel>> GetE00T_Customer_ItemByCode(string code)
         {
-            var data = await Entities.ProjectTo< E00T_Customer_ItemViewModel>().Where(x => x.customerCode == code).ToListAsync();
+            var data = await Entities.ProjectTo<E00T_Customer_ItemViewModel>().Where(x => x.customerCode == code).ToListAsync();
             return data;
+        }
+
+        public async Task<bool> SaveCustomerItem(E00T_Customer_ItemViewModel SaveCustomerItemrequest)
+        {
+            var saveCustomerItemrequest = Mapper.Map<E00T_Customer_ItemViewModel, E00T_Customer_Item>(SaveCustomerItemrequest);
+
+            Entities.Add(saveCustomerItemrequest);
+            return await Task.FromResult(true);
+        }
+
+        public async Task<bool> UpdateCustomerItem(E00T_Customer_ItemViewModel UpdateCustomerItemrequest)
+        {
+            var updateCustomerItemrequest = Mapper.Map<E00T_Customer_ItemViewModel, E00T_Customer_Item>(UpdateCustomerItemrequest);
+
+            Entities.Update(updateCustomerItemrequest);
+            return await Task.FromResult(true);
         }
     }
 }

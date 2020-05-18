@@ -4,6 +4,7 @@ using DRLab.Data.Entities;
 using DRLab.Data.Interfaces;
 using DRLab.Data.ViewModels;
 using DRLab.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,16 +19,17 @@ namespace DRLab.Services.IntegrationServices
         private readonly IRepository<E00T_Customer> _test;
         private readonly IUnitOfWork _uow;
         private readonly IE08T_AnalysisRequest_DataRepository _e08T_AnalysisRequest_DataRepository;
-        public E00T_CustomerService(IUnitOfWork uow,IE00T_CustomerRepository e00T_CustomerRepository, IE08T_AnalysisRequest_DataRepository e08T_AnalysisRequest_DataRepository)
+        public E00T_CustomerService(IUnitOfWork uow, IE00T_CustomerRepository e00T_CustomerRepository, IE08T_AnalysisRequest_DataRepository e08T_AnalysisRequest_DataRepository)
         {
-            _e00T_CustomerRepository = e00T_CustomerRepository;           
+            _e00T_CustomerRepository = e00T_CustomerRepository;
             _uow = uow;
             _e08T_AnalysisRequest_DataRepository = e08T_AnalysisRequest_DataRepository;
+            _test = _uow.GetRepository<IRepository<E00T_Customer>>();
         }
 
         public async Task<bool> Create(E00T_CustomerViewModel Data)
         {
-            
+
             var customer = new E00T_Customer()
             {
                 customerCode = Data.customerCode,
@@ -38,20 +40,20 @@ namespace DRLab.Services.IntegrationServices
                 city = Data.city,
                 note = Data.note,
             };
-             _test.Add(customer);
-             _uow.SaveChanges();
+            _test.Add(customer);
+            _uow.SaveChanges();
 
 
 
             return true;
         }
-       
+
         public async Task<List<E00T_CustomerViewModel>> GetCustomer(string text)
         {
             return await _e00T_CustomerRepository.GetCustomer(text);
         }
         public async Task<IEnumerable<E00T_CustomerViewModel>> GetListCustomer()
-        {           
+        {
             var test = _test.GetAll().ProjectTo<E00T_CustomerViewModel>().AsEnumerable();
             return await Task.FromResult(test);
         }
@@ -85,7 +87,12 @@ namespace DRLab.Services.IntegrationServices
         {
             var save = await _e08T_AnalysisRequest_DataRepository.CreateAnalysisRequestData(request);
             _uow.SaveChanges();
-             return save;
+            return save;
+        }
+        public async Task<List<E00T_CustomerViewModel>> GetAll()
+        {
+            var data = await _test.GetAll().ProjectTo<E00T_CustomerViewModel>().ToListAsync();
+            return data;
         }
     }
 }

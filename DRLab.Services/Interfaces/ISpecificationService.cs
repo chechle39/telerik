@@ -10,5 +10,7 @@ namespace DRLab.Services.Interfaces
     {
         Task<List<E00T_SpecificationViewModel>> GetAll();
         Task<List<E00T_SpecificationViewModel>> GetbyId(long? id);
+        Task<List<E00T_SpecificationViewModel>> GetbyName(string text);
+        Task<bool> Create(E00T_SpecificationViewModel Data);
     }
 }

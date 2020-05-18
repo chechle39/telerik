@@ -1,0 +1,86 @@
+﻿@(Html.Kendo().Grid<DRLab.Data.ViewModels.E08T_Testing_DataViewModel>
+    ()
+    .Name("Testing_Data")
+    .Columns(columns =>
+    {
+    columns.Bound(p => p.iD);
+    columns.Bound(p => p.matrixID);
+    columns.Bound(p => p.specID);
+    columns.Bound(p => p.min);
+    columns.Bound(p => p.max);
+    columns.Bound(p => p.precision);
+    columns.Bound(p => p.LOD);
+    columns.Command(command => command.Destroy()).Width(120);
+    })
+    .ToolBar(toolbar =>
+    {
+    toolbar.Create();
+    toolbar.Save();
+    })
+    .Editable(editable => editable.Mode(GridEditMode.InCell))
+    .Pageable()
+    .Navigatable()
+    .Sortable()
+    .Groupable()
+    .Filterable()
+    .Scrollable()
+    .DataSource(dataSource => dataSource
+    .Ajax()
+    .Batch(true)
+    .PageSize(20)
+    .ServerOperation(false)
+    .Events(events => events.Error("error_handler"))
+    .Model(model =>
+    {
+    model.Id(p => p.iD);
+    model.Field(p => p.matrixID);
+    model.Field(p => p.specID);
+    model.Field(p => p.min);
+    model.Field(p => p.max);
+    model.Field(p => p.precision);
+    model.Field(p => p.LOD);
+
+    })
+    .Create(read => read.Action("TestingData_Create", "Testing_Data"))
+    .Read(read => read.Action("Read_Testing_Data", "Testing_Data"))
+    .Update(read => read.Action("TestingData_Update", "Testing_Data"))
+    .Destroy(read => read.Action("TestingData_Destroy", "Testing_Data"))
+    )
+    )
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+</script>
+<style>
+    .product-photo {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-size: 32px 35px;
+        background-position: center center;
+        vertical-align: middle;
+        line-height: 32px;
+        box-shadow: inset 0 0 1px #999, inset 0 0 10px rgba(0,0,0,.2);
+        margin-left: 5px;
+    }
+
+    .product-name {
+        display: inline-block;
+        vertical-align: middle;
+        line-height: 32px;
+        padding-left: 3px;
+    }
+</style>

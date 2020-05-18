@@ -10,5 +10,6 @@ namespace DRLab.Data.Interfaces
     {
         Task<List<E00T_CustomerViewModel>> GetCustomer(string text);
         Task<List<E00T_CustomerViewModel>> GetCustomerById(string id);
+     
     }
 }

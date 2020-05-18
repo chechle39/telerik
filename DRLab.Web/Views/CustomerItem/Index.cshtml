@@ -1,0 +1,140 @@
+﻿@model string
+
+
+<div class="container-fluid">
+</div>
+@(Html.Kendo().Window()
+    .Name(Model)
+    .Title("Customer Item")
+    .Content(
+
+    (Html.Kendo().Grid<DRLab.Data.ViewModels.E00T_Customer_ItemViewModel>()
+        .Name("Dialog")
+         .Columns(columns =>
+         {
+
+             columns.Bound(p => p.contactName);
+             columns.ForeignKey(p => p.customerCode, (System.Collections.IEnumerable)ViewData["categories"], "customerCode", "companyName").Title("Company Name");
+             columns.Bound(p => p.address);
+             columns.Bound(p => p.note);
+             columns.Bound(p => p.email);
+             columns.Command(command => command.Destroy()).Width(120);
+
+         })
+          //.ClientRowTemplate(
+          //    "<tr data-uid='#: uid #'>" +
+          //     "<td class='details'>" +
+          //         "<span class='title'>#: contactName #</span><br>" +
+          //         "<span class='description'>Name : #: email#</span><br>" +
+          //         "<span class='description'>Address : #: address# </span><br>" +
+          //     "</td>" +
+          //     "<td class='note'>" +
+          //         "#: note #" +
+          //     "</td>" +
+          //     "<td class='customerCode'>" +
+          //         "#: customerCode #" +
+          //     "</td>" +
+          //       "<td style='width:80px'>" +
+          //            "<a class='k-button k-button-icontext k-grid-delete'" +
+          //               "<span class='k-icon k-edit'></span>Edit</a>" +
+          //        "<span class='k-icon k-delete'></span>Delete</a>" +
+          //        "</td>" +
+          //     "</tr>"
+          // )
+
+          .ToolBar(toolbar =>
+          {
+
+              toolbar.Create();
+              toolbar.Save();
+          })
+        .Editable(editable => editable.Mode(GridEditMode.InCell))
+        .Pageable()
+        .Navigatable()
+        .Sortable()
+        .Scrollable()
+        .Filterable()     
+        .HtmlAttributes(new { style = "height:350px;" })
+        .DataSource(dataSource => dataSource
+        .Ajax()
+        .Batch(true)
+        .PageSize(20)
+        .ServerOperation(false)
+        .PageSize(20)
+
+        .Model(model =>
+        {
+        model.Id(p => p.contactID);
+        model.Field(p => p.contactName);
+        model.Field(p => p.customerCode);
+        model.Field(p => p.email);
+        model.Field(p => p.address);
+        model.Field(p => p.note);
+   
+
+})
+         .Create(read => read.Action("Create_Customer", "CustomerItem"))
+        .Read(read => read.Action("Read_Customer", "CustomerItem"))
+        .Update(read => read.Action("Update_Customer", "CustomerItem"))
+        .Destroy(read => read.Action("Destroy_Customer", "CustomerItem"))
+        )).ToHtmlString()
+            )
+            .Draggable()
+    .Resizable()
+    .Width(700)
+    .Visible(true)
+    .Actions(actions => actions.Pin().Minimize().Maximize().Close()
+    )
+)
+
+<script type="text/javascript">
+   
+
+</script>
+@section HeadContent {
+    <style>
+        .title {
+            display: block;
+            font-size: 1.6em;
+        }
+
+        .description {
+            display: block;
+            padding-top: 1.6em;
+        }
+
+        .employeeID, .country {
+            font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+            font-size: 50px;
+            font-weight: bold;
+            color: #898989;
+        }
+
+        td.photo, .employeeID {
+            text-align: center;
+        }
+
+        .k-grid-header .k-header {
+            padding: 10px 20px;
+        }
+
+        .k-grid td {
+            background: -moz-linear-gradient(top, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.15) 100%);
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.05)), color-stop(100%,rgba(0,0,0,0.15)));
+            background: -webkit-linear-gradient(top, rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.15) 100%);
+            background: -o-linear-gradient(top, rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.15) 100%);
+            background: -ms-linear-gradient(top, rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.15) 100%);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.15) 100%);
+            padding: 20px;
+        }
+
+        .k-grid .k-alt td {
+            background: -moz-linear-gradient(top, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 100%);
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.2)), color-stop(100%,rgba(0,0,0,0.1)));
+            background: -webkit-linear-gradient(top, rgba(0,0,0,0.2) 0%,rgba(0,0,0,0.1) 100%);
+            background: -o-linear-gradient(top, rgba(0,0,0,0.2) 0%,rgba(0,0,0,0.1) 100%);
+            background: -ms-linear-gradient(top, rgba(0,0,0,0.2) 0%,rgba(0,0,0,0.1) 100%);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%,rgba(0,0,0,0.1) 100%);
+        }
+    </style>
+}

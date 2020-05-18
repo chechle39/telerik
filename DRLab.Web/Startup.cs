@@ -18,6 +18,9 @@ using Microsoft.Extensions.Hosting;
 using System.Globalization;
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Options;
+using System.Linq;
+using System.Text;
 
 namespace DRLab.Web
 {
@@ -48,6 +51,7 @@ namespace DRLab.Web
             services.AddTransient<IE00T_SampleMatrixRepository, E00T_SampleMatrixRepository>();
             services.AddTransient<IE00T_CustomerRepository, E00T_CustomerRepository>();
             services.AddTransient<IE00T_Customer_ItemRepository, E00T_Customer_ItemRepository>();
+            services.AddTransient<IE00T_SpecificationRepository, E00T_SpecificationRepository>();
             services.AddTransient<IE08T_AnalysisRequest_InfoRepository, E08T_AnalysisRequest_InfoRepository>();
             services.AddTransient<IE00T_CustomerService, E00T_CustomerService>();
             services.AddTransient<IE00T_Customer_ItemService, E00T_Customer_ItemService>();
@@ -68,13 +72,22 @@ namespace DRLab.Web
             services.AddKendo();
 
             //l10n
+            var languages = Configuration.GetSection("Languages").Get<string[]>();
             services.AddControllersWithViews();
             services.AddJsonLocalization(options => {
                 options.ResourcesPath = "I18N";
                 options.CacheDuration = TimeSpan.FromSeconds(1);
-                options.SupportedCultureInfos = new HashSet<CultureInfo> { new CultureInfo("en-US"), new CultureInfo("fr-FR"), };
+                options.FileEncoding = Encoding.GetEncoding("utf-8");
+                options.SupportedCultureInfos =  languages.Select(language => new CultureInfo(language)).ToHashSet<CultureInfo>();
             });
-            
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = languages.Select(language => new CultureInfo(language)).ToList();
+                options.DefaultRequestCulture = new RequestCulture(culture: languages[0], uiCulture: languages[0]);
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
+
             services.AddMvc()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
@@ -83,6 +96,10 @@ namespace DRLab.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            var locOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
+            app.UseRequestLocalization(locOptions.Value);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -95,19 +112,6 @@ namespace DRLab.Web
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            var supportedCultures = new[] {
-                new CultureInfo("en-US"),
-                new CultureInfo("fr-FR"),
-            };
-
-            app.UseRequestLocalization(new RequestLocalizationOptions
-            {
-                DefaultRequestCulture = new RequestCulture("en-US"),
-                // Formatting numbers, dates, etc.
-                SupportedCultures = supportedCultures,
-                // UI strings that we have localized.
-                SupportedUICultures = supportedCultures
-            });
 
             app.UseRouting();
 

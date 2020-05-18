@@ -1,0 +1,87 @@
+﻿@(Html.Kendo().Grid<DRLab.Data.ViewModels.E00T_CustomerViewModel>
+    ()
+    .Name("CustomerList")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.customerCode).Title(("Customer Code"));
+        columns.Bound(p => p.companyName).Title(("Company Name"));
+        columns.Bound(p => p.companyAddress).Title(("Company Address"));
+        columns.Bound(p => p.contactName).Title(("Contact Name"));
+        columns.Bound(p => p.contactEmail).Title(("Contact Email"));
+        columns.Bound(p => p.city).Title(("City"));
+        columns.Bound(p => p.note).Title(("Note"));
+        columns.Command(command => command.Destroy()).Width(120);
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Create();
+        toolbar.Save();
+        toolbar.Custom().Text("Create Item").HtmlAttributes(new { onclick = "customCom()" });
+    })
+    .Editable(editable => editable.Mode(GridEditMode.InCell))
+    .Pageable()
+    .Navigatable()
+    .Sortable()
+    .Filterable()
+    .Scrollable()
+    .DataSource(dataSource => dataSource
+    .Ajax()
+    .Batch(true)
+    .PageSize(20)
+    .ServerOperation(false)
+    .Model(model =>
+    {
+        model.Id(p => p.customerCode);
+        model.Id(p => p.companyName);
+        model.Id(p => p.companyAddress);
+        model.Id(p => p.contactName);
+        model.Id(p => p.contactEmail);
+        model.Id(p => p.city);
+        model.Id(p => p.note);
+
+    })
+    .Create(read => read.Action("Create_Customer", "CustomerList"))
+    .Read(read => read.Action("Read_Customer", "CustomerList"))
+    .Update(read => read.Action("Update_Customer", "CustomerList"))
+    .Destroy(read => read.Action("Destroy_Customer", "CustomerList"))
+    )
+    )
+
+@await Html.PartialAsync("../CustomerItem/Index", "CustomerItem")
+
+
+<script type="text/javascript">
+    function customCom(e) {
+        console.log($("#CustomerItem"));
+        $("#CustomerItem").data("kendoWindow").center();
+        $("#CustomerItem").data("kendoWindow").open();
+     
+        }
+    </script>
+
+
+<style>
+    .product-photo {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-size: 32px 35px;
+        background-position: center center;
+        vertical-align: middle;
+        line-height: 32px;
+        box-shadow: inset 0 0 1px #999, inset 0 0 10px rgba(0,0,0,.2);
+        margin-left: 5px;
+    }
+
+    .product-name {
+        display: inline-block;
+        vertical-align: middle;
+        line-height: 32px;
+        padding-left: 3px;
+    }
+
+    .k-window {
+        display: none;
+    }
+</style>
