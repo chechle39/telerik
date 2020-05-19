@@ -1,11 +1,8 @@
 var customerController = function () {
     var self = this;
     this.initialize = function () {
-        initForm().done(function (result) {
-            // Call the alert here..
-            alert('xxx');
-        });
-      ;
+        initForm();
+       
     }
     var sampleListCount;
 
@@ -20,15 +17,16 @@ var customerController = function () {
 
     function initForm() {
         var requestNo = "RequestNo";
-        return $.ajax({
+         $.ajax({
             type: "GET",
             url: "/GetCounter/GetCounterString",
             data: { request: requestNo },
           //  dataType: "text",
             async: false,
             success: function (response) {
-                console.log(response);
                 $('#requestNo').val(response);
+                $('#simpleCode').val("lalala");
+                $('#innerCode').val("lalala1");
             },
             error: function () {
 

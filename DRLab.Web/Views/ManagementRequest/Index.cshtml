@@ -331,6 +331,11 @@
                 var dataSource = new kendo.data.DataSource({
                     data: response,
                     pageSize: 20,
+                    schema: {
+                        model: {
+                            id: "requestNo"
+                        }
+                    }
                 });
                 grid.setDataSource(dataSource);
                 var dateTemplate = $('#date-templateData').html();
