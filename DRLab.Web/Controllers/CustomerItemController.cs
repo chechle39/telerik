@@ -15,7 +15,7 @@ namespace DRLab.Web.Areas.API.Controllers
 {
    
 
-    public class CustomerItemController : Controller
+    public class CustomerItemController : BaseController
     {
         private readonly ILogger<CustomerListController> _logger;
         private readonly IE00T_Customer_ItemService _customer_ItemService;

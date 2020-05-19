@@ -7,7 +7,7 @@ namespace DRLab.Data.ViewModels
 {
     public class E00T_CustomerViewModel
     {
-       
+        [Required]
         [Display(Name = "Customer Code")]
         public string customerCode { get; set; }
         [Required]

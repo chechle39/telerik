@@ -8,21 +8,26 @@ using System.Threading.Tasks;
 
 namespace DRLab.Web.Controllers
 {
-    public class CustomerRequestController : Controller
+    public class CustomerRequestController : BaseController
     {
         private readonly IE00T_CustomerService _e00T_CustomerService;
         private readonly IE00T_Customer_ItemService _e00T_Customer_ItemService;
         private readonly IE08T_AnalysisRequest_InfoService _e08T_AnalysisRequest_InfoService;
+        private readonly ISpecificationService _specificationDataService;
+
         public CustomerRequestController(IE00T_CustomerService e00T_CustomerService, 
             IE00T_Customer_ItemService e00T_Customer_ItemService, 
-            IE08T_AnalysisRequest_InfoService e08T_AnalysisRequest_InfoService)
+            IE08T_AnalysisRequest_InfoService e08T_AnalysisRequest_InfoService, ISpecificationService specificationDataService)
         {
             _e00T_CustomerService = e00T_CustomerService;
             _e00T_Customer_ItemService = e00T_Customer_ItemService;
             _e08T_AnalysisRequest_InfoService = e08T_AnalysisRequest_InfoService;
+            _specificationDataService = specificationDataService;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var result = await _specificationDataService.GetAll();
+            ViewData["categories"] = result.ToList();
             return View();
         }
         [HttpPost]
@@ -37,7 +42,7 @@ namespace DRLab.Web.Controllers
             return new OkObjectResult(request);
         }
         [HttpPost]
-        public async Task<IActionResult> SaveEntity(E08T_AnalysisRequest_InfoViewModel req)
+        public async Task<IActionResult> SaveEntity([FromBody]E08T_AnalysisRequest_InfoViewModel req)
         {
             if (!ModelState.IsValid)
             {

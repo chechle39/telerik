@@ -4,5 +4,17 @@
       "en-US": "Hello!",
       "vi-VN": "Xin chào"
     }
+  },
+  "TotalRequest": {
+    "Values": {
+      "en-US": "Total Request",
+      "vi-VN": "Tổng số yêu cầu"
+    }
+  },
+  "RequestInProgress": {
+    "Values": {
+      "en-US": "Request in progress",
+      "vi-VN": "Yêu cầu đang thực hiện"
+    }
   }
 }

@@ -10,7 +10,11 @@ var ManagementRequestController = function () {
 
     function loadData() {
         var date = paramDate();
-        var dataCus = $("#multiselect").data("kendoMultiSelect")._old;
+        var dataCus = [];
+        if ($("#multiselect").data("kendoMultiSelect") !== undefined) {
+             dataCus = $("#multiselect").data("kendoMultiSelect")._old;
+        }
+        
         $.ajax({
             type: "GET",
             url: "/ManagementRequest/GetManagementRequestList",
@@ -23,16 +27,25 @@ var ManagementRequestController = function () {
             beforeSend: function () {
             },
             success: function (response) {
-                console.log(response);
                 var grid = $("#Grid").data("kendoGrid");
                 var dataSource = new kendo.data.DataSource({
                     data: response,
                     pageSize: 20,
+                    schema: {
+                        model: {
+                            id: "requestNo"
+                        }
+                    }
                 });
                 grid.setDataSource(dataSource);
+                var dateTemplate = $('#date-templateData').html();
+                var renderDateTem = "";
+                renderDateTem += Mustache.render(dateTemplate, {
+                    day: date.startDate + '-' + date.endDate
+                });
+                $('#dayTem').html(renderDateTem);
             },
             error: function (status) {
-                console.log(status);
             }
         });
     };
@@ -61,10 +74,11 @@ var ManagementRequestController = function () {
         closable: false,
         modal: false,
         content: "",
+        visible: false,
         actions: [
             { text: 'Cancel' },
             {
-                text: 'Save', primary: true,
+                text: 'Search', primary: true,
                 action: okSearch,
                 //action: function (e) {
 
@@ -113,8 +127,19 @@ var ManagementRequestController = function () {
                 var dataSource = new kendo.data.DataSource({
                     data: response,
                     pageSize: 20,
+                    schema: {
+                        model: {
+                            id: "requestNo"
+                        }
+                    }
                 });
                 grid.setDataSource(dataSource);
+                var dateTemplate = $('#date-templateData').html();
+                var renderDateTem = "";
+                renderDateTem += Mustache.render(dateTemplate, {
+                    day: start + '-' + end
+                });
+                $('#dayTem').html(renderDateTem);
             },
             error: function (status) {
             }

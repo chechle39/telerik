@@ -1,0 +1,53 @@
+﻿@(Html.Kendo().Grid<DRLab.Data.ViewModels.E00T_SpecificationViewModel>()
+    .Name("Specification")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.specID).Hidden();
+        columns.Bound(p => p.specification).Hidden().Width(100);
+        columns.Command(command => command.Edit().UpdateText("Insert")).Hidden();
+
+
+    })
+    .ToolBar(toolbar => toolbar.Create().Text("Add"))
+    .Editable(editable => editable.Mode(GridEditMode.PopUp).Window(w => w.Title("New Specification")))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Events(events => events.Error("error_handler"))
+        .Model(model => model.Id(p => p.specID))
+        .Model(model => model.Field(p => p.specification))
+        .Create(create => create.Action("Specification_Create", "Specification"))
+        .Read(read => read.Action("Specification_Read", "Specification"))
+
+    )
+)
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+</script>
+<style>
+    .k-header.k-grid-toolbar {
+        border: 0;
+        background: none;
+    }
+
+    .k-grid-toolbar {
+        width: 63px;
+        border: 0;
+        background: none;
+    }
+
+    .k-grid.k-widget.k-grid-display-block.k-editable {
+        border: 0;
+    }      
+</style>

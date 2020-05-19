@@ -17,10 +17,12 @@ namespace DRLab.Data.Repositories
     {
         private readonly IE00T_CustomerRepository _e00T_CustomerRepository;
         public readonly IE00T_Customer_ItemRepository _e00T_Customer_ItemRepository;
-        public E08T_AnalysisRequest_InfoRepository(DbContext context, IE00T_CustomerRepository e00T_CustomerRepository, IE00T_Customer_ItemRepository e00T_Customer_ItemRepository) : base(context)
+        private readonly IE08T_AnalysisRequest_DataRepository _e08T_AnalysisRequest_DataRepository;
+        public E08T_AnalysisRequest_InfoRepository(DbContext context, IE00T_CustomerRepository e00T_CustomerRepository, IE00T_Customer_ItemRepository e00T_Customer_ItemRepository, IE08T_AnalysisRequest_DataRepository e08T_AnalysisRequest_DataRepository) : base(context)
         {
             _e00T_CustomerRepository = e00T_CustomerRepository;
             _e00T_Customer_ItemRepository = e00T_Customer_ItemRepository;
+            _e08T_AnalysisRequest_DataRepository = e08T_AnalysisRequest_DataRepository;
         }
 
         public async Task<List<GridManagementViewModel>> GetRequestInfoGrid(SerchGridManagement request)
@@ -55,9 +57,10 @@ namespace DRLab.Data.Repositories
 
                 listGridManagementViewModel = listGridManagementViewModel.Where(x => x.receivceDate <= end).ToList();
             }
-            if (request.Customer != null)
+            var rq = JsonConvert.DeserializeObject<string[]>(request.Customer[0]);
+            if (rq.Count() > 0)
             {
-                var rq = JsonConvert.DeserializeObject<string[]>(request.Customer[0]);
+                
                 listGridManagementViewModel = listGridManagementViewModel.Where(t => rq.Contains(t.customerCode)).ToList();
             }
             return listGridManagementViewModel;
@@ -76,6 +79,20 @@ namespace DRLab.Data.Repositories
             var saveAnalysisRequestInforequest = Mapper.Map<E08T_AnalysisRequest_InfoViewModel, E08T_AnalysisRequest_Info>(SaveAnalysisRequestInforequest);
 
             Entities.Update(saveAnalysisRequestInforequest);
+            return await Task.FromResult(true);
+        }
+
+        public async Task<bool> DeleteAnalysisRequestInfo(string[] requestNo)
+        {
+            foreach (var item in requestNo)
+            {
+                var objDelete = await Entities.Where(x => x.requestNo == item).ToListAsync();
+                if (objDelete.Count() > 0)
+                {
+                    Entities.Remove(objDelete[0]);
+                }
+            }
+            await _e08T_AnalysisRequest_DataRepository.DeleteAnalysisRequestData(requestNo);
             return await Task.FromResult(true);
         }
     }

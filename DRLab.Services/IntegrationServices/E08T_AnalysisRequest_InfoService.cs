@@ -17,6 +17,13 @@ namespace DRLab.Services.IntegrationServices
             _uow = uow;
         }
 
+        public async Task<bool> DeleteAnalysisRequestInfo(string[] requestNo)
+        {
+            var delete = await _e08T_AnalysisRequest_InfoRepository.DeleteAnalysisRequestInfo(requestNo);
+            _uow.SaveChanges();
+            return delete;
+        }
+
         public async Task<List<GridManagementViewModel>> GetRequestInfoGrid(SerchGridManagement request)
         {
             return await _e08T_AnalysisRequest_InfoRepository.GetRequestInfoGrid(request);

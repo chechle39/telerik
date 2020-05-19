@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Builder
+﻿@*@using Microsoft.AspNetCore.Builder
 @using Microsoft.AspNetCore.Http.Features
 @using Microsoft.AspNetCore.Localization
 @using Microsoft.AspNetCore.Mvc.Localization
@@ -13,7 +13,7 @@
         .Select(c => new SelectListItem { Value = c.Name, Text = c.DisplayName })
         .ToList();
     var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}";
-}
+}*@
 
 <!-- Navbar -->
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -46,7 +46,7 @@
     <ul class="navbar-nav ml-auto">
 
         <!-- Translate button -->
-        <div title="@Localizer["Request culture provider:"] @requestCulture?.Provider?.GetType().Name">
+        @*<div title="@Localizer["Request culture provider:"] @requestCulture?.Provider?.GetType().Name">
             <form id="selectLanguage" asp-controller="Language"
                   asp-action="SetLanguage" asp-route-returnUrl="@returnUrl"
                   method="post" class="form-horizontal" role="form">
@@ -63,7 +63,7 @@
               .Value(requestCulture.RequestCulture.UICulture.Name)
               )
             </form>
-        </div>
+        </div>*@
         <!-- Messages Dropdown Menu -->
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">

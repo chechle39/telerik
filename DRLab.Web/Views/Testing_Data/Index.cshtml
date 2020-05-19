@@ -1,4 +1,12 @@
-﻿@(Html.Kendo().Grid<DRLab.Data.ViewModels.E08T_Testing_DataViewModel>
+﻿@(Html.Kendo().Window()
+    .Name("PopupForm")
+    .Title("My Form")
+    .LoadContentFrom("GetForm","Home")
+    .Iframe(true)
+    .Resizable()
+    .Draggable()
+)
+@(Html.Kendo().Grid<DRLab.Data.ViewModels.E08T_Testing_DataViewModel>
     ()
     .Name("Testing_Data")
     .Columns(columns =>
@@ -46,6 +54,7 @@
     .Update(read => read.Action("TestingData_Update", "Testing_Data"))
     .Destroy(read => read.Action("TestingData_Destroy", "Testing_Data"))
     )
+
     )
 
 <script type="text/javascript">

@@ -11,14 +11,14 @@
     -ms-flex-pack: justify;
     justify-content: space-between;
 }
-    .home__chart-container::after {
+    /*.home__chart-container::after {
         content: '';
         display: block;
     }
     .home__chart-container::before {
         content: '';
         display: block;
-    }
+    }*/
 
 .home__chart__inner {
     position: absolute;

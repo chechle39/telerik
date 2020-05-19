@@ -1,7 +1,19 @@
 ﻿
+@{
+    ViewData["Title"] = "Index";
+}
+@(Html.Kendo().Notification()
+    .Name("notification")
+    .Position(p => p.Pinned(true).Top(30).Right(30))
+    .Stacking(NotificationStackingSettings.Down)
+    .Templates(t =>
+    {
+        t.Add().Type("success").ClientTemplateID("successTemplate");
+    })
+)
 @using Kendo.Mvc
 @section Scripts{
-    <script src="~/app/ManagementRequest/index.js" asp-append-version="true"></script>
+    <script src="~/app/ManagementRequest/ManagementRequest.js" asp-append-version="true"></script>
     <script>
         var rq = new ManagementRequestController();
         rq.initialize();
@@ -16,20 +28,19 @@
                     <div class="col-md-12">
                         <!-- general form elements -->
                         <div class="card">
-                            <form id="ticketsForm" class="k-form k-form-vertical" kendo-validator="true">
+                            <div id="ticketsForm" class="k-form k-form-vertical" kendo-validator="true">
                                 <div class="card-header row" style="margin-left: 0px;">
 
                                     <div class="col-4">
-                                        <h3 class="card-title" style="font-size: 25px">Request Management <h6 class="fas fa-search"></h6> </h3>
-
-                                       
+                                        <h3 class="card-title" style="font-size: 25px">Request Management </h3><h6 onclick=onClicSearch() id="btnsearch" style="margin-left: 12px;margin-top: 10px;cursor: pointer;" class="fas fa-search"></h6>
+                                        <div id="dayTem"></div>
                                     </div>
                                     <div class="col-3">
                                         @(Html.Kendo().DropDownList()
                                         .Name("color")
                                         .DataTextField("Text")
                                         .DataValueField("Value")
-                                        .Events(e => e.Change("change"))
+                                        .Events(e => e.Change("change").Select("onSelectAction"))
                                         .BindTo(new List<SelectListItem>() {
                                         new SelectListItem() {
                                             Text = "Bulk Actions",
@@ -62,7 +73,7 @@
                                     </div>
                                     <div class="col-5">
                                         <div style="float:right">
-                                            <button onclick="SaveEntity()" type="submit" class="btn btn-raised">Refresh</button>
+                                            <button onclick="refresh()" class="btn btn-raised">Refresh</button>
                                         </div>
 
                                     </div>
@@ -76,7 +87,7 @@
                                         .HtmlAttributes(new { style = "height:auto;" })
                                         .Columns(columns =>
                                         {
-                                            columns.Select().Width(75).HtmlAttributes(new { @class = "checkbox-align" }).HeaderHtmlAttributes(new { @class = "checkbox-align" });
+                                           columns.Select().Width(50);
                                             columns.Bound(p => p.requestNo).Title("Request No#");
                                             columns.Bound(p => p.receivceDate).Title("Receive Date").Format("{0:MM/dd/yyyy}");
                                             columns.Bound(p => p.companyName).Title("Customer Name");
@@ -84,25 +95,27 @@
                                             columns.Bound(p => p.dateOfSendingResult).Format("{0:MM/dd/yyyy}").Title("Expected Date");
                                             columns.Bound(p => p.status).Title("Request Status");
                                             columns.Command(command =>
-                  {
-                      command.Edit()
-                          .Text(" ")
-                          .HtmlAttributes(new {style = "width:40%"});
-                      command.Custom("Destroy")
-                          .IconClass("k-icon k-i-close")
-                          .Click("showDeleteConfirmation")
-                          .Text(" ")
-                          .HtmlAttributes(new {style = "width:40%"});
-                  }).Width("15%");
+                                            {
+                                                command.Custom("Edit")
+                                                 .IconClass("k-icon k-i-edit")
+                                                  .Click("showEdit")
+                                                    .Text(" ")
+                                                    .HtmlAttributes(new { style = "width:43%" });
+                                                command.Custom("Destroy")
+                                                    .IconClass("k-icon k-i-close")
+                                                    .Click("showDeleteConfirmation")
+                                                    .Text(" ")
+                                                    .HtmlAttributes(new { style = "width:43%" });
+                                            }).Width("9%");
                                         })
-                                        .Editable(e => e.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+                                         .Events(ev => ev.Change("onChangex"))
+                                       
                                         .Pageable()
                                         .Sortable()
                                         .Scrollable()
                                         .DataSource(dataSource => dataSource
                                         .Custom()
                                         .PageSize(20)
-                                       
                                         .Batch(true)
                                         .Schema(schema =>
                                         {
@@ -118,13 +131,12 @@
                                             })
                                             .Data(d => "schemaData")
                                             .Total(t => "schemaTotal");
-                                        })).Events(e => e.DataBound("onDataBound")))
-
+                                        })))
                                 </div>
                                 <!-- /.card-body -->
 
 
-                            </form>
+                            </div>
 
                         </div>
                     </div>
@@ -139,10 +151,207 @@
 
 @Html.Partial("search.cshtml")
 
+<script type="text/javascript">
+    var data = [];
+    function refresh() {
+        reLoadData();
+    }
+    $("#dialog").data("kendoDialog").close();
+    function showDeleteConfirmation(e) {
+        var deleteRequest = [];
 
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        deleteRequest.push(dataItem.requestNo);
+        var kendoWindow = $("<div />").kendoWindow({
+            title: "Confirm",
+            resizable: false,
+            modal: true
+        });
+
+        kendoWindow.data("kendoWindow")
+            .content($("#delete-confirmation").html())
+            .center().open();
+
+        kendoWindow
+            .find(".delete-confirm,.delete-cancel")
+            .click(function () {
+                if ($(this).hasClass("delete-confirm")) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/ManagementRequest/DeletedAnalysisRequestInfo",
+                        data: JSON.stringify(deleteRequest),
+                        dataType: "json",
+                        contentType: "application/json",
+                        success: function () {
+                            var notification = $("#notification").data("kendoNotification");
+                            notification.show({
+                                message: "Delete Successful"
+                            }, "success");
+                            reLoadData();
+                        },
+                        error: function () {
+
+                        }
+                    });
+                }
+
+                kendoWindow.data("kendoWindow").close();
+            })
+            .end()
+
+
+    }
+    var deleteAray = [];
+    function onChangex(arg) {
+        deleteAray = this.selectedKeyNames();
+        //console.log("The selected product ids are: [" + this.selectedKeyNames().join(", ") + "]");
+    }
+
+    function showEdit() {
+
+    }
+    function schemaData() {
+
+        return data;
+    }
+    function schemaTotal(response) {
+        return data.length;
+    }
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+
+    function onDataBound(e) {
+        var grid = this;
+        grid.table.find("tr").each(function () {
+            var dataItem = grid.dataItem(this);
+            var type = dataItem.Discontinued ? 'success' : 'error';
+            var text = dataItem.Discontinued ? 'available' : 'not available';
+
+            $(this).find('script').each(function () {
+                eval($(this).html());
+            });
+
+            $(this).find(".badgeTemplate").kendoBadge({
+                type: type,
+                value: text,
+            });
+
+
+            kendo.bind($(this), dataItem);
+        });
+    }
+
+    function returnFalse() {
+        return false;
+    }
+
+    function change(e) {
+    };
+    function onSelectAction(e) {
+        var dataItem = this.dataItem(e.item);
+        if (dataItem.Value === "5") {
+            var deleteRequest = [];
+
+            e.preventDefault();
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+            deleteRequest = deleteAray;
+            var kendoWindow = $("<div />").kendoWindow({
+                title: "Confirm",
+                resizable: false,
+                modal: true
+            });
+
+            kendoWindow.data("kendoWindow")
+                .content($("#delete-confirmation").html())
+                .center().open();
+
+            kendoWindow
+                .find(".delete-confirm,.delete-cancel")
+                .click(function () {
+                    if ($(this).hasClass("delete-confirm")) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/ManagementRequest/DeletedAnalysisRequestInfo",
+                            data: JSON.stringify(deleteRequest),
+                            dataType: "json",
+                            contentType: "application/json",
+                            success: function () {
+                                var notification = $("#notification").data("kendoNotification");
+                                notification.show({
+                                    message: "Delete Successful"
+                                }, "success");
+                                reLoadData();
+                            },
+                            error: function () {
+
+                            }
+                        });
+                    }
+
+                    kendoWindow.data("kendoWindow").close();
+                })
+                .end()
+        }
+    }
+    function onClicSearch() {
+        var dialog = $('#dialog');
+        dialog.data("kendoDialog").open();
+    }
+    function reLoadData() {
+        var dataCus = [];
+        var date = document.getElementById("dayData").innerHTML;
+        if ($("#multiselect").data("kendoMultiSelect") !== undefined) {
+            dataCus = $("#multiselect").data("kendoMultiSelect")._old;
+        }
+        $.ajax({
+            type: "GET",
+            url: "/ManagementRequest/GetManagementRequestList",
+            data: {
+                startDate: date.split('-')[0],
+                endDate: date.split('-')[1],
+                customer: JSON.stringify(dataCus)
+            },
+            dataType: "json",
+            beforeSend: function () {
+            },
+            success: function (response) {
+                var grid = $("#Grid").data("kendoGrid");
+                var dataSource = new kendo.data.DataSource({
+                    data: response,
+                    pageSize: 20,
+                });
+                grid.setDataSource(dataSource);
+                var dateTemplate = $('#date-templateData').html();
+                var renderDateTem = "";
+                renderDateTem += Mustache.render(dateTemplate, {
+                    day: date.split('-')[0] + '-' + date.split('-')[1]
+                });
+                $('#dayTem').html(renderDateTem);
+            },
+            error: function (status) {
+            }
+        });
+    };
+</script>
 
 
 <style>
+    .k-window-title k-dialog-title::before {
+        content: 'Confirmation' !important;
+    }
+
     .k-grid tr .checkbox-align {
         text-align: center;
         vertical-align: middle;
@@ -161,66 +370,91 @@
         color: #fff !important;
         border-color: #92d050;
     }
+
+    .k-grid tbody .k-button {
+        min-width: 0px !important;
+        height: 20px;
+    }
+
+    div.k-window {
+        min-width: 15% !important;
+    }
+    .k-notification h3 {
+        padding: 30px 10px 5px;
+        font-size: 1em;
+        line-height: normal;
+    }
+
+    .k-notification img {
+        margin: 20px;
+        float: left;
+    }
+
+
+    /* Info template */
+    .new-mail {
+        width: 300px;
+        height: 100px;
+    }
+
+    /* Error template */
+    .wrong-pass {
+        width: 300px;
+        height: 100px;
+    }
+
+    /* Success template */
+    .upload-success {
+        width: 300px;
+        height: 50px;
+    }
+
+
+    /* For Bootstrap v4 theme */
+    .k-bootstrap-v4 .k-notification h3 {
+        padding: 10px 10px 5px;
+    }
+
+    .k-bootstrap-v4 .k-notification img {
+        margin: 10px 20px 0 0;
+    }
+
+    .k-bootstrap-v4 .new-mail,
+    .k-bootstrap-v4 .wrong-pass,
+    .k-bootstrap-v4 .upload-success {
+        width: calc( 300px - 2.5rem );
+        height: calc( 100px - 1.5rem );
+    }
+
+
+    /* For Material v2 theme */
+    .k-material-v2 .k-notification h3 {
+        padding: 10px 10px 5px;
+    }
+
+    .k-material-v2 .k-notification img {
+        margin: 10px 20px 0 0;
+    }
+
+    .k-material-v2 .new-mail,
+    .k-material-v2 .wrong-pass,
+    .k-material-v2 .upload-success {
+        width: 270px;
+        height: 70px;
+    }
 </style>
-<script type="text/javascript">
-    var data = [];
-    function schemaData() {
+<script id="date-templateData" type="x-tmpl-mustache">
+    <h6 id="dayData">{{day}}</h6>
+</script>
+<script id="delete-confirmation" type="text/x-kendo-template">
+    <p class="delete-message">Are you sure?</p>
 
-        return data;
-    }
-    function schemaTotal(response) {
-        return data.length;
-    }
-    function showDeleteConfirmation () {
-    }
-    function error_handler(e) {
-        if (e.errors) {
-            var message = "Errors:\n";
-            $.each(e.errors, function (key, value) {
-                if ('errors' in value) {
-                    $.each(value.errors, function () {
-                        message += this + "\n";
-                    });
-                }
-            });
-            alert(message);
-        }
-    }
-
-    function onDataBound(e) {
-        console.log(e);
-        var grid = this;
-        grid.table.find("tr").each(function () {
-            var dataItem = grid.dataItem(this);
-            var type = dataItem.Discontinued ? 'success' : 'error';
-            var text = dataItem.Discontinued ? 'available' : 'not available';
-            console.log(dataItem.isDeletable);
-            $(this).find('script').each(function () {
-                eval($(this).html());
-            });
-
-            $(this).find(".badgeTemplate").kendoBadge({
-                type: type,
-                value: text,
-            });
-
-
-            kendo.bind($(this), dataItem);
-        });
-        $("#Grid tbody tr .k-grid-delete").each(function () {
-            var currentDataItem = $("#Grid").data("kendoGrid").dataItem($(this).closest("tr"));
-
-            //Check in the current dataItem if the row is deletable
-            if (currentDataItem.isDeletable == true) {
-                console.log(currentDataItem.isDeletable);
-                $(this).remove();
-            }
-        });
-    }
-
-
-
-    function change() {
-
-    };
+    <button class="delete-confirm k-button">Yes</button>
+    <a href="#" class="delete-cancel">No</a>
+</script>
+<script id="successTemplate" type="text/x-kendo-template">
+    <div class="upload-success">
+        <img src="@Url.Content("~/Shared/success-icon.png")" />
+        <h3>#= message #</h3>
+    </div>
 </script>

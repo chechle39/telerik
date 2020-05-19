@@ -206,9 +206,9 @@
                                                     .ServerFiltering(true);
                                                 })
                                                 )
-                                               <span style="margin-top: -2px;">
+                                               @*<span style="margin-top: -2px;">
                                                 @await Html.PartialAsync("../Testing_Info/PartialViewAddTestInfo")
-                                               </span>
+                                               </span>*@
                                             </div>
                                            
                                         </div>
@@ -601,7 +601,7 @@
             }
         }
         if (string1.length > 0) {
-            var mess = 'Save error samplematrix of sample lisst' + string.substring(0, x.length - 1);
+            var mess = 'Save error samplematrix of sample lisst' + string.substring(0, string.length - 1);
             var notification = $("#notification").data("kendoNotification");
             notification.show({
                 title: "Wrong Save",

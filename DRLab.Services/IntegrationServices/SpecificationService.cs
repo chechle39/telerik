@@ -27,7 +27,11 @@ namespace DRLab.Services.IntegrationServices
             _test = _uow.GetRepository<IRepository<E00T_Specification>>();
         }
 
-
+        public async Task<IEnumerable<E00T_SpecificationViewModel>> GetAll_IEnumerable()
+        {
+            var test = _test.GetAll().ProjectTo<E00T_SpecificationViewModel>().AsEnumerable();
+            return await Task.FromResult(test);
+        }
 
         public async Task<List<E00T_SpecificationViewModel>> GetAll()
         {

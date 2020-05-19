@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DRLab.Web.Controllers
 {
-    public class CustomerListController : Controller
+    public class CustomerListController : BaseController
     {
         private readonly ILogger<CustomerListController> _logger;
         private readonly IE00T_CustomerService _customerService;
@@ -80,8 +80,16 @@ namespace DRLab.Web.Controllers
 
             return Json(data_info.ToDataSourceResult(request, ModelState));
         }
-       
-      
+
+        public async Task<ActionResult> Create_CustomerRequest([DataSourceRequest] DataSourceRequest request, E00T_CustomerViewModel customer_request)
+        {
+           
+            if (customer_request != null && ModelState.IsValid){
+             
+                        await _customerService.Create(customer_request);                                      
+            }        
+            return Json((await _customerService.GetListCustomer()).ToDataSourceResult(request, ModelState));
+        }
 
     }
 }

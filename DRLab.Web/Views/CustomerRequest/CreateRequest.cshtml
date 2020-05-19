@@ -28,17 +28,21 @@
                 </div>
                 <div class="form-group">
                     <div class="row">
-                        <label class="col-sm-4 custom-font-weight control-label no-padding-right">Customer</label>
-                        <div class="col-sm-7 cus">
-                            @(Html.Kendo().ComboBox()
+                        <div class="col-sm-4">
+                            <label class="custom-font-weight control-label no-padding-right">Customer</label>
+
+                        </div>
+                        <div class="col-sm-7 row">
+                            <div class="col-9 cus">
+                                @(Html.Kendo().ComboBox()
                                 .Name("customers")
                                 .Placeholder("Select customer")
                                 .DataTextField("companyName")
                                 .DataValueField("customerCode")
-                                .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
+                                .HtmlAttributes(new { style = "width: 108%;height: 90%;" })
                                 .Events(e =>
                                 {
-                                    e.Change("onChange").Select("onSelect");
+                                    e.Change("onChangecustomer").Select("onSelectcustomer");
                                 })
                                 .DataSource(source =>
                                 {
@@ -57,7 +61,15 @@
                             )
 
 
+                            </div>
+                            <div class="col-1 spanSty">
+                                <span style="margin-top: -2px;">
+                                    @await Html.PartialAsync("../CustomerList/PartialViewAddCustomer")
+                                </span>
+                            </div>
                         </div>
+                        
+                        
                     </div>
 
                 </div>
@@ -192,9 +204,9 @@
 <script>
     var selected;
     var itemSelected;
-    function onChange() {
+    function onChangecustomer() {
     }
-    function onSelect(e) {
+    function onSelectcustomer(e) {
         var dataItem = this.dataItem(e.item.index());
         selected = dataItem.customerCode;
         itemSelected = dataItem;
@@ -230,5 +242,10 @@
 
     .form-group {
         margin-bottom: 0 !important
+    }
+    .spanSty {
+        margin-top: -5px;
+        margin-left: 1px;
+        height: 10px;
     }
 </style>

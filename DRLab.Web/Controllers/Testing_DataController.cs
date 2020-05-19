@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DRLab.Web.Controllers
 {
-    public class Testing_DataController : Controller
+    public class Testing_DataController : BaseController
     {
         private readonly ILogger<Testing_DataController> _logger;
         private readonly ITesting_DataService _testDataService;

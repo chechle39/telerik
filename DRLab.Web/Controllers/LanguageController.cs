@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DRLab.Web.Controllers
 {
-    public class LanguageController : Controller
+    public class LanguageController : BaseController
     {
         [HttpPost]
         public IActionResult SetLanguage(string culture, string returnUrl)

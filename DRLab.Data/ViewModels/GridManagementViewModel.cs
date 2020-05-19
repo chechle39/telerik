@@ -28,8 +28,4 @@ namespace DRLab.Data.ViewModels
         public string EndDate { get; set; }
         public string[] Customer { get; set; }
     }
-    public class userCode
-    {
-        public string customerCode { get; set; }
-    }
 }

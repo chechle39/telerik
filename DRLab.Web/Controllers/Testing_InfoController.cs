@@ -14,21 +14,24 @@ using Microsoft.Extensions.Logging;
 
 namespace DRLab.Web.Controllers
 {
-    public class Testing_InfoController : Controller
+    public class Testing_InfoController : BaseController
     {
         private readonly ILogger<Testing_InfoController> _logger;
         private readonly ITesting_InfoService _testDataService;
         private readonly ISpecificationService _specificationDataService;
-        public Testing_InfoController(ILogger<Testing_InfoController> logger, ITesting_InfoService testDataService, ISpecificationService specificationDataService)
-        {
+        private readonly IE00T_CustomerService _customerService;
+        public Testing_InfoController(ILogger<Testing_InfoController> logger,ITesting_InfoService testDataService, ISpecificationService specificationDataService, IE00T_CustomerService customerService)
+        { 
             _logger = logger;
             _testDataService = testDataService;
             _specificationDataService = specificationDataService;
+            _customerService = customerService;
         }
 
         public async Task<IActionResult> Index()
         {
-          
+            var result = await _specificationDataService.GetAll();
+            ViewData["categories"] = result.ToList();
             return View();
         }
 
@@ -45,7 +48,6 @@ namespace DRLab.Web.Controllers
 
         public async Task<IActionResult> Read_Testing_Info([DataSourceRequest] DataSourceRequest request)
         {
-
             return Json((await _testDataService.GetAllTesting_Info()).ToDataSourceResult(request));
         }
         public async Task<ActionResult> TestingInfo_CreateAsync([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<E08T_Testing_InfoViewModel> data_info)
@@ -103,14 +105,7 @@ namespace DRLab.Web.Controllers
 
             return Json(data_info.ToDataSourceResult(request, ModelState));
         }
-        public async Task<List<E00T_SpecificationViewModel>> PopulateCategories()
-        {
-            
-            
-            var result = await _specificationDataService.GetAll();
-            ViewData["categories"] = result.ToList();
-            return result;
-        }
+        
         public async Task<List<E08T_Testing_InfoViewModel>> GetTestingInfoCombobox(string text)
         {
             return await _testDataService.GetE08TTestingInfoCombobox(text);
@@ -119,6 +114,12 @@ namespace DRLab.Web.Controllers
         public async Task<List<E00T_CustomerGridViewModel>> GetTestingInfoBySpecId(string id)
         {
             return await _testDataService.GetE08TTestingInfoBySpecId(id);
+        }
+        public async Task<ActionResult> Create_TestingInfoRequest([DataSourceRequest] DataSourceRequest request,E08T_Testing_InfoViewModel1 testinfo_request)
+        {           
+           await _testDataService.CreateWithCombobox(testinfo_request);             
+
+           return Json((await _testDataService.GetAllTesting_Info()).ToDataSourceResult(request, ModelState));
         }
     }
 }

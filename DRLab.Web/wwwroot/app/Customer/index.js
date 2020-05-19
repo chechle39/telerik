@@ -1,6 +1,11 @@
 var customerController = function () {
     var self = this;
     this.initialize = function () {
+        initForm().done(function (result) {
+            // Call the alert here..
+            alert('xxx');
+        });
+      ;
     }
     var sampleListCount;
 
@@ -12,11 +17,25 @@ var customerController = function () {
         $('#exampleModal').modal('hide');
         $('#exampleModal').css('display', 'none');
     });
-    $("#hahaha").on('click', function () {
-      
 
-    });
+    function initForm() {
+        var requestNo = "RequestNo";
+        return $.ajax({
+            type: "GET",
+            url: "/GetCounter/GetCounterString",
+            data: { request: requestNo },
+          //  dataType: "text",
+            async: false,
+            success: function (response) {
+                console.log(response);
+                $('#requestNo').val(response);
+            },
+            error: function () {
 
+            }
+        });
+
+    }
 
 
     //paging fronent
@@ -171,21 +190,22 @@ function filter_requests() {
                    // var piceList = $('#piceList').val();
                     if ($('#requestNoId').val() === '') {
                         sampleListCount = parseInt($('#numOfSam').val());
-                      
+                        var request = {
+                            requestNo: requestNo,
+                            customerID: customers,
+                            receivceDate: datetimepicker,
+                            dateOfSendingResult: datetimepickerReturn,
+                            contactID: contact,
+                            numberSample: numOfSam,
+                            printVAT: vat,
+                        };
                         $.ajax({
                             type: "POST",
                             url: "/CustomerRequest/SaveEntity",
-                            data: {
-                                requestNo: requestNo,
-                                customerID: customers,
-                                receivceDate: datetimepicker,
-                                dateOfSendingResult: datetimepickerReturn,
-                                contactID: contact,
-                                numberSample: numOfSam,
-                                printVAT: vat,
-                            },
-                            dataType: "json",
-
+                            data: JSON.stringify(request),
+                            dataType: 'json',
+                            contentType: 'application/json',
+                            processData: false,
                             success: function (response) {
                                 lenthx = response;
                                 isCheck = true;
@@ -230,21 +250,23 @@ function filter_requests() {
 
                         })
                     } else {
+                        var request = {
+                            requestNo: document.getElementById("requestNo").innerHTML,
+                            customerID: customers,
+                            receivceDate: datetimepicker,
+                            dateOfSendingResult: datetimepickerReturn,
+                            contactID: contact,
+                            numberSample: numOfSam,
+                            printVAT: vat,
+                        };
                         sampleListCount = parseInt($('#numOfSam').val());
                         $.ajax({
                             type: "POST",
                             url: "/CustomerRequest/UpdateEntity",
-                            data: {
-                                requestNo: document.getElementById("requestNo").innerHTML,
-                                customerID: customers,
-                                receivceDate: datetimepicker,
-                                dateOfSendingResult: datetimepickerReturn,
-                                contactID: contact,
-                                numberSample: numOfSam,
-                                printVAT: vat,
-                            },
+                            data: JSON.stringify(request),
                             dataType: "json",
-
+                            contentType: "application/json",
+                            processData: false,
                             success: function (response) {
                                 isCheck = true;
                                 var notification = $("#notification").data("kendoNotification");

@@ -6,19 +6,19 @@ using DRLab.Data.Interfaces;
 using DRLab.Data.Repositories;
 using DRLab.Services.IntegrationServices;
 using DRLab.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Globalization;
-using System;
-using System.Collections.Generic;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -62,6 +62,7 @@ namespace DRLab.Web
             services.AddTransient<IE08T_AnalysisRequest_InfoService, E08T_AnalysisRequest_InfoService>();
             services.AddTransient<IE00T_SampleMatrixService, E00T_SampleMatrixService>();
             services.AddTransient<IE08T_Testing_InfoRepository, E08T_Testing_InfoRepository>();
+            services.AddTransient<IGetRequestNoDapperService, GetRequestNoDapperService>();
             services.AddScoped<DbContext, DataBaseContext>();
             services.AddControllers().AddJsonOptions(jsonOptions =>
             {
@@ -83,14 +84,21 @@ namespace DRLab.Web
             services.Configure<RequestLocalizationOptions>(options =>
             {
                 var supportedCultures = languages.Select(language => new CultureInfo(language)).ToList();
-                options.DefaultRequestCulture = new RequestCulture(culture: languages[0], uiCulture: languages[0]);
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });
-
             services.AddMvc()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
+            services.AddControllers().AddNewtonsoftJson(options => 
+            { 
+              options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+              options.SerializerSettings.DateFormatString = "MM/dd/yyyy";
+            });
+
+            //Authen
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -115,6 +123,7 @@ namespace DRLab.Web
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

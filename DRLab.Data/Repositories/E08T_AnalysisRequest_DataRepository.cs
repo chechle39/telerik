@@ -78,5 +78,22 @@ namespace DRLab.Data.Repositories
             await _e08T_AnalysisRequest_ItemRepository.CreatAnalysisRequestItem(request);
             return await Task.FromResult(true);
         }
+
+        public async Task<bool> DeleteAnalysisRequestData(string[] request)
+        {
+            foreach (var item in request)
+            {
+                var objDelete = await Entities.Where(x => x.requestNo == item).ToListAsync();
+                if (objDelete.Count() > 0)
+                {
+                    foreach(var iitem in objDelete)
+                    {
+                        Entities.Remove(iitem);
+                    }
+                    
+                }
+            }
+            return await Task.FromResult(true);
+        }
     }
 }
