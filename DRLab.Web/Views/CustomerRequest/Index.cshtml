@@ -401,6 +401,7 @@
     function active_page(element, rows, req_per_page) {
         if (myData.length === 0) {
             for (var i = 0; i < JSON.parse(window.atob(rows)).length; i++) {
+               
                 const a = { simpleName: '', simpleCode: '', descriptionCustomer: '', innerCode: '', remarkToLab: '', weight: '', sampleMatrix: -1, sampleMatrixValue: '', addSpecification: -1, addSpecificationValue: '', templateMark: '', tat: '' };
                 myData.push(a);
             }
@@ -487,6 +488,7 @@
         response[curent - 1].data = handerDataGrid();
         const resp = response.slice(req_per_page * (page_no - 1), req_per_page * page_no);
         if (response[page_no - 1].simpleCode === '') {
+<<<<<<< HEAD
             var requestNo = ["SampleCode", "InLabCode"];
             $.ajax({
                 type: "POST",
@@ -504,6 +506,23 @@
         } else {
             $('#simpleCode').val(response[page_no - 1].sampleCode);
             $('#innerCode').val(response[page_no - 1].inLabCode);
+=======
+            var requestNo = "RequestNo";
+            $.ajax({
+            type: "GET",
+            url: "/GetCounter/GetCounterString",
+            data: { request: requestNo },
+          //  dataType: "text",
+            async: false,
+            success: function (response) {
+                $('#simpleCode').val(response);
+                $('#innerCode').val(response);
+            },
+            error: function () {
+
+            }
+        });
+>>>>>>> 4466cb2800ef7b932c5d5c1b349bbc4faf6e8d69
         }
         $('#simpleName').val(response[page_no - 1].simpleName);
         $('#descriptionCustomer').val(response[page_no - 1].descriptionCustomer);
