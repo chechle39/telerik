@@ -17,6 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -94,6 +95,7 @@ namespace DRLab.Web
             { 
               options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
               options.SerializerSettings.DateFormatString = "MM/dd/yyyy";
+              options.SerializerSettings.ContractResolver = new DefaultContractResolver();
             });
 
             //Authen

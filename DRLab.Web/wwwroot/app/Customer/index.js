@@ -1,11 +1,7 @@
 var customerController = function () {
     var self = this;
     this.initialize = function () {
-        initForm().done(function (result) {
-            // Call the alert here..
-            alert('xxx');
-        });
-      ;
+        initForm();
     }
     var sampleListCount;
 
@@ -19,16 +15,18 @@ var customerController = function () {
     });
 
     function initForm() {
-        var requestNo = "RequestNo";
+        var requestNo = ["RequestNo", "SampleCode", "InLabCode"];
         return $.ajax({
-            type: "GET",
+            type: "POST",
             url: "/GetCounter/GetCounterString",
-            data: { request: requestNo },
-          //  dataType: "text",
-            async: false,
+            data:  JSON.stringify(requestNo) ,
+            dataType: "json",
+            contentType: "application/json",
             success: function (response) {
-                console.log(response);
-                $('#requestNo').val(response);
+                $('#requestNo').val(response.requestNo);
+                $('#simpleCode').val(response.sampleCode);
+                $('#innerCode').val(response.inLabCode); 
+                $('#vat').val(0)
             },
             error: function () {
 
@@ -97,8 +95,8 @@ function render_table_rows(rows, req_per_page, page_no) {
 }   
 
 // Pagination logic implementation
-function pagination(data, lenth) {
-    for (var i = 0; i < lenth; i++) {
+    function pagination(data, lenth) {
+        for (var i = 0; i < lenth; i++) {
         const a = { simpleName: i, simpleCode: '', descriptionCustomer: '', innerCode: '', remarkToLab: '', weight: '', sampleMatrix: '', addSpecification: '', templateMark: '', tat: '' };
         myarr.push(a);
     }

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using DRLab.Data.ViewModels;
 using System.Threading.Tasks;
 
 namespace DRLab.Services.Interfaces
 {
     public interface IGetRequestNoDapperService
     {
-        Task<string> GetRequestNo(string request);
+        Task<Couter> GetRequestNo(string[] request);
     }
 }

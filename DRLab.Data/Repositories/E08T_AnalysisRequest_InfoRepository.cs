@@ -27,7 +27,7 @@ namespace DRLab.Data.Repositories
 
         public async Task<List<GridManagementViewModel>> GetRequestInfoGrid(SerchGridManagement request)
         {
-            var data = await Entities.ToListAsync();
+            var data = await Entities.AsNoTracking().ToListAsync();
             var listGridManagementViewModel = new List<GridManagementViewModel>();
             foreach (var item in data)
             {
@@ -35,13 +35,13 @@ namespace DRLab.Data.Repositories
                 var cus = await _e00T_CustomerRepository.GetCustomerById(item.customerID);
                 var objGridManagementViewModel = new GridManagementViewModel()
                 {
-                    companyName = cus[0].companyName,
-                    contactName = cus[0].contactName,
+                    companyName = cus.Count > 0 ? cus[0].companyName : null,
+                    contactName = cus.Count > 0 ? cus[0].contactName : null,
                     dateOfSendingResult = item.dateOfSendingResult,
                     receivceDate = item.receivceDate,
                     requestNo = item.requestNo,
                     status = item.status,
-                    customerCode = cus[0].customerCode
+                    customerCode = cus.Count > 0 ? cus[0].customerCode : null
                 };
                 listGridManagementViewModel.Add(objGridManagementViewModel);
             }

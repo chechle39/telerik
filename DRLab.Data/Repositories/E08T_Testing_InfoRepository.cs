@@ -23,9 +23,9 @@ namespace DRLab.Data.Repositories
         public async Task<List<E00T_CustomerGridViewModel>> GetE08TTestingInfoBySpecId(string analysisCode)
         {
             var analysisCodeData = await Entities.Where(x => x.analysisCode == analysisCode).ToListAsync();
-            var data = analysisCodeData.Where(x => x.method == x.specification);
+           // var data = analysisCodeData.Where(x => x.method == x.specification);
             var lisE00T_CustomerGrid = new List<E00T_CustomerGridViewModel>();
-            foreach(var item in data)
+            foreach(var item in analysisCodeData)
             {
                 var obj = new E00T_CustomerGridViewModel()
                 {

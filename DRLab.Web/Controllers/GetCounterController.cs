@@ -18,8 +18,8 @@ namespace DRLab.Web.Controllers
         {
             return View();
         }
-        [HttpGet]
-        public async Task<IActionResult> GetCounterString(string request)
+        [HttpPost]
+        public async Task<IActionResult> GetCounterString([FromBody]string[] request)
         {
             var data = await _getRequestNoDapperService.GetRequestNo(request);
             return Ok(data);

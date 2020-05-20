@@ -20,7 +20,7 @@
                             @(Html.Kendo().NumericTextBox<int>()
                                 .Format("n0")
                                 .Name("numOfSam")
-                                .HtmlAttributes(new { placeholder = "Number Of Sample", style = "width: 100%; height: 90%;" })
+                                .HtmlAttributes(new { placeholder = "Number Of Sample", style = "width: 100%; height: 100%;" })
                             )
                         </div>
                     </div>
@@ -39,7 +39,7 @@
                                 .Placeholder("Select customer")
                                 .DataTextField("companyName")
                                 .DataValueField("customerCode")
-                                .HtmlAttributes(new { style = "width: 108%;height: 90%;" })
+                                .HtmlAttributes(new { style = "width: 108%;height: 100%;" })
                                 .Events(e =>
                                 {
                                     e.Change("onChangecustomer").Select("onSelectcustomer");
@@ -83,7 +83,7 @@
                                 .Placeholder("Select contact")
                                 .DataTextField("contactName")
                                 .DataValueField("contactID")
-                                .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
+                                .HtmlAttributes(new { style = "width: 100%;height: 100%;" })
                                 .Events(e =>
                                 {
                                     e.Open("onOpenContact");
@@ -118,7 +118,7 @@
                         <div class="col-sm-3">
                             @(Html.Kendo().TextBox()
                           .Name("requestNo")
-                          .HtmlAttributes(new { placeholder = "Request No", required = "required", style = "width: 100%;height: 90%" })
+                          .HtmlAttributes(new { placeholder = "Request No", required = "required", style = "width: 100%;height: 100%" })
                             )
 
                         </div>
@@ -126,7 +126,7 @@
                         <div class="col-sm-1">
                             @(Html.Kendo().TextBox()
                           .Name("vat")
-                          .HtmlAttributes(new { placeholder = "VAT", required = "required", style = "margin-left: -28px;width: 147%;height: 90%;" })
+                          .HtmlAttributes(new { placeholder = "VAT", required = "required", style = "margin-left: -28px;width: 147%;height: 100%;" })
                             )
 
                         </div>
@@ -141,7 +141,7 @@
                             @(Html.Kendo().DateTimePicker()
                                 .Name("datetimepicker")
                                 .Value(DateTime.Now)
-                                .HtmlAttributes(new { style = "width: 72%;height: 90%;", title = "datetimepicker" })
+                                .HtmlAttributes(new { style = "width: 100%;height: 100%;", title = "datetimepicker" })
                                 .DateInput()
                             )
                         </div>
@@ -156,7 +156,7 @@
                             @(Html.Kendo().DateTimePicker()
                                 .Name("datetimepickerReturn")
                                 .Value(DateTime.Now)
-                                .HtmlAttributes(new { style = "width: 72%; height: 90%;", title = "datetimepicker" })
+                                .HtmlAttributes(new { style = "width: 100%; height: 100%;", title = "datetimepicker" })
                                 .DateInput()
                             )
                         </div>
@@ -173,7 +173,7 @@
                                 .Placeholder("Select price")
                                 .DataTextField("contactName")
                                 .DataValueField("customerID")
-                                .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
+                                .HtmlAttributes(new { style = "width: 100%;height: 100%;" })
                                 .DataSource(source =>
                                 {
                                     source.Read(read =>
@@ -247,5 +247,8 @@
         margin-top: -5px;
         margin-left: 1px;
         height: 10px;
+    }
+    .k-grid-add {
+        margin-left: 12px!important;
     }
 </style>

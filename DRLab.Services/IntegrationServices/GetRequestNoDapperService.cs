@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using DRLab.Data.ViewModels;
 using DRLab.Services.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -19,19 +20,39 @@ namespace DRLab.Services.IntegrationServices
         {
             _configuration = configuration;
         }
-        public async Task<string> GetRequestNo(string request)
+        public async Task<Couter> GetRequestNo(string[] request)
         {
             using (var sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 await sqlConnection.OpenAsync();
                 var dynamicParameters = new DynamicParameters();
-
-
-                dynamicParameters.Add("@CounterCode", request);
-
-                var rqNo = await sqlConnection.QueryAsync<string>(
-                         "GetCounter", dynamicParameters, commandType: CommandType.StoredProcedure);
-                return rqNo.ToList()[0].ToString();
+                var counter = new Couter();
+                foreach (var item in request)
+                {
+                    if (item == "RequestNo")
+                    {
+                        dynamicParameters.Add("@CounterCode", item);
+                        var rq = await sqlConnection.QueryAsync<string>(
+                                 "GetCounter", dynamicParameters, commandType: CommandType.StoredProcedure);
+                        counter.requestNo = rq.ToList()[0].ToString();
+                    }
+                    if (item == "SampleCode")
+                    {
+                        dynamicParameters.Add("@CounterCode", item);
+                        var rq = await sqlConnection.QueryAsync<string>(
+                                 "GetCounter", dynamicParameters, commandType: CommandType.StoredProcedure);
+                        counter.sampleCode = rq.ToList()[0].ToString();
+                    }
+                    if (item == "InLabCode")
+                    {
+                        dynamicParameters.Add("@CounterCode", item);
+                        var rq = await sqlConnection.QueryAsync<string>(
+                                 "GetCounter", dynamicParameters, commandType: CommandType.StoredProcedure);
+                        counter.inLabCode = rq.ToList()[0].ToString();
+                    }
+                }
+               
+                return counter;
             }
         }
     }

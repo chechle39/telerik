@@ -30,6 +30,12 @@ namespace DRLab.Web.Controllers
             ViewData["categories"] = result.ToList();
             return View();
         }
+        public IActionResult DetailCustomer(string requestNo)
+        {
+            var myStringModel = new MyStringModel();
+            myStringModel.MyString = requestNo;
+            return View(myStringModel);
+        }
         [HttpPost]
         public async Task<IActionResult> SaveEntityAnalysisRequestData([FromBody] List<CreateCustomeRequest> request)
         {
@@ -77,5 +83,10 @@ namespace DRLab.Web.Controllers
         {
             return await _e00T_Customer_ItemService.GetE00T_Customer_ItemByCode(id);
         }
+    }
+
+    public class MyStringModel
+    {
+        public string MyString { get; set; }
     }
 }

@@ -28,6 +28,7 @@ namespace DRLab.Web.Controllers
             return View();
            
         }
+
         public async Task<IActionResult> Read_Customer([DataSourceRequest] DataSourceRequest request)
         {
            

@@ -18,4 +18,12 @@ namespace DRLab.Data.ViewModels
         public string note { get; set; }
 
     }
+
+    public class Couter
+    {
+        public string requestNo { get; set; }
+        public string sampleCode { get; set; }
+        public string inLabCode { get; set; }
+
+    }
 }

@@ -1,13 +1,15 @@
-﻿@addTagHelper *, Kendo.Mvc
+﻿@model DRLab.Web.Controllers.MyStringModel
+@{
+    ViewData["Title"] = "DetailCustomer";
+}
 @section Scripts{
-
-    <script src="~/app/Customer/index.js" asp-append-version="true"></script>
+    <script src="~/app/Customer/EditCustomer.js" asp-append-version="true"></script>
     <script>
-        var userObj = new customerController();
-        userObj.initialize();
+        var detailObj = new customerDetailController();
+        detailObj.initialize();
     </script>
 }
-
+<h1 id="flag" hidden>2</h1>
 @{
     var messages = new Dictionary<string, string>() { { "custom", "Please choose another Start Time." } };
     var rules = new Dictionary<string, string>() { { "custom", "customFunction" } };
@@ -23,7 +25,7 @@
         t.Add().Type("error").ClientTemplateID("errorTemplate");
     })
 )
-<section id="isCheck" style="display:none"  class="content">
+<section id="isCheck"  class="content">
     <div class="container-fluid">
         <section class="content">
             <div class="container-fluid">
@@ -36,7 +38,7 @@
                                 <div class="card-header row" style="margin-left: 0px;">
 
                                     <div class="col-4">
-                                        <h3 class="card-title" style="font-size: 25px">New Request</h3>
+                                        <h3 class="card-title" style="font-size: 25px">Edit Request</h3>
 
 
                                     </div>
@@ -76,7 +78,7 @@
 
                                     </div>
 
-                                    <div class="form-group row pad-25">
+                                    <div class="form-group row">
 
                                     </div>
                                     <div class="form-group row">
@@ -158,15 +160,15 @@
 
                                     <div class="form-group row margin-left-0">
 
-                                        <div class="col-3 row">
+                                        <div class="col-4 row">
                                             <span>Sample Matrix</span>
-                                            <div class="col-sm-7">
+                                            <div class="col-sm-9">
                                                 @(Html.Kendo().ComboBox()
                                                 .Name("sampleMatrix")
                                                 .Placeholder("Select Sample Matrix")
                                                 .DataTextField("sampleMatrix")
                                                 .DataValueField("matrixID")
-                                                .HtmlAttributes(new {style = "width:143%; height:calc(1.42857143em + 10px);margin-left: 5px" })
+                                                .HtmlAttributes(new {style = "width:100%; height:calc(1.42857143em + 10px);margin-left: 5px" })
 
                                                 .AutoBind(false)
                                                 .DataSource(source =>
@@ -182,16 +184,15 @@
                                             </div>
                                         </div>
 
-                                        <div class="row col-5" style="margin-left: 39px;">
+                                        <div class="row col-5">
                                             <span>Add Specification</span>
                                             <div class="col-sm-9 row">
-                                                <div class="col-11">
-                                                    @(Html.Kendo().ComboBox()
+                                                @(Html.Kendo().ComboBox()
                                                 .Name("addSpecification")
                                                 .Placeholder("Select Specification")
                                                 .DataTextField("specification")
                                                 .DataValueField("analysisCode")
-                                                .HtmlAttributes(new { style = "width:100%; height:calc(1.42857143em + 10px);margin-left: 5px" })
+                                                .HtmlAttributes(new { style = "width:73%; height:calc(1.42857143em + 10px);margin-left: 5px" })
                                                  .Events(e =>
                                                  {
                                                      e.Select("onSelectaddSpecification");
@@ -207,15 +208,9 @@
                                                     .ServerFiltering(true);
                                                 })
                                                 )
-                                                </div>
-                                                <div class="col-1" style="padding-left: 0px;">
-                                                    <span style="margin-top: -2px;">
-                                                        @await Html.PartialAsync("../Testing_Info/PartialViewAddTestInfo")
-                                                    </span>
-                                                </div>
-                                                  
-                                                </div>
-                                           
+                           
+                                            </div>
+
                                         </div>
                                     </div>
                                     <div style="margin-bottom: 25px;">
@@ -256,17 +251,17 @@
                                         .HtmlAttributes(new { style = "height:auto;" })
                                         .Columns(columns =>
                                         {
-                                            columns.Bound(p => p.specification).Title("Specification").Width("25%");
+                                            columns.Bound(p => p.specification).Title("Specification");
                                             columns.Bound(p => p.Mark).Title("Mark");
-                                            columns.Bound(p => p.method).Title("Method").Width("25%");
+                                            columns.Bound(p => p.method).Title("Method");
                                             columns.Bound(p => p.LOD).Title("LOD");
                                             columns.Bound(p => p.unit).Title("Unit");
-                                            columns.Bound(p => p.Price).Title("Price").Width("10%");
+                                            columns.Bound(p => p.Price).Title("Price");
                                             columns.Bound(p => p.Urgent).Title("% Urgent");
                                             columns.Bound(p => p.TAT).Title("TAT");
                                             columns.Command(command => { command.Destroy(); }).Width(100);
                                         })
-                                        .Navigatable()
+
                                         .Editable(editable => editable.Mode(GridEditMode.InCell))
                                         .Pageable()
                                         .Sortable()
@@ -297,9 +292,9 @@
                                 </div>
                                 <!-- /.card-body -->
                                 <div id="temlate">
-                                    
+
                                 </div>
-                                
+
 
                             </form>
                         </div>
@@ -311,7 +306,6 @@
     </div><!-- /.container-fluid -->
 </section>
 
-@Html.Partial("CreateRequest.cshtml")
 <script>
     var data = [];
     myData = [];
@@ -347,7 +341,6 @@
     function schemaTotal(response) {
         return data.length;
     }
-    var specdata = [];
     function onSelectaddSpecification(e) {
         var grid = $("#Grid").data("kendoGrid");
         //grid.bind("save", grid_save);
@@ -359,19 +352,12 @@
             dataType: "json",
 
             success: function (response) {
-                //specdata = response;
-                //if (specdata.length > 0) {
-
-                //}
-                for (var i = 0; i < response.length; i++) {
-                    if (specdata.filter(x => x.analysisCode === response[i].analysisCode).length === 0) {
-                        specdata.push(response[i])
-                    }
-                }
-                //data = response;
-                schemaTotal(specdata);
+                data = [];
+                data = response;
+                console.log(data);
+                schemaTotal(data);
                 var dataSource = new kendo.data.DataSource({
-                    data: specdata,
+                    data: data,
                     pageSize: 20,
                 });
                 grid.setDataSource(dataSource);
@@ -501,9 +487,6 @@
                 error: function () {
                 }
             });
-        } else {
-            $('#simpleCode').val(response[page_no - 1].sampleCode);
-            $('#innerCode').val(response[page_no - 1].inLabCode);
         }
         $('#simpleName').val(response[page_no - 1].simpleName);
         $('#descriptionCustomer').val(response[page_no - 1].descriptionCustomer);
@@ -542,7 +525,7 @@
     }
 
     function SaveEntity() {
-       
+
         var saveRequest = [];
         if (response.length > 0) {
             var x = checkClass(document.getElementsByClassName('active'))
@@ -629,10 +612,10 @@
                 }
             });
         }
-        
+
 
     }
-  
+
 
     function verify(SaveRq) {
         var string = '';
@@ -789,15 +772,6 @@
         width: 270px;
         height: 70px;
     }
-    .card-body {
-        padding-top: 0;
-    }
-    .card-header {
-        border-bottom: 0px;
-    }
-    .pad-25 {
-        padding-bottom: 25px;
-    }
 </style>
 <script id="errorTemplate" type="text/x-kendo-template">
     <div class="wrong-pass">
@@ -851,8 +825,8 @@
     };
 
     function xx() {
-          var dialog = $('#dialog');
-            dialog.data("kendoDialog").open();
+        var dialog = $('#dialog');
+        dialog.data("kendoDialog").open();
     }
 
 </script>

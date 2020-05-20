@@ -19,23 +19,24 @@ namespace DRLab.Web.Areas.API.Controllers
     {
         private readonly ILogger<CustomerListController> _logger;
         private readonly IE00T_Customer_ItemService _customer_ItemService;
-        private readonly IE00T_CustomerService _e00T_CustomerService;
-        public CustomerItemController(ILogger<CustomerListController> logger, IE00T_Customer_ItemService customer_ItemService, IE00T_CustomerService e00T_CustomerService)
+        private readonly ISpecificationService _specificationDataService;
+        public CustomerItemController(ILogger<CustomerListController> logger, IE00T_Customer_ItemService customer_ItemService, ISpecificationService specificationDataService)
         {
             _logger = logger;
             _customer_ItemService = customer_ItemService;
-            _e00T_CustomerService = e00T_CustomerService;
+            _specificationDataService = specificationDataService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var result = await _e00T_CustomerService.GetAll();
+            var result = await _specificationDataService.GetAll();
             ViewData["categories"] = result.ToList();
             ViewData["defaultvalue"] = result.First();
             return View();
 
         }
-         public IActionResult Privacy()
+      
+        public IActionResult Privacy()
         {
             return View();
         }

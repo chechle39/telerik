@@ -52,8 +52,10 @@ namespace DRLab.Web.Controllers
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
 
-     
-            return LocalRedirect(model.ReturnUrl);
+            if(Url.IsLocalUrl(model.ReturnUrl))
+                return LocalRedirect(model.ReturnUrl);
+
+            return LocalRedirect("/");
         }
 
         [Authorize]

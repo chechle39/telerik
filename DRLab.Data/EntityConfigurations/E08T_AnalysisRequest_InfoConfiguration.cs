@@ -11,7 +11,7 @@ namespace DRLab.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<E08T_AnalysisRequest_Info> builder)
         {
-            builder.Property(e => e.contactID).ValueGeneratedNever();
+            builder.Property(e => e.requestNo).ValueGeneratedNever();
         }
     }
 }

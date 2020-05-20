@@ -10,6 +10,6 @@ namespace DRLab.Services.Interfaces
         Task<bool> UpdateAnalysisRequestInfo(E08T_AnalysisRequest_InfoViewModel SaveAnalysisRequestInforequest);
         Task<List<GridManagementViewModel>> GetRequestInfoGrid(SerchGridManagement request);
         Task<bool> DeleteAnalysisRequestInfo(string[] requestNo);
-
+       // Task<List<GridManagementViewModel>> GetRequestInfoGrid(SerchGridManagement request);
     }
 }

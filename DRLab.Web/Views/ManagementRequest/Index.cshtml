@@ -208,8 +208,10 @@
         //console.log("The selected product ids are: [" + this.selectedKeyNames().join(", ") + "]");
     }
 
-    function showEdit() {
-
+    function showEdit(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        window.location.href = '/CustomerRequest/DetailCustomer/?' +"requestNo=" + dataItem.requestNo;
     }
     function schemaData() {
 
@@ -331,6 +333,11 @@
                 var dataSource = new kendo.data.DataSource({
                     data: response,
                     pageSize: 20,
+                    schema: {
+                        model: {
+                            id: "requestNo"
+                        }
+                    }
                 });
                 grid.setDataSource(dataSource);
                 var dateTemplate = $('#date-templateData').html();

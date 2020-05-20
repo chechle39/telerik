@@ -6,6 +6,7 @@ var ManagementRequestController = function () {
     var self = this;
     this.initialize = function () {
         loadData();
+       
     }
 
     function loadData() {

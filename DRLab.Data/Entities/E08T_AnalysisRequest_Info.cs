@@ -48,7 +48,6 @@ namespace DRLab.Data.Entities
         public Nullable<bool> orderConfim { get; set; }
         public Nullable<long> contactID { get; set; }
         public string testReportContactID { get; set; }
-        [Required]
         public Nullable<int> numberSample { get; set; }
         public Nullable<int> printVAT { get; set; }
         public string priceID { get; set; }

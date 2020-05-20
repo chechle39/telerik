@@ -10,13 +10,18 @@
         columns.Bound(p => p.contactEmail).Title(("Contact Email"));
         columns.Bound(p => p.city).Title(("City"));
         columns.Bound(p => p.note).Title(("Note"));
-        columns.Command(command => command.Destroy()).Width(120);
+        columns.Command(command => command.Destroy()).Width(100);
+        columns.Command(c =>
+        {
+            c.Custom("RefreshRecord").Text("Create Item").Click("customCom");
+        });
+
     })
     .ToolBar(toolbar =>
     {
         toolbar.Create();
         toolbar.Save();
-        toolbar.Custom().Text("Create Item").HtmlAttributes(new { onclick = "customCom()" });
+        //toolbar.Custom().Text("Create Item").HtmlAttributes(new { onclick = "customCom()" });
     })
     .Editable(editable => editable.Mode(GridEditMode.InCell))
     .Pageable()
@@ -50,14 +55,36 @@
 @await Html.PartialAsync("../CustomerItem/Index", "CustomerItem")
 
 
-<script type="text/javascript">
-    function customCom(e) {
-        console.log($("#CustomerItem"));
-        $("#CustomerItem").data("kendoWindow").center();
-        $("#CustomerItem").data("kendoWindow").open();
+    <script type="text/javascript">
+        var gridxxx = [];
+        function customCom(e) {
 
-    }
-</script>
+            var grid = e.sender;
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));  
+            var a = dataItem.customerCode;           
+            var grid = $("#gridCustomer").data("kendoGrid");
+            $.ajax({
+                type: "GET",
+                url: "/CustomerRequest/GetCustomersItemByCode",
+                data: { id: a },
+                dataType: "json",
+
+                success: function (response) {                 
+                    gridxxx = response;
+                    var dataSource = new kendo.data.DataSource({
+                        data: response,
+                        pageSize: 20,
+                    });
+                    grid.setDataSource(dataSource);
+                },
+                error: function () {
+                }            
+            });
+           
+            $("#CustomerItem").data("kendoWindow").center();
+            $("#CustomerItem").data("kendoWindow").open();
+        }
+    </script>
 
 
 <style>

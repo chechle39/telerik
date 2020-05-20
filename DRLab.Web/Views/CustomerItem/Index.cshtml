@@ -1,82 +1,66 @@
 ﻿@model string
-
-
-<div class="container-fluid">
-</div>
 @(Html.Kendo().Window()
     .Name(Model)
     .Title("Customer Item")
     .Content(
 
     (Html.Kendo().Grid<DRLab.Data.ViewModels.E00T_Customer_ItemViewModel>()
-        .Name("Dialog")
+        .Name("gridCustomer")
          .Columns(columns =>
          {
-
              columns.Bound(p => p.contactName);
-             columns.ForeignKey(p => p.customerCode, (System.Collections.IEnumerable)ViewData["categories"], "customerCode", "companyName").Title("Company Name");
              columns.Bound(p => p.address);
-             columns.Bound(p => p.note);
-             columns.Bound(p => p.email);
+             columns.Bound(p => p.note).Hidden();
+             columns.Bound(p => p.email).Hidden();
              columns.Command(command => command.Destroy()).Width(120);
-
          })
-          //.ClientRowTemplate(
-          //    "<tr data-uid='#: uid #'>" +
-          //     "<td class='details'>" +
-          //         "<span class='title'>#: contactName #</span><br>" +
-          //         "<span class='description'>Name : #: email#</span><br>" +
-          //         "<span class='description'>Address : #: address# </span><br>" +
-          //     "</td>" +
-          //     "<td class='note'>" +
-          //         "#: note #" +
-          //     "</td>" +
-          //     "<td class='customerCode'>" +
-          //         "#: customerCode #" +
-          //     "</td>" +
-          //       "<td style='width:80px'>" +
-          //            "<a class='k-button k-button-icontext k-grid-delete'" +
-          //               "<span class='k-icon k-edit'></span>Edit</a>" +
-          //        "<span class='k-icon k-delete'></span>Delete</a>" +
-          //        "</td>" +
-          //     "</tr>"
-          // )
+          .ClientRowTemplate(
+              "<tr data-uid='#: uid #'>" +
+               "<td class='details'>" +
+                   "<span class='title'>#: contactName #</span><br>" +
+                   "<span class='description'>Email : #: email#</span><br>" +
+               "</td>" +
+               "<td class='details1'>" +
+                   "<span class='title'>Address : #: address#</span><br>" +
+                   "<span class='description'>Note : #: note#</span><br>" +
+               "</td>" +
+                 "<td style='width:80px'>" +
+                      "<a class='k-button k-button-icontext k-grid-delete'" +
+
+                  "<span class='k-icon k-delete'></span>Delete</a>" +
+                  "</td>" +
+               "</tr>"
+           )
 
           .ToolBar(toolbar =>
           {
-
-              toolbar.Create();
-              toolbar.Save();
+              toolbar.Create();             
           })
         .Editable(editable => editable.Mode(GridEditMode.InCell))
         .Pageable()
         .Navigatable()
         .Sortable()
         .Scrollable()
-        .Filterable()     
+        .Filterable()
         .HtmlAttributes(new { style = "height:350px;" })
         .DataSource(dataSource => dataSource
-        .Ajax()
+        .Custom()
         .Batch(true)
         .PageSize(20)
-        .ServerOperation(false)
-        .PageSize(20)
-
-        .Model(model =>
+        .Schema(schema =>
         {
-        model.Id(p => p.contactID);
-        model.Field(p => p.contactName);
-        model.Field(p => p.customerCode);
-        model.Field(p => p.email);
-        model.Field(p => p.address);
-        model.Field(p => p.note);
-   
+            schema.Model(model =>
+            {
+                model.Id(p => p.contactID);
+                model.Field(p => p.contactName);                
+                model.Field(p => p.customerCode);
+                model.Field(p => p.address);
+                model.Field(p => p.email);
+            })
+    .Data(d => "schemaData")
+    .Total(t => "schemaTotal");
+        })
 
-})
-         .Create(read => read.Action("Create_Customer", "CustomerItem"))
-        .Read(read => read.Action("Read_Customer", "CustomerItem"))
-        .Update(read => read.Action("Update_Customer", "CustomerItem"))
-        .Destroy(read => read.Action("Destroy_Customer", "CustomerItem"))
         )).ToHtmlString()
             )
             .Draggable()
@@ -88,8 +72,12 @@
 )
 
 <script type="text/javascript">
-   
-
+    function schemaData() {
+        return gridxxx;
+    }
+    function schemaTotal(response) {
+        return gridxxx.length;
+    }
 </script>
 @section HeadContent {
     <style>
