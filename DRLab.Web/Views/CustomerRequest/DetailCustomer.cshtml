@@ -10,6 +10,16 @@
         detailObj.initialize();
     </script>
 }
+@(Html.Kendo().Notification()
+    .Name("notificationEdit")
+    .Position(p => p.Pinned(true).Top(30).Right(30))
+    .Stacking(NotificationStackingSettings.Down)
+    .Templates(t =>
+    {
+        t.Add().Type("success").ClientTemplateID("successTemplate");
+        t.Add().Type("error").ClientTemplateID("errorTemplate");
+    })
+)
 <h1 hidden id="flag">@Model.numberSample</h1>
 <h1 hidden id="flag2">@Model.dateOfSendingResult</h1>
 <h1 hidden id="flag3">@Model.receivceDate</h1>
@@ -17,7 +27,7 @@
 <h1 hidden id="flag5">@Model.email</h1>
 <h1 hidden id="flag6">@Model.contactName</h1>
 <h1 hidden id="flag7">@Model.contactName</h1>
-<section id="isCheck"  class="content">
+<section id="isCheck" class="content">
     <div class="container-fluid">
         <section class="content">
             <div class="container-fluid">
@@ -52,7 +62,7 @@
                                         })
                                     .Value("1")
                                     .HtmlAttributes(new { style = "width: 100%" })
-                                    )
+                                        )
                                     </div>
                                     <div class="col-5">
                                         <div style="float:right">
@@ -161,7 +171,7 @@
                                                 .Placeholder("Select Sample Matrix")
                                                 .DataTextField("sampleMatrix")
                                                 .DataValueField("matrixID")
-                                                .HtmlAttributes(new {style = "width:143%; height:calc(1.42857143em + 10px);margin-left: 5px" })
+                                                .HtmlAttributes(new { style = "width:143%; height:calc(1.42857143em + 10px);margin-left: 5px" })
 
                                                 .AutoBind(false)
                                                 .DataSource(source =>
@@ -201,7 +211,7 @@
                                                     })
                                                     .ServerFiltering(true);
                                                 })
-                                                )
+                                                    )
                                                 </div>
                                                 <div class="col-1" style="padding-left: 0px;max-width: 1.333333%;margin-top: -5px;">
                                                     <span style="margin-top: -2px;">
@@ -226,7 +236,7 @@
                                                 @(Html.Kendo().TextBox()
                                             .Name("templateMark")
                                             .HtmlAttributes(new { placeholder = "Template Mark", style = "width: 100%;height: calc(1.42857143em + 10px);" })
-                                            )
+                                                )
                                             </div>
                                             <span>Save</span>
                                             <span class="pd-left-30">Get</span>
@@ -238,7 +248,7 @@
                                                 @(Html.Kendo().TextBox()
                                             .Name("tat")
                                             .HtmlAttributes(new { placeholder = "TAT", style = "width: 80%;height: calc(1.42857143em + 10px);" })
-                                            )
+                                                )
                                             </div>
                                             <span>Done</span>
                                         </div>
@@ -309,6 +319,7 @@
 <script>
     var data = [];
     myData = [];
+    var specdata = [];
     var curent;
     function customFunction(input) {
 
@@ -341,9 +352,10 @@
     function schemaTotal(response) {
         return data.length;
     }
-    var specdata = [];
+
     function onSelectaddSpecification(e) {
         var grid = $("#Grid").data("kendoGrid");
+        specdata = grid.dataSource._pristineData;
         //grid.bind("save", grid_save);
         var dataItem = this.dataItem(e.item.index());
         $.ajax({
@@ -420,23 +432,30 @@
                         pageSize: 20,
                     });
                     grid.setDataSource(dataSource);
-                    for (var i = 0; i < response.length; i++) {
-                        const a = {
-                            simpleName: response[i].sampleName,
-                            simpleCode: response[i].sampleCode,
-                            descriptionCustomer: response[i].sampleDescription,
-                            innerCode: response[i].LVNCode,
-                            remarkToLab: response[i].remarkToLab,
-                            weight: response[i].weight,
-                            sampleMatrix: 1,
-                            sampleMatrixValue: response[i].sampleMatrix,
-                            addSpecification: 1,
-                            addSpecificationValue: response[i].specification,
-                            templateMark: "",
-                            tat: "",
-                            data: response[i].Data
-                        };
-                        myData.push(a);
+                    for (var i = 0; i < parseInt(document.getElementById("flag").innerHTML); i++) {
+                        if (response[i] !== undefined) {
+                            const a = {
+                                simpleName: response[i].sampleName,
+                                simpleCode: response[i].sampleCode,
+                                descriptionCustomer: response[i].sampleDescription,
+                                innerCode: response[i].LVNCode,
+                                remarkToLab: response[i].remarkToLab,
+                                weight: response[i].weight,
+                                sampleMatrix: 1,
+                                sampleMatrixValue: response[i].sampleMatrix,
+                                addSpecification: 1,
+                                addSpecificationValue: response[i].specification,
+                                templateMark: "",
+                                tat: "",
+                                data: response[i].Data
+
+                            };
+                            myData.push(a);
+                        } else {
+                            const a = { simpleName: '', simpleCode: '', descriptionCustomer: '', innerCode: '', remarkToLab: '', weight: '', sampleMatrix: -1, sampleMatrixValue: '', addSpecification: -1, addSpecificationValue: '', templateMark: '', tat: '' };
+                            myData.push(a);
+                        }
+
                     }
                     //$.ajax({
                     //    type: "GET",
@@ -562,7 +581,7 @@
             }
         }
 
-        
+
     }
 
     function checkClass(classList) {
@@ -595,6 +614,7 @@
         response[curent - 1].addSpecificationValue = comboAddSpecification._prev;
         // var hander = handerDataGrid()
         response[curent - 1].data = handerDataGrid();
+        response[curent - 1].deleted = handerDataGridDeleted();
         const resp = response.slice(req_per_page * (page_no - 1), req_per_page * page_no);
         if (response[page_no - 1].simpleCode === '') {
             var requestNo = ["SampleCode", "InLabCode"];
@@ -623,7 +643,14 @@
         $('#templateMark').val(response[page_no - 1].templateMark);
         $('#tat').val(response[page_no - 1].tat);
         comboboxsampleMatrix.select(parseInt(response[page_no - 1].sampleMatrix));
-        comboAddSpecification.select(parseInt(response[page_no - 1].addSpecification));
+        if (response[page_no - 1].addSpecificationValue.length > 0) {
+            $("#addSpecification").data("kendoComboBox").value(comboAddSpecification.dataSource._pristineData.filter(x => x.specification === response[page_no - 1].addSpecificationValue)[0].analysisCode);
+
+        } else {
+             comboAddSpecification.select(parseInt(response[page_no - 1].addSpecification));
+        }
+
+        // comboAddSpecification.select(parseInt(response[page_no - 1].addSpecification));
         var dataSource = new kendo.data.DataSource({
             data: response[page_no - 1].data,
             pageSize: 20,
@@ -631,6 +658,26 @@
         grid.setDataSource(dataSource);
     }
 
+    function handerDataGridDeleted(request) {
+        var myGrid = [];
+        var grid = $("#Grid").data("kendoGrid");
+        for (var i = 0; i < grid.dataSource._destroyed.length; i++) {
+            var object = {
+                analysisCode: grid.dataSource._destroyed[i].analysisCode,
+                lOD: grid.dataSource._destroyed[i].LOD,
+                mark: grid.dataSource._destroyed[i].Mark,
+                method: grid.dataSource._destroyed[i].method,
+                price: grid.dataSource._destroyed[i].Price,
+                specification: grid.dataSource._destroyed[i].specification,
+                tAT: grid.dataSource._destroyed[i].TAT,
+                unit: grid.dataSource._destroyed[i].unit,
+                urgent: grid.dataSource._destroyed[i].Urgent,
+            };
+
+            myGrid.push(object);
+        }
+        return myGrid;
+    }
     function handerDataGrid(request) {
         var myGrid = [];
         var grid = $("#Grid").data("kendoGrid");
@@ -650,7 +697,6 @@
         }
         return myGrid;
     }
-
     function SaveEntity() {
 
         var saveRequest = [];
@@ -673,10 +719,15 @@
             response[cr - 1].sampleMatrixValue = comboboxsampleMatrix._prev;
             response[cr - 1].addSpecificationValue = comboAddSpecification._prev;
             response[cr - 1].data = handerDataGrid();
+            response[cr - 1].deleted = handerDataGridDeleted();
             for (var i = 0; i < response.length; i++) {
                 var arr = [];
+                 var arrdelete = [];
                 if (response[i].data !== undefined) {
                     arr = response[i].data;
+                }
+                if (response[i].deleted !== undefined) {
+                    arrdelete = response[i].deleted;
                 }
                 const object = {
                     requestNo: document.getElementById("requestNo").innerHTML,
@@ -689,6 +740,7 @@
                     sampleMatrix: response[i].sampleMatrixValue,
                     specification: response[i].addSpecificationValue,
                     data: arr,
+                    deleted: arrdelete,
                 }
                 saveRequest.push(object);
             }
@@ -708,6 +760,7 @@
                 sampleMatrix: comboboxsampleMatrix._prev,
                 specification: comboAddSpecification._prev,
                 data: handerDataGrid(),
+                deleted: handerDataGridDeleted(),
             }
             saveRequest.push(object);
             SaveAnalysisRequestData(saveRequest);
@@ -715,32 +768,32 @@
     }
 
     function SaveAnalysisRequestData(SaveRq) {
-        var check = verify(SaveRq);
-        if (check === true) {
-            $.ajax({
-                type: "POST",
-                url: "/CustomerRequest/SaveEntityAnalysisRequestData",
-                data: JSON.stringify(SaveRq),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (response) {
-                    var notification = $("#notification").data("kendoNotification");
-                    notification.show({
-                        message: "Save Successful"
-                    }, "success");
+        // var check = verify(SaveRq);
+        //if (check === true) {
 
-                },
-                error: function () {
-                    var notification = $("#notification").data("kendoNotification");
-                    notification.show({
-                        title: "Wrong Save",
-                        message: "Save error"
-                    }, "error");
-                }
-            });
-        }
+        //}
 
+        $.ajax({
+            type: "POST",
+            url: "/CustomerRequest/SaveEntityAnalysisRequestData",
+            data: JSON.stringify(SaveRq),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                var notification = $("#notificationEdit").data("kendoNotification");
+                notification.show({
+                    message: "Save Successful"
+                }, "success");
 
+            },
+            error: function () {
+                var notification = $("#notificationEdit").data("kendoNotification");
+                notification.show({
+                    title: "Wrong Save",
+                    message: "Save error"
+                }, "error");
+            }
+        });
     }
 
 
@@ -757,7 +810,7 @@
         }
         if (string1.length > 0) {
             var mess = 'Save error samplematrix of sample lisst' + string.substring(0, string.length - 1);
-            var notification = $("#notification").data("kendoNotification");
+            var notification = $("#notificationEdit").data("kendoNotification");
             notification.show({
                 title: "Wrong Save",
                 message: mess

@@ -59,6 +59,7 @@ namespace DRLab.Data.ViewModels
     public class CreateCustomeRequest
     {
         public List<E00T_CustomerGridViewModel> Data { get; set; }
+        public List<E00T_CustomerGridViewModel> Deleted { get; set; }
         public string requestNo { get; set; }
         public string LVNCode { get; set; }
         public string sampleCode { get; set; }

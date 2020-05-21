@@ -35,50 +35,72 @@
             data: { requestNo: document.getElementById("flag4").innerHTML },
             dataType: "Json",
             success: function (response) {
-                console.log(response);
-                var grid = $("#Grid").data("kendoGrid");
-                myarr = [];
-                reponseGetById = response;
-                $('#simpleCode').val(response[0].sampleCode);
-                $('#innerCode').val(response[0].LVNCode);
-                $('#simpleName').val(response[0].sampleName);
-                $('#descriptionCustomer').val(response[0].sampleDescription);
-                $('#remarkToLab').val(response[0].remarkToLab);
-                $('#sampleMatrix').val(response[0].sampleMatrix);
-                $('#weight').val(response[0].weight);
-                $('#templateMark').val('');
-                $('#tat').val('');
+                
+                $.ajax({
+                    type: "GET",
+                    url: "/Testing_Info/GetTestingInfoCombobox",
+                    data: { text: "" },
+                    dataType: "json",
 
-                var dataSource = new kendo.data.DataSource({
-                    data: response[0].Data,
-                    pageSize: 20,
+                    success: function (responseCbb) {
+                        
+                        //comboAddSpecification.select(comboAddSpecification.dataSource._pristineData.indexOf(comboAddSpecification.dataSource._pristineData.filter(x => x.specification === response[0].specification)[0]));
+                        $.ajax({
+                            type: "GET",
+                            url: "/SampleMatrix/GetSampleMatrix",
+                            data: { text: "" },
+                            dataType: "json",
+
+                            success: function (responseCbbMatrix) {
+
+                                //comboAddSpecification.select(comboAddSpecification.dataSource._pristineData.indexOf(comboAddSpecification.dataSource._pristineData.filter(x => x.specification === response[0].specification)[0]));
+                                console.log(response);
+                                var grid = $("#Grid").data("kendoGrid");
+                                myarr = [];
+                                reponseGetById = response;
+                                $('#simpleCode').val(response[0].sampleCode);
+                                $('#innerCode').val(response[0].LVNCode);
+                                $('#simpleName').val(response[0].sampleName);
+                                $('#descriptionCustomer').val(response[0].sampleDescription);
+                                $('#remarkToLab').val(response[0].remarkToLab);
+                                $('#sampleMatrix').val(response[0].sampleMatrix);
+                                $('#weight').val(response[0].weight);
+                                $('#templateMark').val('');
+                                $('#tat').val('');
+
+                                var dataSource = new kendo.data.DataSource({
+                                    data: response[0].Data,
+                                    pageSize: 20,
+                                });
+                                grid.setDataSource(dataSource);
+                                const data = { "req_per_page": 1, "page_no": 1 };
+                                pagination(data, parseInt(document.getElementById("flag").innerHTML));
+                                console.log(responseCbb);
+                                var comboAddSpecification = $("#addSpecification").data("kendoComboBox");
+                                var dataSource = new kendo.data.DataSource({
+                                    data: responseCbb
+                                });
+                                comboAddSpecification.setDataSource(dataSource);
+                                comboAddSpecification.dataSource._pristineData = responseCbb;
+                                var combosampleMatrix = $("#sampleMatrix").data("kendoComboBox");
+                                var dataSource1 = new kendo.data.DataSource({
+                                    data: responseCbbMatrix
+                                });
+                                combosampleMatrix.setDataSource(dataSource1);
+                                combosampleMatrix.dataSource._pristineData = responseCbbMatrix;
+                                $("#sampleMatrix").data("kendoComboBox").value(responseCbbMatrix.filter(x => x.sampleMatrix === response[0].sampleMatrix)[0].matrixID);
+                                $("#addSpecification").data("kendoComboBox").value(responseCbb.filter(x => x.specification === response[0].specification)[0].analysisCode);
+
+                            },
+                            error: function () {
+
+                            }
+                        });
+                    },
+                    error: function () {
+
+                    }
                 });
-                grid.setDataSource(dataSource);
-                const data = { "req_per_page": 1, "page_no": 1 };
-                pagination(data, parseInt(document.getElementById("flag").innerHTML));
-                //$.ajax({
-                //    type: "GET",
-                //    url: "/Testing_Info/GetTestingInfoCombobox",
-                //    data: { text: "" },
-                //    dataType: "json",
-
-                //    success: function (responseCbb) {
-                       
-                //        console.log(responseCbb);
-                //        var comboAddSpecification = $("#addSpecification").data("kendoComboBox");
-                //        var dataSource = new kendo.data.DataSource({
-                //            data: responseCbb
-                //        });
-                //        comboAddSpecification.setDataSource(dataSource);
-                //        comboAddSpecification.dataSource._pristineData = responseCbb;
-
-                //        comboAddSpecification.select(comboAddSpecification.dataSource._pristineData.indexOf(comboAddSpecification.dataSource._pristineData.filter(x => x.specification === response[0].specification)[0]));
-
-                //    },
-                //    error: function () {
-
-                //    }
-                //});
             },
             error: function () {
             }

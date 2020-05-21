@@ -27,9 +27,11 @@ namespace DRLab.Data.Repositories
                
                 if (item.Data.Count() > 0 && item.sampleName != "")
                 {
+
                     foreach (var iitem in item.Data)
                     {
-                        var check = Entities.Where(x => x.LVNCode == item.LVNCode && x.requestNo == item.requestNo).AsNoTracking().ToList();
+                        var check = Entities.Where(x=>x.analysisCode == iitem.analysisCode && x.requestNo == item.requestNo).AsNoTracking().ToList();
+                       // var check = Entities.Where(x => x.LVNCode == item.LVNCode && x.requestNo == item.requestNo).AsNoTracking().ToList();
                         if (check.Count() == 0)
                         {
                             var e08T_AnalysisRequest_Data = new E08T_AnalysisRequest_Data()
@@ -44,7 +46,7 @@ namespace DRLab.Data.Repositories
                                 price = iitem.Price,
                                 requestNo = item.requestNo,
                                 sampleMatrix = item.sampleMatrix,
-                                specification = item.specification,
+                                specification = iitem.specification,
                                 specMark = null,
                                 turnAroundDay = null,
                                 unit = iitem.unit,
@@ -65,7 +67,7 @@ namespace DRLab.Data.Repositories
                                 price = iitem.Price,
                                 requestNo = item.requestNo,
                                 sampleMatrix = item.sampleMatrix,
-                                specification = item.specification,
+                                specification = iitem.specification,
                                 specMark = null,
                                 turnAroundDay = null,
                                 unit = iitem.unit,
@@ -73,9 +75,40 @@ namespace DRLab.Data.Repositories
                             };
                             Entities.Update(e08T_AnalysisRequest_Data);
                         }
-                        
                     }
                 }
+
+                if (item.Deleted.Count > 0)
+                {
+                    foreach(var iii in item.Deleted)
+                    {
+                        var checkDelete = Entities.Where(x => x.analysisCode == iii.analysisCode && x.requestNo == item.requestNo).AsNoTracking().ToList();
+
+                        if (checkDelete.Count() > 0)
+                        {
+                            var e08T_AnalysisRequest_Data = new E08T_AnalysisRequest_Data()
+                            {
+                                analysisCode = iii.analysisCode,
+                                LOD = iii.LOD,
+                                LVNCode = item.LVNCode,
+                                max = null,
+                                method = iii.method,
+                                min = null,
+                                precision = null,
+                                price = iii.Price,
+                                requestNo = item.requestNo,
+                                sampleMatrix = item.sampleMatrix,
+                                specification = item.specification,
+                                specMark = null,
+                                turnAroundDay = null,
+                                unit = iii.unit,
+                                urgentRate = iii.Urgent
+                            };
+                            Entities.Remove(e08T_AnalysisRequest_Data);
+                        }
+                    }
+                }
+                
             }
             await _e08T_AnalysisRequest_ItemRepository.CreatAnalysisRequestItem(request);
             return await Task.FromResult(true);

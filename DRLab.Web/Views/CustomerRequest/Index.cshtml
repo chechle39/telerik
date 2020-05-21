@@ -486,6 +486,7 @@
         response[curent - 1].addSpecificationValue = comboAddSpecification._prev;
         // var hander = handerDataGrid()
         response[curent - 1].data = handerDataGrid();
+         response[curent - 1].deleted = handerDataGridDeleted();
         const resp = response.slice(req_per_page * (page_no - 1), req_per_page * page_no);
         if (response[page_no - 1].simpleCode === '') {
             var requestNo = ["SampleCode", "InLabCode"];
@@ -542,7 +543,26 @@
         }
         return myGrid;
     }
+    function handerDataGridDeleted(request) {
+        var myGrid = [];
+        var grid = $("#Grid").data("kendoGrid");
+        for (var i = 0; i < grid.dataSource._destroyed.length; i++) {
+            var object = {
+                analysisCode: grid.dataSource._destroyed[i].analysisCode,
+                lOD: grid.dataSource._destroyed[i].LOD,
+                mark: grid.dataSource._destroyed[i].Mark,
+                method: grid.dataSource._destroyed[i].method,
+                price: grid.dataSource._destroyed[i].Price,
+                specification: grid.dataSource._destroyed[i].specification,
+                tAT: grid.dataSource._destroyed[i].TAT,
+                unit: grid.dataSource._destroyed[i].unit,
+                urgent: grid.dataSource._destroyed[i].Urgent,
+            };
 
+            myGrid.push(object);
+        }
+        return myGrid;
+    }
     function SaveEntity() {
        
         var saveRequest = [];
@@ -565,10 +585,15 @@
             response[cr - 1].sampleMatrixValue = comboboxsampleMatrix._prev;
             response[cr - 1].addSpecificationValue = comboAddSpecification._prev;
             response[cr - 1].data = handerDataGrid();
+            response[cr - 1].deleted = handerDataGridDeleted();
             for (var i = 0; i < response.length; i++) {
                 var arr = [];
+                var arrdelete = [];
                 if (response[i].data !== undefined) {
                     arr = response[i].data;
+                }
+                 if (response[i].deleted !== undefined) {
+                    arrdelete = response[i].deleted;
                 }
                 const object = {
                     requestNo: document.getElementById("requestNo").innerHTML,
@@ -581,6 +606,7 @@
                     sampleMatrix: response[i].sampleMatrixValue,
                     specification: response[i].addSpecificationValue,
                     data: arr,
+                    deleted: arrdelete,
                 }
                 saveRequest.push(object);
             }
@@ -600,6 +626,7 @@
                 sampleMatrix: comboboxsampleMatrix._prev,
                 specification: comboAddSpecification._prev,
                 data: handerDataGrid(),
+                deleted: handerDataGridDeleted(),
             }
             saveRequest.push(object);
             SaveAnalysisRequestData(saveRequest);
