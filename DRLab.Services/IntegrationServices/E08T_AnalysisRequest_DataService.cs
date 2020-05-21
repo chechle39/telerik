@@ -21,5 +21,10 @@ namespace DRLab.Services.IntegrationServices
             _uow.SaveChanges();
             return x;
         }
+
+        public async Task<List<CreateCustomeRequest>> GetAnalysisByRequestNo(string requestNo)
+        {
+            return await _e08T_AnalysisRequest_DataService.GetAnalysisByRequestNo(requestNo);
+        }
     }
 }

@@ -7,5 +7,6 @@ namespace DRLab.Services.Interfaces
     public interface IE08T_AnalysisRequest_DataService
     {
         Task<bool> CreateAnalysisRequestData(List<CreateCustomeRequest> request);
+        public Task<List<CreateCustomeRequest>> GetAnalysisByRequestNo(string requestNo);
     }
 }

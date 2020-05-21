@@ -58,23 +58,15 @@ namespace DRLab.Web.Controllers
             {
                 foreach (var data in data_info)
                 {
-                    if (data != null) {                       
-                        var TestingInfoList = await _specificationDataService.GetAll();
-                        for (int i = 0; i < TestingInfoList.Count; i++)
-                        {
-                            if (data.specification == TestingInfoList[i].specification) {
-                                data.specID = TestingInfoList[i].specID;                               
-                            }
-                          
-                        }
+                    
                         await _testDataService.Create(data);
-                    }               
+                    
                 }
             }
 
             return Json(results.ToDataSourceResult(request, ModelState));
         }
-        public ActionResult TestingInfo_Update([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<E08T_Testing_InfoViewModel> data_info)
+        public async Task<ActionResult> TestingInfo_UpdateAsync([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<E08T_Testing_InfoViewModel> data_info)
         {
             if (data_info != null && ModelState.IsValid)
             {
@@ -82,7 +74,7 @@ namespace DRLab.Web.Controllers
                 {
                     if (data != null)
                     {
-                        _testDataService.Update(data);
+                        await _testDataService.Update(data);
                     }
                 }
             }

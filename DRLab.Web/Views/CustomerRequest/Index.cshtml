@@ -79,9 +79,10 @@
                                     <div class="form-group row pad-25">
 
                                     </div>
-                                    <div class="form-group row">
+                                    <div class="form-group row" style="    padding-bottom: 15px;
+">
                                         <div class="col-2">
-                                            <span style="color: #922999">Sample List</span>
+                                            <span style="color: #922999;text-decoration: underline double;">Sample List</span>
                                         </div>
 
                                         <div class="box pagination">
@@ -92,14 +93,14 @@
                                         <div class="col-5 row">
                                             <span>Sample Name</span>
 
-                                            <div class="col-sm-9 ">
+                                            <div class="col-sm-9 mr-t ">
                                                 <textarea id="simpleName" required="required" placeholder="Sample Name" class="k-textbox" style="margin-left: 7px;width: 100%;height: calc(1.42857143em + 10px)"></textarea>
                                             </div>
                                         </div>
 
                                         <div class="row col-5">
                                             <span>Sample Code</span>
-                                            <div class="col-sm-9">
+                                            <div class="col-sm-9 mr-t">
                                                 @(Html.Kendo().TextBox()
                                                 .Name("simpleCode")
                                                 .HtmlAttributes(new { placeholder = "Sample Code", style = "width: 50%;height: calc(1.42857143em + 10px);margin-left: 8px" })
@@ -114,17 +115,17 @@
 
                                         <div class="col-5 row">
                                             <span>Description</span>
-                                            <div class="col-sm-9">
-                                                <textarea id="descriptionCustomer" placeholder="Description" class="k-textbox" style="width: 100%;margin-left: 24px;height: calc(1.42857143em + 10px)"></textarea>
+                                            <div class="col-sm-9 mr-t">
+                                                <textarea id="descriptionCustomer" placeholder="Description" class="k-textbox" style="width: 100%;margin-left: 21px;height: calc(1.42857143em + 10px)"></textarea>
                                             </div>
                                         </div>
 
                                         <div class="row col-5">
                                             <span>Inner Code</span>
-                                            <div class="col-sm-9">
+                                            <div class="col-sm-9 mr-t">
                                                 @(Html.Kendo().TextBox()
                                                 .Name("innerCode")
-                                                .HtmlAttributes(new { placeholder = "Inner Code", style = "width: 50%;height: calc(1.42857143em + 10px);margin-left: 24px" })
+                                                .HtmlAttributes(new { placeholder = "Inner Code", style = "width: 50%;height: calc(1.42857143em + 10px);margin-left: 22px" })
                                                 )
                                             </div>
 
@@ -138,7 +139,7 @@
 
                                         <div class="col-5 row">
                                             <span>Remark To Lab</span>
-                                            <div class="col-sm-9">
+                                            <div class="col-sm-9 mr-t">
                                                 <textarea id="remarkToLab" placeholder="Remark To Lab" class="k-textbox" style="margin-left: 2px;width: 100%;height: calc(1.42857143em + 10px)"></textarea>
 
                                             </div>
@@ -146,10 +147,10 @@
 
                                         <div class="row col-5">
                                             <span>Weight</span>
-                                            <div class="col-sm-9">
+                                            <div class="col-sm-9 mr-t">
                                                 @(Html.Kendo().TextBox()
                                                 .Name("weight")
-                                                .HtmlAttributes(new { placeholder = "Weight", style = "width: 50%;height: calc(1.42857143em + 10px);margin-left: 50px", })
+                                                .HtmlAttributes(new { placeholder = "Weight", style = "width: 50%;height: calc(1.42857143em + 10px);margin-left: 45px", })
                                                 )
                                             </div>
 
@@ -160,7 +161,7 @@
 
                                         <div class="col-3 row">
                                             <span>Sample Matrix</span>
-                                            <div class="col-sm-7">
+                                            <div class="col-sm-7 mr-t">
                                                 @(Html.Kendo().ComboBox()
                                                 .Name("sampleMatrix")
                                                 .Placeholder("Select Sample Matrix")
@@ -184,14 +185,14 @@
 
                                         <div class="row col-5" style="margin-left: 39px;">
                                             <span>Add Specification</span>
-                                            <div class="col-sm-9 row">
+                                            <div class="col-sm-9 row mr-t">
                                                 <div class="col-11">
                                                     @(Html.Kendo().ComboBox()
                                                 .Name("addSpecification")
                                                 .Placeholder("Select Specification")
                                                 .DataTextField("specification")
                                                 .DataValueField("analysisCode")
-                                                .HtmlAttributes(new { style = "width:100%; height:calc(1.42857143em + 10px);margin-left: 5px" })
+                                                .HtmlAttributes(new { style = "width:101%; height:calc(1.42857143em + 10px);margin-left: 7px" })
                                                  .Events(e =>
                                                  {
                                                      e.Select("onSelectaddSpecification");
@@ -208,7 +209,7 @@
                                                 })
                                                 )
                                                 </div>
-                                                <div class="col-1" style="padding-left: 0px;">
+                                                <div class="col-1" style="padding-left: 0px;max-width: 1.333333%;margin-top: -5px">
                                                     <span style="margin-top: -2px;">
                                                         @await Html.PartialAsync("../Testing_Info/PartialViewAddTestInfo")
                                                     </span>
@@ -227,7 +228,7 @@
 
                                         <div class="col-5 row">
                                             <span>Template Mark</span>
-                                            <div class="col-sm-5">
+                                            <div class="col-sm-5 mr-t">
                                                 @(Html.Kendo().TextBox()
                                             .Name("templateMark")
                                             .HtmlAttributes(new { placeholder = "Template Mark", style = "width: 100%;height: calc(1.42857143em + 10px);" })
@@ -239,7 +240,7 @@
 
                                         <div class="col-5 row">
                                             <span>TAT (+/-)</span>
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-2 mr-t">
                                                 @(Html.Kendo().TextBox()
                                             .Name("tat")
                                             .HtmlAttributes(new { placeholder = "TAT", style = "width: 80%;height: calc(1.42857143em + 10px);" })
@@ -401,7 +402,6 @@
     function active_page(element, rows, req_per_page) {
         if (myData.length === 0) {
             for (var i = 0; i < JSON.parse(window.atob(rows)).length; i++) {
-               
                 const a = { simpleName: '', simpleCode: '', descriptionCustomer: '', innerCode: '', remarkToLab: '', weight: '', sampleMatrix: -1, sampleMatrixValue: '', addSpecification: -1, addSpecificationValue: '', templateMark: '', tat: '' };
                 myData.push(a);
             }
@@ -488,7 +488,6 @@
         response[curent - 1].data = handerDataGrid();
         const resp = response.slice(req_per_page * (page_no - 1), req_per_page * page_no);
         if (response[page_no - 1].simpleCode === '') {
-<<<<<<< HEAD
             var requestNo = ["SampleCode", "InLabCode"];
             $.ajax({
                 type: "POST",
@@ -504,25 +503,8 @@
                 }
             });
         } else {
-            $('#simpleCode').val(response[page_no - 1].sampleCode);
-            $('#innerCode').val(response[page_no - 1].inLabCode);
-=======
-            var requestNo = "RequestNo";
-            $.ajax({
-            type: "GET",
-            url: "/GetCounter/GetCounterString",
-            data: { request: requestNo },
-          //  dataType: "text",
-            async: false,
-            success: function (response) {
-                $('#simpleCode').val(response);
-                $('#innerCode').val(response);
-            },
-            error: function () {
-
-            }
-        });
->>>>>>> 4466cb2800ef7b932c5d5c1b349bbc4faf6e8d69
+            $('#simpleCode').val(response[page_no - 1].simpleCode);
+            $('#innerCode').val(response[page_no - 1].innerCode);
         }
         $('#simpleName').val(response[page_no - 1].simpleName);
         $('#descriptionCustomer').val(response[page_no - 1].descriptionCustomer);
@@ -531,6 +513,7 @@
         $('#weight').val(response[page_no - 1].weight);
         $('#templateMark').val(response[page_no - 1].templateMark);
         $('#tat').val(response[page_no - 1].tat);
+        specdata = []
         comboboxsampleMatrix.select(parseInt(response[page_no - 1].sampleMatrix));
         comboAddSpecification.select(parseInt(response[page_no - 1].addSpecification));
         var dataSource = new kendo.data.DataSource({
@@ -811,12 +794,27 @@
     .card-body {
         padding-top: 0;
     }
+
     .card-header {
         border-bottom: 0px;
     }
     .pad-25 {
         padding-bottom: 25px;
     }
+    /*.k-editable {
+        background-color: white !important;
+    }
+    .k-grid-add {
+        height: 30px;
+        margin-top: -10px;
+    }*/
+    .mr-t {
+        margin-top: -4px;
+    }
+    .span {
+ 
+    }
+    
 </style>
 <script id="errorTemplate" type="text/x-kendo-template">
     <div class="wrong-pass">

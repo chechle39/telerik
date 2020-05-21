@@ -1,12 +1,11 @@
 ﻿@(Html.Kendo().Grid<DRLab.Data.ViewModels.E08T_Testing_InfoViewModel>()
     .Name("Testing_Info")
     .Columns(columns =>
-    {
-        columns.Bound(p => p.analysisCode);
+    {       
         //columns.ForeignKey(p => p.specification, (System.Collections.IEnumerable)ViewData["categories"], "specID", "specification").EditorTemplateName("PopulateCategories1")
         //.Title("Specification").Width(300);
-        columns.Bound(p => p.specification).Width(400);
-        columns.Bound(p => p.method).Width(400);
+        columns.Bound(p => p.specification).Width(300);
+        columns.Bound(p => p.method).Width(300);
         columns.Bound(p => p.unit);
         columns.Bound(p => p.turnAroundTime);
         columns.Bound(p => p.reformTestResult);

@@ -2,10 +2,6 @@ var customerController = function () {
     var self = this;
     this.initialize = function () {
         initForm();
-<<<<<<< HEAD
-=======
-       
->>>>>>> 4466cb2800ef7b932c5d5c1b349bbc4faf6e8d69
     }
     var sampleListCount;
 
@@ -19,30 +15,18 @@ var customerController = function () {
     });
 
     function initForm() {
-<<<<<<< HEAD
         var requestNo = ["RequestNo", "SampleCode", "InLabCode"];
         return $.ajax({
             type: "POST",
-=======
-        var requestNo = "RequestNo";
-         $.ajax({
-            type: "GET",
->>>>>>> 4466cb2800ef7b932c5d5c1b349bbc4faf6e8d69
             url: "/GetCounter/GetCounterString",
             data:  JSON.stringify(requestNo) ,
             dataType: "json",
             contentType: "application/json",
             success: function (response) {
-<<<<<<< HEAD
                 $('#requestNo').val(response.requestNo);
                 $('#simpleCode').val(response.sampleCode);
                 $('#innerCode').val(response.inLabCode); 
                 $('#vat').val(0)
-=======
-                $('#requestNo').val(response);
-                $('#simpleCode').val("lalala");
-                $('#innerCode').val("lalala1");
->>>>>>> 4466cb2800ef7b932c5d5c1b349bbc4faf6e8d69
             },
             error: function () {
 

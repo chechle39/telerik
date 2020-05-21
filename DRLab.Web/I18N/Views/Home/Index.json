@@ -1,17 +1,11 @@
 ﻿{
-  "Hello": {
-    "Values": {
-      "en-US": "Hello!",
-      "vi-VN": "Xin chào"
-    }
-  },
-  "TotalRequest": {
+  "Home.Index.TotalRequest": {
     "Values": {
       "en-US": "Total Request",
       "vi-VN": "Tổng số yêu cầu"
     }
   },
-  "RequestInProgress": {
+  "Home.Index.RequestInProgress": {
     "Values": {
       "en-US": "Request in progress",
       "vi-VN": "Yêu cầu đang thực hiện"

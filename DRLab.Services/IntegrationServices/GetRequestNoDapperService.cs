@@ -50,6 +50,13 @@ namespace DRLab.Services.IntegrationServices
                                  "GetCounter", dynamicParameters, commandType: CommandType.StoredProcedure);
                         counter.inLabCode = rq.ToList()[0].ToString();
                     }
+                    if (item == "AnalysisCode")
+                    {
+                        dynamicParameters.Add("@CounterCode", item);
+                        var rq = await sqlConnection.QueryAsync<string>(
+                                 "GetCounter", dynamicParameters, commandType: CommandType.StoredProcedure);
+                        counter.analysisCode = rq.ToList()[0].ToString();
+                    }
                 }
                
                 return counter;

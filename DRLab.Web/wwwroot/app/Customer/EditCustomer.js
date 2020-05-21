@@ -1,10 +1,11 @@
 ﻿var customerDetailController = function () {
     var self = this;
+    var sampleListCount;
+    var reponseGetById;
     this.initialize = function () {
         initForm();
     }
-    var sampleListCount;
-
+    
     $("#btnCancel").on('click', function () {
         $('#exampleModal').modal('hide');
         $('#exampleModal').css('display', 'none');
@@ -13,23 +14,73 @@
         $('#exampleModal').modal('hide');
         $('#exampleModal').css('display', 'none');
     });
-
+   
     function initForm() {
         var requestNo = ["RequestNo", "SampleCode", "InLabCode"];
-        return $.ajax({
-            type: "POST",
-            url: "/GetCounter/GetCounterString",
-            data: JSON.stringify(requestNo),
-            dataType: "json",
-            contentType: "application/json",
+        var template = $('#table-template').html();
+        var render = "";
+
+        render += Mustache.render(template, {
+            requestNo: document.getElementById("flag4").innerHTML,
+            receivceDate: drlab.dateTimeFormatJson(document.getElementById("flag3").innerHTML),
+            dateOfSendingResult: drlab.dateTimeFormatJson(document.getElementById("flag2").innerHTML),
+            contactName: document.getElementById("flag6").innerHTML,
+            contactEmail: document.getElementById("flag5").innerHTML,
+            companyName: document.getElementById("flag7").innerHTML
+        });
+        $('#tbl-content').html(render);
+        $.ajax({
+            type: "GET",
+            url: "/CustomerRequest/GetAnalysisByRequestNo",
+            data: { requestNo: document.getElementById("flag4").innerHTML },
+            dataType: "Json",
             success: function (response) {
-                $('#requestNo').val(response.requestNo);
-                $('#simpleCode').val(response.sampleCode);
-                $('#innerCode').val(response.inLabCode);
-                $('#vat').val(0)
+                console.log(response);
+                var grid = $("#Grid").data("kendoGrid");
+                myarr = [];
+                reponseGetById = response;
+                $('#simpleCode').val(response[0].sampleCode);
+                $('#innerCode').val(response[0].LVNCode);
+                $('#simpleName').val(response[0].sampleName);
+                $('#descriptionCustomer').val(response[0].sampleDescription);
+                $('#remarkToLab').val(response[0].remarkToLab);
+                $('#sampleMatrix').val(response[0].sampleMatrix);
+                $('#weight').val(response[0].weight);
+                $('#templateMark').val('');
+                $('#tat').val('');
+
+                var dataSource = new kendo.data.DataSource({
+                    data: response[0].Data,
+                    pageSize: 20,
+                });
+                grid.setDataSource(dataSource);
+                const data = { "req_per_page": 1, "page_no": 1 };
+                pagination(data, parseInt(document.getElementById("flag").innerHTML));
+                //$.ajax({
+                //    type: "GET",
+                //    url: "/Testing_Info/GetTestingInfoCombobox",
+                //    data: { text: "" },
+                //    dataType: "json",
+
+                //    success: function (responseCbb) {
+                       
+                //        console.log(responseCbb);
+                //        var comboAddSpecification = $("#addSpecification").data("kendoComboBox");
+                //        var dataSource = new kendo.data.DataSource({
+                //            data: responseCbb
+                //        });
+                //        comboAddSpecification.setDataSource(dataSource);
+                //        comboAddSpecification.dataSource._pristineData = responseCbb;
+
+                //        comboAddSpecification.select(comboAddSpecification.dataSource._pristineData.indexOf(comboAddSpecification.dataSource._pristineData.filter(x => x.specification === response[0].specification)[0]));
+
+                //    },
+                //    error: function () {
+
+                //    }
+                //});
             },
             error: function () {
-
             }
         });
 
@@ -46,7 +97,7 @@
     const data = { "req_per_page": 1, "page_no": 1 };
 
     // At a time maximum allowed pages to be shown in pagination div
-    const pagination_visible_pages = 5;
+    const pagination_visible_pages = 10;
 
 
     // hide pages from pagination from beginning if more than pagination_visible_pages
@@ -97,6 +148,22 @@
     // Pagination logic implementation
     function pagination(data, lenth) {
         for (var i = 0; i < parseInt(document.getElementById("flag").innerHTML); i++) {
+            //if (reponseGetById.length > 0) {
+            //    const a = {
+            //        simpleName: reponseGetById[i].sampleName,
+            //        simpleCode: reponseGetById[i].sampleCode,
+            //        descriptionCustomer: reponseGetById[i].sampleDescription,
+            //        innerCode: reponseGetById[i].LVNCode,
+            //        remarkToLab: reponseGetById[i].remarkToLab,
+            //        weight: reponseGetById[i].weight,
+            //        sampleMatrix: reponseGetById[i].sampleMatrix,
+            //        addSpecification: reponseGetById[i].specification,
+            //        templateMark: '',
+            //        tat: '',
+            //        data: reponseGetById[i].Data
+            //    };
+            //    myarr.push(a);
+            //}
             const a = { simpleName: i, simpleCode: '', descriptionCustomer: '', innerCode: '', remarkToLab: '', weight: '', sampleMatrix: '', addSpecification: '', templateMark: '', tat: '' };
             myarr.push(a);
         }

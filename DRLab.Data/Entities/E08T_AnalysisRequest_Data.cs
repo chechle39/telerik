@@ -14,6 +14,28 @@ namespace DRLab.Data.Entities
     
     public partial class E08T_AnalysisRequest_Data
     {
+        private string mark;
+        private int? urgent;
+
+        public E08T_AnalysisRequest_Data()
+        {
+        }
+
+        public E08T_AnalysisRequest_Data(string analysisCode, string lOD, string mark, string method, int? price, string specification, string unit, int? urgent, double? min, double? max, string sampleMatrix)
+        {
+            this.analysisCode = analysisCode;
+            LOD = lOD;
+            this.mark = mark;
+            this.method = method;
+            this.price = Convert.ToInt32(price);
+            this.specification = specification;
+            this.unit = unit;
+            this.urgent = urgent;
+            this.min = min;
+            this.max = max;
+            this.sampleMatrix = sampleMatrix;
+        }
+
         public string requestNo { get; set; }
         public string LVNCode { get; set; }
         public string analysisCode { get; set; }

@@ -8,14 +8,11 @@ namespace DRLab.Data.ViewModels
     public class E00T_Customer_ItemViewModel
     {
         [Display(Name = "Contact ID")]
-        public long contactID { get; set; }
-        [Required]
+        public long contactID { get; set; }        
         [Display(Name = "Customer Code")]
-        public string customerCode { get; set; }
-        [Required]
+        public string customerCode { get; set; }     
         [Display(Name = "Contact Name")]
-        public string contactName { get; set; }
-        [Required]
+        public string contactName { get; set; }        
         [Display(Name = "Email")]
         public string email { get; set; }
         [Display(Name = "Address")]

@@ -12,7 +12,8 @@
              columns.Bound(p => p.address);
              columns.Bound(p => p.note).Hidden();
              columns.Bound(p => p.email).Hidden();
-             columns.Command(command => command.Destroy()).Width(120);
+             columns.Command(command => command.Edit()).Width(100);
+             columns.Command(command => command.Destroy()).Width(100);
          })
           .ClientRowTemplate(
               "<tr data-uid='#: uid #'>" +
@@ -29,14 +30,19 @@
 
                   "<span class='k-icon k-delete'></span>Delete</a>" +
                   "</td>" +
+                   "<td style='width:80px'>" +
+                      "<a class='k-button k-button-icontext k-grid-edit'" +
+
+                  "<span class='k-icon k-edit'></span>edit</a>" +
+                  "</td>" +
                "</tr>"
            )
 
           .ToolBar(toolbar =>
           {
-              toolbar.Create();             
+              toolbar.Create().Text("Add Customer Item");
           })
-        .Editable(editable => editable.Mode(GridEditMode.InCell))
+        .Editable(editable => editable.Mode(GridEditMode.PopUp))
         .Pageable()
         .Navigatable()
         .Sortable()
@@ -45,17 +51,19 @@
         .HtmlAttributes(new { style = "height:350px;" })
         .DataSource(dataSource => dataSource
         .Custom()
-        .Batch(true)
+        .Batch(true)      
         .PageSize(20)
         .Schema(schema =>
         {
             schema.Model(model =>
             {
                 model.Id(p => p.contactID);
-                model.Field(p => p.contactName);                
-                model.Field(p => p.customerCode);
-                model.Field(p => p.address);
+                model.Field(p => p.contactID);
+                model.Field(p => p.customerCode).DefaultValue("asdas").ToString();
+                model.Field(p => p.contactName);
+                model.Field(p => p.note);
                 model.Field(p => p.email);
+                model.Field(p => p.address);
             })
     .Data(d => "schemaData")
     .Total(t => "schemaTotal");

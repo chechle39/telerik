@@ -1,4 +1,5 @@
-﻿using DRLab.Data.Base;
+﻿using AutoMapper.QueryableExtensions;
+using DRLab.Data.Base;
 using DRLab.Data.Entities;
 using DRLab.Data.Interfaces;
 using DRLab.Data.ViewModels;
@@ -23,7 +24,8 @@ namespace DRLab.Data.Repositories
         {
             foreach(var item in request)
             {
-                if (item.Data.Count() > 0)
+               
+                if (item.Data.Count() > 0 && item.sampleName != "")
                 {
                     foreach (var iitem in item.Data)
                     {
@@ -94,6 +96,60 @@ namespace DRLab.Data.Repositories
                 }
             }
             return await Task.FromResult(true);
+        }
+
+        public async Task<List<CreateCustomeRequest>> GetAnalysisByRequestNo(string requestNo)
+        {
+            var dataList = new List<CreateCustomeRequest>();
+            var data = await _e08T_AnalysisRequest_ItemRepository.GetAnalysisRequest_ItemByRequestNo(requestNo);
+            foreach(var item in data)
+            {
+                var listGridManagementViewModel = new List<GridManagementViewModel>();
+                try
+                {
+                    var e00T_CustomerGridViewModel = new List<E00T_CustomerGridViewModel>();
+                    var analysisData = await Entities.Where(x => x.LVNCode == item.LVNCode).ToListAsync();
+                    foreach (var iitem in analysisData)
+                    {
+                        var dataCustomerGridViewModel = new E00T_CustomerGridViewModel()
+                        {
+                            analysisCode = iitem.analysisCode,
+                            LOD = iitem.LOD,
+                            Mark = null,
+                            max = iitem.max,
+                            method = iitem.method,
+                            min = iitem.min,
+                            Price = Convert.ToInt32(iitem.price),
+                            sampleMatrix = iitem.sampleMatrix,
+                            specification = iitem.specification,
+                            TAT = null,
+                            unit = iitem.unit,
+                            Urgent = iitem.urgentRate,
+
+                        };
+                        e00T_CustomerGridViewModel.Add(dataCustomerGridViewModel);
+                    }
+                    var createCustomeRequest = new CreateCustomeRequest()
+                    {
+                        Data = e00T_CustomerGridViewModel,
+                        specification = analysisData[0].specification,
+                        LVNCode = item.LVNCode,
+                        remarkToLab = item.remarkToLab,
+                        requestNo = item.requestNo,
+                        sampleCode = item.sampleCode,
+                        sampleDescription = item.sampleDescription,
+                        sampleMatrix = analysisData[0].sampleMatrix,
+                        sampleName = item.sampleName,
+                        weight = item.weight,
+                    };
+                    dataList.Add(createCustomeRequest);
+                } catch (Exception ex)
+                {
+
+                }
+                
+            }
+            return dataList;
         }
     }
 }

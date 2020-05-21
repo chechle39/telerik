@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using DRLab.Data.Base;
 using DRLab.Data.Entities;
 using DRLab.Data.Interfaces;
@@ -18,11 +19,13 @@ namespace DRLab.Data.Repositories
         private readonly IE00T_CustomerRepository _e00T_CustomerRepository;
         public readonly IE00T_Customer_ItemRepository _e00T_Customer_ItemRepository;
         private readonly IE08T_AnalysisRequest_DataRepository _e08T_AnalysisRequest_DataRepository;
-        public E08T_AnalysisRequest_InfoRepository(DbContext context, IE00T_CustomerRepository e00T_CustomerRepository, IE00T_Customer_ItemRepository e00T_Customer_ItemRepository, IE08T_AnalysisRequest_DataRepository e08T_AnalysisRequest_DataRepository) : base(context)
+        private readonly IE08T_AnalysisRequest_ItemRepository _e08T_AnalysisRequest_ItemRepository;
+        public E08T_AnalysisRequest_InfoRepository(DbContext context, IE00T_CustomerRepository e00T_CustomerRepository, IE00T_Customer_ItemRepository e00T_Customer_ItemRepository, IE08T_AnalysisRequest_DataRepository e08T_AnalysisRequest_DataRepository, IE08T_AnalysisRequest_ItemRepository e08T_AnalysisRequest_ItemRepository) : base(context)
         {
             _e00T_CustomerRepository = e00T_CustomerRepository;
             _e00T_Customer_ItemRepository = e00T_Customer_ItemRepository;
             _e08T_AnalysisRequest_DataRepository = e08T_AnalysisRequest_DataRepository;
+            _e08T_AnalysisRequest_ItemRepository = e08T_AnalysisRequest_ItemRepository;
         }
 
         public async Task<List<GridManagementViewModel>> GetRequestInfoGrid(SerchGridManagement request)
@@ -93,7 +96,29 @@ namespace DRLab.Data.Repositories
                 }
             }
             await _e08T_AnalysisRequest_DataRepository.DeleteAnalysisRequestData(requestNo);
+            await _e08T_AnalysisRequest_ItemRepository.DeleteAnalysisRequestItem(requestNo);
             return await Task.FromResult(true);
+        }
+
+        public async Task<AnalysisRequest_Info> GetRequestInfoByRequestNo(string request)
+        {
+            var data = await Entities.Where(x=>x.requestNo == request).ProjectTo<E08T_AnalysisRequest_InfoViewModel>().ToListAsync();
+            var getItem = await _e00T_Customer_ItemRepository.GetCustomerItemById(data[0].contactID);
+            var rs = new AnalysisRequest_Info()
+            {
+                requestNo = data[0].requestNo,
+                contactID = (getItem.Count() > 0) ? getItem[0].contactID : 0,
+                address = (getItem.Count() > 0) ? getItem[0].address: null,
+                contactName = (getItem.Count() > 0) ? getItem[0].contactName : null,
+                customerCode = (getItem.Count() > 0) ? getItem[0].customerCode : null,
+                customerID = data[0].customerID,
+                dateOfSendingResult = data[0].dateOfSendingResult,
+                email = (getItem.Count() > 0) ? getItem[0].email : null,
+                note = (getItem.Count() > 0) ? getItem[0].note : null,
+                receivceDate =  data[0].receivceDate,
+                numberSample = data[0].numberSample
+            };
+            return rs;
         }
     }
 }

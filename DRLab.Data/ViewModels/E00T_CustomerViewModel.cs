@@ -51,12 +51,14 @@ namespace DRLab.Data.ViewModels
         public Nullable<int> Urgent { get; set; }
         [Display(Name = "TAT")]
         public string TAT { get; set; }
+        public Nullable<double> min { get; set; }
+        public Nullable<double> max { get; set; }
+        public string sampleMatrix { get; set; }
     }
 
     public class CreateCustomeRequest
     {
         public List<E00T_CustomerGridViewModel> Data { get; set; }
-        //public CreateE08TAnalysisRequestItemCreate CreateAnalysisRequestItemCreate { get; set; }
         public string requestNo { get; set; }
         public string LVNCode { get; set; }
         public string sampleCode { get; set; }

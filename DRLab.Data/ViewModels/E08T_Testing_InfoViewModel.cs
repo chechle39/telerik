@@ -7,7 +7,7 @@ namespace DRLab.Data.ViewModels
     {
         [Display(Name = "Analysis Code")]
         public string analysisCode { get; set; }
-        [Required]
+       
         [Display(Name = "Spec ID")]
         public Nullable<long> specID { get; set; }
         [Required]
@@ -22,7 +22,7 @@ namespace DRLab.Data.ViewModels
         public double turnAroundTime { get; set; }
         
         public bool reformTestResult { get; set; }
-        [Display(Name = "note")]
+        [Display(Name = "Note")]
         public string note { get; set; }
     }
     public class E08T_Testing_InfoViewModel1

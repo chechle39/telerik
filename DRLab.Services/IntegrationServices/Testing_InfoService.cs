@@ -15,14 +15,16 @@ namespace DRLab.Services.IntegrationServices
         private static bool UpdateDatabase = false;
         private readonly IRepository<E08T_Testing_Info> _test;
         private readonly ISpecificationService _Specifi;
+        private readonly IGetRequestNoDapperService _getRequestNoDapperService;
         private readonly IUnitOfWork _uow;
         private readonly IE08T_Testing_InfoRepository _e08T_Testing_InfoRepository;
-        public Testing_InfoService(IUnitOfWork uow, ISpecificationService Specifi, IE08T_Testing_InfoRepository e08T_Testing_InfoRepository)
+        public Testing_InfoService(IUnitOfWork uow, ISpecificationService Specifi, IGetRequestNoDapperService getRequestNoDapperService, IE08T_Testing_InfoRepository e08T_Testing_InfoRepository)
         {
             _uow = uow;
             _test = _uow.GetRepository<IRepository<E08T_Testing_Info>>();
             _Specifi = Specifi;
             _e08T_Testing_InfoRepository = e08T_Testing_InfoRepository;
+            _getRequestNoDapperService = getRequestNoDapperService;
         }
        
         public async Task<IEnumerable<E08T_Testing_InfoViewModel>> GetAllTesting_Info()
@@ -57,13 +59,17 @@ namespace DRLab.Services.IntegrationServices
        
         public async Task<E08T_Testing_InfoViewModel> Create(E08T_Testing_InfoViewModel Data)
         {
-            if (Data.specID != null)
+            var requestNo = new[] { "AnalysisCode" };           
+            var code = await _getRequestNoDapperService.GetRequestNo(requestNo);
+            var resultId = new List<E00T_SpecificationViewModel>();
+            resultId = await _Specifi.GetbyName(Data.specification);
+            if(resultId.Count > 0)
             {
                 var client = new E08T_Testing_Info()
                 {
 
-                    analysisCode = Data.analysisCode,
-                    specID = Data.specID,
+                    analysisCode = code.analysisCode,
+                    specID = resultId[0].specID,
                     specification = Data.specification,
                     method = Data.method,
                     unit = Data.unit,
@@ -74,19 +80,20 @@ namespace DRLab.Services.IntegrationServices
                 _test.Add(client);
                 _uow.SaveChanges();
             }
-            else {
+            if (resultId.Count < 1)
+            {
                 var request = new E00T_SpecificationViewModel();
                 {
                     request.specID = null;
                     request.specification = Data.specification;
                 }
                 await _Specifi.Create(request);
-                var resultId = new List<E00T_SpecificationViewModel>();
-                resultId = await _Specifi.GetbyName(Data.specification);
+                var newSpecif = new List<E00T_SpecificationViewModel>();
+                newSpecif = await _Specifi.GetbyName(Data.specification);
                 var client = new E08T_Testing_Info()
                 {
-                    analysisCode = Data.analysisCode,
-                    specID = resultId[0].specID,
+                    analysisCode = code.analysisCode,
+                    specID = newSpecif[0].specID,
                     specification = Data.specification,
                     method = Data.method,
                     unit = Data.unit,
@@ -103,21 +110,49 @@ namespace DRLab.Services.IntegrationServices
         public async Task<E08T_Testing_InfoViewModel> Update(E08T_Testing_InfoViewModel Data)
         {
             var specifi = new List<E00T_SpecificationViewModel>();
-            specifi = await _Specifi.GetbyId(Data.specID);
-            var client = new E08T_Testing_Info()
+            specifi = await _Specifi.GetbyName(Data.specification);
+            if (specifi.Count < 1)
             {
+                var request = new E00T_SpecificationViewModel();
+                {
+                    request.specID = null;
+                    request.specification = Data.specification;
+                }
+                await _Specifi.Create(request);
+              
+                 var  newSpecif = await _Specifi.GetbyName(Data.specification);
+                var client = new E08T_Testing_Info()
+                {
 
-                analysisCode = Data.analysisCode,
-                specID = Data.specID,
-                specification = specifi[0].specification,
-                method = Data.method,
-                unit = Data.unit,
-                turnAroundTime = Data.turnAroundTime,
-                reformTestResult = Data.reformTestResult,
-                note = Data.note,
-            };
-            _test.Update(client);
-            _uow.SaveChanges();
+                    analysisCode = Data.analysisCode,
+                    specID = newSpecif[0].specID,
+                    specification = Data.specification,
+                    method = Data.method,
+                    unit = Data.unit,
+                    turnAroundTime = Data.turnAroundTime,
+                    reformTestResult = Data.reformTestResult,
+                    note = Data.note,
+                };
+                _test.Update(client);
+                _uow.SaveChanges();
+            }
+            else {
+                var client = new E08T_Testing_Info()
+                {
+
+                    analysisCode = Data.analysisCode,
+                    specID = Data.specID,
+                    specification = Data.specification,
+                    method = Data.method,
+                    unit = Data.unit,
+                    turnAroundTime = Data.turnAroundTime,
+                    reformTestResult = Data.reformTestResult,
+                    note = Data.note,
+                };
+                _test.Update(client);
+                _uow.SaveChanges();
+            }
+            
             return null;
         }
 

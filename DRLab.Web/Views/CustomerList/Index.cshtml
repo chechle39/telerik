@@ -3,7 +3,7 @@
     .Name("CustomerList")
     .Columns(columns =>
     {
-        columns.Bound(p => p.customerCode).Title(("Customer Code"));
+
         columns.Bound(p => p.companyName).Title(("Company Name"));
         columns.Bound(p => p.companyAddress).Title(("Company Address"));
         columns.Bound(p => p.contactName).Title(("Contact Name"));
@@ -13,8 +13,8 @@
         columns.Command(command => command.Destroy()).Width(100);
         columns.Command(c =>
         {
-            c.Custom("RefreshRecord").Text("Create Item").Click("customCom");
-        });
+            c.Custom("RefreshRecord").Text("Add Item").Click("customCom");
+        }).Width(110);
 
     })
     .ToolBar(toolbar =>
@@ -58,7 +58,6 @@
     <script type="text/javascript">
         var gridxxx = [];
         function customCom(e) {
-
             var grid = e.sender;
             var dataItem = this.dataItem($(e.currentTarget).closest("tr"));  
             var a = dataItem.customerCode;           
@@ -67,14 +66,16 @@
                 type: "GET",
                 url: "/CustomerRequest/GetCustomersItemByCode",
                 data: { id: a },
-                dataType: "json",
-
-                success: function (response) {                 
+                dataType: "Json",
+                success: function (response) {                  
+                    data = response;                   
+                    schemaTotal(data);
+                    autoSync: true;
                     gridxxx = response;
                     var dataSource = new kendo.data.DataSource({
                         data: response,
                         pageSize: 20,
-                    });
+                    });                    
                     grid.setDataSource(dataSource);
                 },
                 error: function () {

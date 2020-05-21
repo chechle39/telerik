@@ -94,5 +94,15 @@ namespace DRLab.Services.IntegrationServices
             var data = await _test.GetAll().ProjectTo<E00T_CustomerViewModel>().ToListAsync();
             return data;
         }
+
+        public async Task<List<E00T_CustomerViewModel>> GetCustomerById(string id)
+        {
+            return await _e00T_CustomerRepository.GetCustomerById(id);
+        }
+
+        public async Task<List<CreateCustomeRequest>> GetAnalysisByRequestNo(string requestNo)
+        {
+            return await _e08T_AnalysisRequest_DataRepository.GetAnalysisByRequestNo(requestNo);
+        }
     }
 }

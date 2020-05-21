@@ -24,6 +24,11 @@ namespace DRLab.Services.IntegrationServices
             return delete;
         }
 
+        public async Task<AnalysisRequest_Info> GetRequestInfoByRequestNo(string request)
+        {
+            return await _e08T_AnalysisRequest_InfoRepository.GetRequestInfoByRequestNo(request);
+        }
+
         public async Task<List<GridManagementViewModel>> GetRequestInfoGrid(SerchGridManagement request)
         {
             return await _e08T_AnalysisRequest_InfoRepository.GetRequestInfoGrid(request);

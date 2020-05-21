@@ -1,0 +1,8 @@
+﻿{
+  "Shared.Hello": {
+    "Values": {
+      "en-US": "hello",
+      "vi-VN": "xin chao"
+    }
+  }
+}

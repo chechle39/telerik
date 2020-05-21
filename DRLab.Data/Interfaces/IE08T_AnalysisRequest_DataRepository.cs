@@ -10,5 +10,6 @@ namespace DRLab.Data.Interfaces
     {
         public Task<bool> CreateAnalysisRequestData(List<CreateCustomeRequest> request);
         public Task<bool> DeleteAnalysisRequestData(string[] request);
+        public Task<List<CreateCustomeRequest>> GetAnalysisByRequestNo(string requestNo);
     }
 }

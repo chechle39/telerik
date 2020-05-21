@@ -16,11 +16,11 @@
                     <div class="row">
                         <input type="hidden" id="hidIdM" value="0" />
                         <label for="txtNameM" class="col-sm-4 custom-font-weight control-label no-padding-right">Number Of Sample</label>
-                        <div class="col-sm-7">
+                        <div class="col-sm-8">
                             @(Html.Kendo().NumericTextBox<int>()
                                 .Format("n0")
                                 .Name("numOfSam")
-                                .HtmlAttributes(new { placeholder = "Number Of Sample", style = "width: 100%; height: 100%;" })
+                                .HtmlAttributes(new { placeholder = "Number Of Sample", style = "width: 100%; height: 100%;margin-top: -3px;" })
                             )
                         </div>
                     </div>
@@ -32,14 +32,14 @@
                             <label class="custom-font-weight control-label no-padding-right">Customer</label>
 
                         </div>
-                        <div class="col-sm-7 row">
-                            <div class="col-9 cus">
+                        <div class="col-sm-8 row">
+                            <div class="col-10 cus">
                                 @(Html.Kendo().ComboBox()
                                 .Name("customers")
                                 .Placeholder("Select customer")
                                 .DataTextField("companyName")
                                 .DataValueField("customerCode")
-                                .HtmlAttributes(new { style = "width: 108%;height: 100%;" })
+                                .HtmlAttributes(new { style = "width: 108%;height: 95%;margin-top: -4px;" })
                                 .Events(e =>
                                 {
                                     e.Change("onChangecustomer").Select("onSelectcustomer");
@@ -77,13 +77,13 @@
                 <div class="form-group">
                     <div class="row">
                         <label class="col-sm-4 custom-font-weight control-label no-padding-right">Contact</label>
-                        <div class="col-sm-7 cus">
+                        <div class="col-sm-8 cus">
                             @(Html.Kendo().ComboBox()
                                 .Name("contact")
                                 .Placeholder("Select contact")
                                 .DataTextField("contactName")
                                 .DataValueField("contactID")
-                                .HtmlAttributes(new { style = "width: 100%;height: 100%;" })
+                                .HtmlAttributes(new { style = "width: 100%;height: 100%; margin-top: -4px;" })
                                 .Events(e =>
                                 {
                                     e.Open("onOpenContact");
@@ -118,7 +118,7 @@
                         <div class="col-sm-3">
                             @(Html.Kendo().TextBox()
                           .Name("requestNo")
-                          .HtmlAttributes(new { placeholder = "Request No", required = "required", style = "width: 100%;height: 100%" })
+                          .HtmlAttributes(new { placeholder = "Request No", required = "required", style = "width: 100%;height: 100%;margin-top: -4px;" })
                             )
 
                         </div>
@@ -126,7 +126,7 @@
                         <div class="col-sm-1">
                             @(Html.Kendo().TextBox()
                           .Name("vat")
-                          .HtmlAttributes(new { placeholder = "VAT", required = "required", style = "margin-left: -28px;width: 147%;height: 100%;" })
+                          .HtmlAttributes(new { placeholder = "VAT", required = "required", style = "margin-left: -28px;width: 147%;height: 100%;margin-top: -4px;" })
                             )
 
                         </div>
@@ -137,11 +137,11 @@
                 <div class="form-group">
                     <div class="row">
                         <label for="txtNameM" class="col-sm-4 custom-font-weight control-label no-padding-right">Receive Time</label>
-                        <div class="col-sm-7 cus">
+                        <div class="col-sm-8 cus">
                             @(Html.Kendo().DateTimePicker()
                                 .Name("datetimepicker")
                                 .Value(DateTime.Now)
-                                .HtmlAttributes(new { style = "width: 100%;height: 100%;", title = "datetimepicker" })
+                                .HtmlAttributes(new { style = "width: 100%;height: 100%;margin-top: -4px;", title = "datetimepicker" })
                                 .DateInput()
                             )
                         </div>
@@ -152,11 +152,11 @@
                 <div class="form-group">
                     <div class="row">
                         <label for="txtNameM" class="col-sm-4 custom-font-weight control-label no-padding-right">Return</label>
-                        <div class="col-sm-7 cus">
+                        <div class="col-sm-8 cus">
                             @(Html.Kendo().DateTimePicker()
                                 .Name("datetimepickerReturn")
                                 .Value(DateTime.Now)
-                                .HtmlAttributes(new { style = "width: 100%; height: 100%;", title = "datetimepicker" })
+                                .HtmlAttributes(new { style = "width: 100%; height: 100%;margin-top: -4px;", title = "datetimepicker" })
                                 .DateInput()
                             )
                         </div>
@@ -167,13 +167,13 @@
                 <div class="form-group">
                     <div class="row">
                         <label class="col-sm-4 custom-font-weight control-label no-padding-right">Price List</label>
-                        <div class="col-sm-7 cus">
+                        <div class="col-sm-8 cus">
                             @(Html.Kendo().ComboBox()
                                 .Name("piceList")
                                 .Placeholder("Select price")
                                 .DataTextField("contactName")
                                 .DataValueField("customerID")
-                                .HtmlAttributes(new { style = "width: 100%;height: 100%;" })
+                                .HtmlAttributes(new { style = "width: 100%;height: 100%;margin-top: -4px;" })
                                 .DataSource(source =>
                                 {
                                     source.Read(read =>
@@ -244,11 +244,13 @@
         margin-bottom: 0 !important
     }
     .spanSty {
-        margin-top: -5px;
+        margin-top: -8px;
         margin-left: 1px;
         height: 10px;
     }
     .k-grid-add {
-        margin-left: 12px!important;
+        margin-left: 3px !important;
+        margin-top: -3px;
     }
+  
 </style>

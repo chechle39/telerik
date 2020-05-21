@@ -24,6 +24,21 @@ namespace DRLab.Data.ViewModels
         public string requestNo { get; set; }
         public string sampleCode { get; set; }
         public string inLabCode { get; set; }
+        public string analysisCode { get; set; }
+    }
 
+    public class AnalysisRequest_Info
+    {
+        public Nullable<int> numberSample { get; set; }
+        public string requestNo { get; set; }
+        public string customerID { get; set; }
+        public Nullable<System.DateTime> receivceDate { get; set; }
+        public Nullable<System.DateTime> dateOfSendingResult { get; set; }
+        public long contactID { get; set; }
+        public string customerCode { get; set; }
+        public string contactName { get; set; }
+        public string email { get; set; }
+        public string address { get; set; }
+        public string note { get; set; }
     }
 }

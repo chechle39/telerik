@@ -53,14 +53,10 @@ namespace DRLab.Services.IntegrationServices
         }
 
         public async Task<bool> Create(E00T_SpecificationViewModel Data)
-        {
-           
+        {          
                 await _e00T_SpecificationRepository.SaveSpecification(Data);
                 _uow.SaveChanges();
-                return await Task.FromResult(true);
-          
-           
-           
+                return await Task.FromResult(true);     
         }
     }
     

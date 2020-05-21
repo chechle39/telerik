@@ -14,7 +14,6 @@ namespace DRLab.Web.Controllers
         private readonly IE00T_Customer_ItemService _e00T_Customer_ItemService;
         private readonly IE08T_AnalysisRequest_InfoService _e08T_AnalysisRequest_InfoService;
         private readonly ISpecificationService _specificationDataService;
-
         public CustomerRequestController(IE00T_CustomerService e00T_CustomerService, 
             IE00T_Customer_ItemService e00T_Customer_ItemService, 
             IE08T_AnalysisRequest_InfoService e08T_AnalysisRequest_InfoService, ISpecificationService specificationDataService)
@@ -30,11 +29,12 @@ namespace DRLab.Web.Controllers
             ViewData["categories"] = result.ToList();
             return View();
         }
-        public IActionResult DetailCustomer(string requestNo)
+        public async Task<IActionResult> DetailCustomer(string requestNo)
         {
-            var myStringModel = new MyStringModel();
-            myStringModel.MyString = requestNo;
-            return View(myStringModel);
+            var result = await _specificationDataService.GetAll();
+            ViewData["categories"] = result.ToList();
+            ViewData["Analysis"] = await _e00T_CustomerService.GetAnalysisByRequestNo(requestNo);
+            return View(await _e08T_AnalysisRequest_InfoService.GetRequestInfoByRequestNo(requestNo));
         }
         [HttpPost]
         public async Task<IActionResult> SaveEntityAnalysisRequestData([FromBody] List<CreateCustomeRequest> request)
@@ -83,10 +83,11 @@ namespace DRLab.Web.Controllers
         {
             return await _e00T_Customer_ItemService.GetE00T_Customer_ItemByCode(id);
         }
-    }
 
-    public class MyStringModel
-    {
-        public string MyString { get; set; }
+        [HttpGet]
+        public async Task<IActionResult> GetAnalysisByRequestNo(string requestNo)
+        {
+            return Ok(await _e00T_CustomerService.GetAnalysisByRequestNo(requestNo));
+        }
     }
 }

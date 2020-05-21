@@ -1,4 +1,5 @@
-﻿using DRLab.Data.Base;
+﻿using AutoMapper.QueryableExtensions;
+using DRLab.Data.Base;
 using DRLab.Data.Entities;
 using DRLab.Data.Interfaces;
 using DRLab.Data.ViewModels;
@@ -24,7 +25,7 @@ namespace DRLab.Data.Repositories
             foreach (var item in request)
             {
 
-                if (item.requestNo != "" && item.LVNCode != "")
+                if (item.sampleName != "")
                 {
                     var check = Entities.Where(x => x.LVNCode == item.LVNCode && x.requestNo == item.requestNo).AsNoTracking().ToList();
                     var e08T_AnalysisRequest_Item = new E08T_AnalysisRequest_Item()
@@ -53,6 +54,29 @@ namespace DRLab.Data.Repositories
 
 
             return await Task.FromResult(true);
+        }
+
+        public async Task<bool> DeleteAnalysisRequestItem(string[] request)
+        {
+            foreach (var item in request)
+            {
+                var objDelete = await Entities.Where(x => x.requestNo == item).ToListAsync();
+                if (objDelete.Count() > 0)
+                {
+                    foreach (var iitem in objDelete)
+                    {
+                        Entities.Remove(iitem);
+                    }
+
+                }
+            }
+            return await Task.FromResult(true);
+        }
+
+        public async Task<List<E08T_AnalysisRequest_ItemViewModel>> GetAnalysisRequest_ItemByRequestNo(string requestNo)
+        {
+            var data = await Entities.Where(x => x.requestNo == requestNo).ProjectTo<E08T_AnalysisRequest_ItemViewModel>().ToListAsync();
+            return data;
         }
     }
 }

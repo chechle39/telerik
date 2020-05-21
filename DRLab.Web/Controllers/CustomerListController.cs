@@ -44,12 +44,12 @@ namespace DRLab.Web.Controllers
                 {
                     if (data !=null) {
                         await _customerService.Create(data);
-                        results.Add(data);
+                        
                     }
 
                 }
             }
-            return Json(results.ToDataSourceResult(request, ModelState));
+            return Json((await _customerService.GetListCustomer()).ToDataSourceResult(request, ModelState));
         }
         public ActionResult Update_Customer([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<E00T_CustomerViewModel> data_info)
         {
