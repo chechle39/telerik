@@ -50,13 +50,13 @@ namespace DRLab.Data.Repositories
             }
             if (!string.IsNullOrEmpty(request.StartDate))
             {
-                DateTime start = DateTime.Parse(request.StartDate, new CultureInfo("en-CA"));
+                DateTime start = DateTime.Parse(request.StartDate, new CultureInfo("vi-VN"));
 
                 listGridManagementViewModel = listGridManagementViewModel.Where(x => x.receivceDate >= start).ToList();
             }
             if (!string.IsNullOrEmpty(request.EndDate))
             {
-                DateTime end = DateTime.Parse(request.EndDate, new CultureInfo("en-CA"));
+                DateTime end = DateTime.Parse(request.EndDate, new CultureInfo("vi-VN")) + new TimeSpan(23, 59, 59);
 
                 listGridManagementViewModel = listGridManagementViewModel.Where(x => x.receivceDate <= end).ToList();
             }

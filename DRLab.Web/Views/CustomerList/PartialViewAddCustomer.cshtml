@@ -1,71 +1,191 @@
-﻿
-@(Html.Kendo().Grid<DRLab.Data.ViewModels.E00T_CustomerViewModel>()
-    .Name("Customer")
-    .Columns(columns =>
-    {
-        columns.Bound(p => p.customerCode).Hidden();
-        columns.Bound(p => p.companyName).Hidden().Width(100);
-        columns.Bound(p => p.companyAddress).Hidden().Width(100);
-        columns.Bound(p => p.city).Title("Province").Hidden().Width(100);
-        columns.Bound(p => p.contactName).Hidden().Width(100);
-        columns.Bound(p => p.contactEmail).Hidden().Width(100);
-        columns.Bound(p => p.note).Hidden().Width(100);
-        columns.Command(command => command.Edit().UpdateText("Insert")).Hidden();
-    })
-    .ToolBar(toolbar => toolbar.Create().Text(" "))
-    .Editable(editable => editable.Mode(GridEditMode.PopUp).Window(w => w.Title("New Customer")))
-    .DataSource(dataSource => dataSource
-        .Ajax()
-        .Events(events => events.Error("error_handler"))
-        .Model(model => model.Id(p => p.customerCode))
-        .Model(model => model.Field(p => p.companyName))
-        .Model(model => model.Id(p => p.companyAddress))
-        .Model(model => model.Field(p => p.city))
-        .Model(model => model.Id(p => p.contactName))
-        .Model(model => model.Field(p => p.contactEmail))
-        .Model(model => model.Id(p => p.note))
-        .Create(read => read.Action("Create_CustomerRequest", "CustomerList"))
-        .Read(read => read.Action("Read_Customer", "CustomerList"))
+﻿@*@(Html.Kendo().Grid<DRLab.Data.ViewModels.E00T_CustomerViewModel>()
+        .Name("Customer")
+        .Columns(columns =>
+        {
+            columns.Bound(p => p.customerCode).Hidden();
+            columns.Bound(p => p.companyName).Hidden().Width(100);
+            columns.Bound(p => p.companyAddress).Hidden().Width(100);
+            columns.Bound(p => p.city).Title("Province").Hidden().Width(100);
+            columns.Bound(p => p.contactName).Hidden().Width(100);
+            columns.Bound(p => p.contactEmail).Hidden().Width(100);
+            columns.Bound(p => p.note).Hidden().Width(100);
+            columns.Command(command => command.Edit().UpdateText("Insert")).Hidden();
+        })
+        .ToolBar(toolbar => toolbar.Create().Text(" "))
+        .Editable(editable => editable.Mode(GridEditMode.PopUp).Window(w => w.Title("New Customer")))
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .Events(events => events.Error("error_handler"))
+            .Model(model => model.Id(p => p.customerCode))
+            .Model(model => model.Field(p => p.companyName))
+            .Model(model => model.Id(p => p.companyAddress))
+            .Model(model => model.Field(p => p.city))
+            .Model(model => model.Id(p => p.contactName))
+            .Model(model => model.Field(p => p.contactEmail))
+            .Model(model => model.Id(p => p.note))
+            .Create(read => read.Action("Create_CustomerRequest", "CustomerList"))
+            .Read(read => read.Action("Read_Customer", "CustomerList"))
 
+        )
     )
-)
-<script type="text/javascript">
-    function error_handler(e) {
-        if (e.errors) {
-            var message = "Errors:\n";
-            $.each(e.errors, function (key, value) {
-                if ('errors' in value) {
-                    $.each(value.errors, function () {
-                        message += this + "\n";
-                    });
-                }
-            });
-            alert(message);
+    <script type="text/javascript">
+        function error_handler(e) {
+            if (e.errors) {
+                var message = "Errors:\n";
+                $.each(e.errors, function (key, value) {
+                    if ('errors' in value) {
+                        $.each(value.errors, function () {
+                            message += this + "\n";
+                        });
+                    }
+                });
+                alert(message);
+            }
         }
+    </script>
+    <style>
+        .k-header.k-grid-toolbar {
+            border: 0;
+            background: none;
+        }
+
+        .k-grid-toolbar {
+            width: 60px;
+            border: 0;
+            background: none;
+        }
+
+        .k-grid.k-widget.k-grid-display-block.k-editable {
+            border: 0;
+        }
+        .k-edit-form-container.editor-label {
+            text-align: left !important;
+        }
+        label:not(.form-check-label):not(.custom-file-label) {
+            font-weight: 400;
+        }
+        .k-button.k-button-icontext.k-grid-add {
+            width: 33px;
+        }
+    </style>*@
+
+@model string
+<kendo-dialog name="@Model" title="New customer" width="500" modal="true" visible="false">
+    <content>
+        <form asp-controller="CustomerList" asp-action="Create_CustomerRequest" id="createCustomerForm"  method="post">
+            <div class="row mb-2">
+                <div class="col-3">
+                    <span style="vertical-align: sub;">Customer Code</span>
+                </div>
+                <div class="col-9">
+                    @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new { style = "width: 100%" })
+                    .Name("customerCode")
+                    )
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3">
+                    <span style="vertical-align: sub;">Company Name</span>
+                </div>
+                <div class="col-9">
+                    @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new { style = "width: 100%" })
+                    .Name("companyName")
+                    )
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3">
+                    <span style="vertical-align: sub;">Company Address</span>
+                </div>
+                <div class="col-9">
+                    @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new { style = "width: 100%" })
+                    .Name("companyAddress")
+                    )
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3">
+                    <span style="vertical-align: sub;">Province</span>
+                </div>
+                <div class="col-9">
+                    @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new { style = "width: 100%" })
+                    .Name("province")
+                    )
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3">
+                    <span style="vertical-align: sub;">Contact Name</span>
+                </div>
+                <div class="col-9">
+                    @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new { style = "width: 100%" })
+                    .Name("contactName")
+                    )
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3">
+                    <span style="vertical-align: sub;">Contact Email</span>
+                </div>
+                <div class="col-9">
+                    @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new { style = "width: 100%" })
+                    .Name("contactEmail")
+                    )
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3">
+                    <span style="vertical-align: sub;">Note</span>
+                </div>
+                <div class="col-9">
+                    @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new { style = "width: 100%" })
+                    .Name("note")
+                    )
+                </div>
+            </div>
+        </form>
+    </content>
+    <actions>
+        <action text="Cancel">
+        </action>
+        <action text="Save" title="Save" action="onSave" primary="true">
+        </action>
+    </actions>
+    <popup-animation>
+        <open duration="500" effects="fade:in" />
+        <close duration="500" effects="fade:out" />
+    </popup-animation>
+</kendo-dialog>
+<script>
+    function onSave() {
+        console.log("ok");
+        const form = $("#createCustomerForm");
+        const requestUrl = "/CustomerList/Create_CustomerRequest";
+        console.log(requestUrl);
+        const data = {
+            customerCode: form.find("customerCode").val(),
+            companyName: form.find("companyName").val(),
+            companyAddress: form.find("companyAddress").val(),
+            province: form.find("province").val(),
+            contactName: form.find("contactName").val(),
+            contactEmail: form.find("contactEmail").val(),
+            note: form.find("note").val(),
+        };
+        $.post({
+            url: requestUrl,
+            data: data,
+            dataType: 'json',
+            success: function (result) {
+                console.log(result);
+            },
+        });
+        return false;
     }
 </script>
-<style>
-    .k-header.k-grid-toolbar {
-        border: 0;
-        background: none;
-    }
-
-    .k-grid-toolbar {
-        width: 60px;
-        border: 0;
-        background: none;
-    }
-
-    .k-grid.k-widget.k-grid-display-block.k-editable {
-        border: 0;
-    }
-    .k-edit-form-container.editor-label {
-        text-align: left !important;
-    }
-    label:not(.form-check-label):not(.custom-file-label) {
-        font-weight: 400;        
-    }
-    .k-button.k-button-icontext.k-grid-add {
-        width: 33px;
-    }
-</style>

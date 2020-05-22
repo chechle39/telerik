@@ -209,9 +209,20 @@
                                                 })
                                                 )
                                                 </div>
-                                                <div class="col-1" style="padding-left: 0px;max-width: 1.333333%;margin-top: -5px">
+                                                <div class="col-1" style="padding-left: 6px;max-width: 1.333333%;margin-top: 0px">
                                                     <span style="margin-top: -2px;">
-                                                        @await Html.PartialAsync("../Testing_Info/PartialViewAddTestInfo")
+                                                        @await Html.PartialAsync("../Testing_Info/PartialViewAddTestInfo", "AddTestInfo")
+                                                        @(Html.Kendo().Button()
+                                                        .Name("AddTestInfoBtn")
+                                                        .HtmlAttributes(new { @class = "hide-on-narrow" })
+                                                        .Icon("plus")
+                                                        .Events(ev => ev.Click("openAddTestInfoDialog"))
+                                    )
+                                                        <script>
+                                                            function openAddTestInfoDialog() {
+                                                                $('#AddTestInfo').data("kendoDialog").open();
+                                                            }
+                                                        </script>
                                                     </span>
                                                 </div>
                                                   
@@ -265,7 +276,7 @@
                                             columns.Bound(p => p.Price).Title("Price").Width("10%");
                                             columns.Bound(p => p.Urgent).Title("% Urgent");
                                             columns.Bound(p => p.TAT).Title("TAT");
-                                            columns.Command(command => { command.Destroy(); }).Width(100);
+                                            columns.Command(command => { command.Destroy().IconClass("k-icon k-i-trash"); }).Width(100);
                                         })
                                         .Navigatable()
                                         .Editable(editable => editable.Mode(GridEditMode.InCell))
@@ -632,9 +643,13 @@
             SaveAnalysisRequestData(saveRequest);
         }
     }
+    samplenameCheck = [];
 
     function SaveAnalysisRequestData(SaveRq) {
         var check = verify(SaveRq);
+        if (this.samplenameCheck.length === 0) {
+            return;
+        }
         if (check === true) {
             $.ajax({
                 type: "POST",
@@ -667,6 +682,10 @@
         var string = '';
         var string1 = '';
         for (var i = 0; i < SaveRq.length; i++) {
+            if (SaveRq[i].sampleName !== "") {
+                this.samplenameCheck.push(SaveRq[i].sampleName);
+
+            }
             if (SaveRq[i].data.length > 0 && (SaveRq[i].sampleMatrix === '' || SaveRq[i].sampleMatrix === undefined)) {
                 var a = i;
                 a++;
@@ -818,13 +837,8 @@
         width: 270px;
         height: 70px;
     }
-    .card-body {
-        padding-top: 0;
-    }
-
-    .card-header {
-        border-bottom: 0px;
-    }
+ 
+  
     .pad-25 {
         padding-bottom: 25px;
     }

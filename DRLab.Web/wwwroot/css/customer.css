@@ -19,6 +19,9 @@
         margin-left: 0px !important;
     }
 }
+.card-body {
+    padding-top: 0;
+}
 
 .span-underline {
     text-decoration: underline;
@@ -28,7 +31,9 @@
 .pd-left-52 {
     padding-left: 52px;
 }
-
+.card-header {
+    border-bottom: 0px;
+}
 .mr-left {
     margin-left: 40px;
 }

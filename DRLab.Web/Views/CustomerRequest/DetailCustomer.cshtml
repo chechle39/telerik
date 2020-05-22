@@ -1,7 +1,6 @@
-﻿@model DRLab.Data.ViewModels.AnalysisRequest_Info
+﻿@model DRLab.Data.ViewModels.AnalysisRequest_InfoStringDate
 @{
     ViewData["Title"] = "DetailCustomer";
-    var address = ViewData["Analysis"] as List<DRLab.Data.ViewModels.CreateCustomeRequest>;
 }
 @section Scripts{
     <script src="~/app/Customer/EditCustomer.js" asp-append-version="true"></script>
@@ -27,6 +26,9 @@
 <h1 hidden id="flag5">@Model.email</h1>
 <h1 hidden id="flag6">@Model.contactName</h1>
 <h1 hidden id="flag7">@Model.contactName</h1>
+<h1 hidden id="flag8">@Model.customerCode</h1>
+<h1 hidden id="flag9">@Model.receivceDate</h1>
+<h1 hidden id="flag10">@Model.dateOfSendingResult</h1>
 <section id="isCheck" class="content">
     <div class="container-fluid">
         <section class="content">
@@ -214,9 +216,9 @@
                                                     )
                                                 </div>
                                                 <div class="col-1" style="padding-left: 0px;max-width: 1.333333%;margin-top: -5px;">
-                                                    <span style="margin-top: -2px;">
+                                                    @*<span style="margin-top: -2px;">
                                                         @await Html.PartialAsync("../Testing_Info/PartialViewAddTestInfo")
-                                                    </span>
+                                                    </span>*@
                                                 </div>
 
                                             </div>
@@ -269,7 +271,7 @@
                                             columns.Bound(p => p.Price).Title("Price").Width("10%");
                                             columns.Bound(p => p.Urgent).Title("% Urgent");
                                             columns.Bound(p => p.TAT).Title("TAT");
-                                            columns.Command(command => { command.Destroy(); }).Width(100);
+                                            columns.Command(command => { command.Destroy().IconClass("k-icon k-i-trash"); }).Width(100);
                                         })
                                         .Navigatable()
                                         .Editable(editable => editable.Mode(GridEditMode.InCell))
@@ -315,7 +317,7 @@
         </section>
     </div><!-- /.container-fluid -->
 </section>
-
+@Html.Partial("EditRequestView.cshtml")
 <script>
     var data = [];
     myData = [];
@@ -417,21 +419,40 @@
                     var grid = $("#Grid").data("kendoGrid");
                     myarr = [];
                     reponseGetById = response;
-                    $('#simpleCode').val(response[0].sampleCode);
-                    $('#innerCode').val(response[0].LVNCode);
-                    $('#simpleName').val(response[0].sampleName);
-                    $('#descriptionCustomer').val(response[0].sampleDescription);
-                    $('#remarkToLab').val(response[0].remarkToLab);
-                    $('#sampleMatrix').val(response[0].sampleMatrix);
-                    $('#weight').val(response[0].weight);
-                    $('#templateMark').val('');
-                    $('#tat').val('');
+                    if (response.length > 0) {
+                        $('#simpleCode').val(response[0].sampleCode);
+                        $('#innerCode').val(response[0].LVNCode);
+                        $('#simpleName').val(response[0].sampleName);
+                        $('#descriptionCustomer').val(response[0].sampleDescription);
+                        $('#remarkToLab').val(response[0].remarkToLab);
+                        $('#sampleMatrix').val(response[0].sampleMatrix);
+                        $('#weight').val(response[0].weight);
+                        $('#templateMark').val('');
+                        $('#tat').val('');
 
-                    var dataSource = new kendo.data.DataSource({
-                        data: response[0].Data,
-                        pageSize: 20,
-                    });
-                    grid.setDataSource(dataSource);
+                        var dataSource = new kendo.data.DataSource({
+                            data: response[0].Data,
+                            pageSize: 20,
+                        });
+                        grid.setDataSource(dataSource);
+                    } else {
+                        //$('#simpleCode').val(response[0].sampleCode);
+                        //$('#innerCode').val(response[0].LVNCode);
+                        //$('#simpleName').val(response[0].sampleName);
+                        //$('#descriptionCustomer').val(response[0].sampleDescription);
+                        //$('#remarkToLab').val(response[0].remarkToLab);
+                        //$('#sampleMatrix').val(response[0].sampleMatrix);
+                        //$('#weight').val(response[0].weight);
+                        //$('#templateMark').val('');
+                        //$('#tat').val('');
+
+                        var dataSource = new kendo.data.DataSource({
+                            data: [],
+                            pageSize: 20,
+                        });
+                        grid.setDataSource(dataSource);
+                    }
+                    
                     for (var i = 0; i < parseInt(document.getElementById("flag").innerHTML); i++) {
                         if (response[i] !== undefined) {
                             const a = {
@@ -457,29 +478,7 @@
                         }
 
                     }
-                    //$.ajax({
-                    //    type: "GET",
-                    //    url: "/Testing_Info/GetTestingInfoCombobox",
-                    //    data: { text: "" },
-                    //    dataType: "json",
-
-                    //    success: function (responseCbb) {
-
-                    //        console.log(responseCbb);
-                    //        var comboAddSpecification = $("#addSpecification").data("kendoComboBox");
-                    //        var dataSource = new kendo.data.DataSource({
-                    //            data: responseCbb
-                    //        });
-                    //        comboAddSpecification.setDataSource(dataSource);
-                    //        comboAddSpecification.dataSource._pristineData = responseCbb;
-
-                    //        comboAddSpecification.select(comboAddSpecification.dataSource._pristineData.indexOf(comboAddSpecification.dataSource._pristineData.filter(x => x.specification === response[0].specification)[0]));
-
-                    //    },
-                    //    error: function () {
-
-                    //    }
-                    //});
+                    
                     var current_page = checkClass(document.getElementsByClassName('active'));
                     var curent = parseInt(current_page[0].innerText)
                     var next_link = document.getElementById('next_link');
@@ -647,7 +646,7 @@
             $("#addSpecification").data("kendoComboBox").value(comboAddSpecification.dataSource._pristineData.filter(x => x.specification === response[page_no - 1].addSpecificationValue)[0].analysisCode);
 
         } else {
-             comboAddSpecification.select(parseInt(response[page_no - 1].addSpecification));
+            comboAddSpecification.select(parseInt(response[page_no - 1].addSpecification));
         }
 
         // comboAddSpecification.select(parseInt(response[page_no - 1].addSpecification));
@@ -722,7 +721,7 @@
             response[cr - 1].deleted = handerDataGridDeleted();
             for (var i = 0; i < response.length; i++) {
                 var arr = [];
-                 var arrdelete = [];
+                var arrdelete = [];
                 if (response[i].data !== undefined) {
                     arr = response[i].data;
                 }
@@ -995,7 +994,7 @@
     <div class="info-custummer">
         <div class="form-group row">
             <div class="col-3">
-                <span onclick=xx() class="span-underline">Request No: <span id="requestNo">{{requestNo}}</span></span>
+                <span onclick=openDialog() class="span-underline">Request No: <span id="requestNo">{{requestNo}}</span></span>
 
             </div>
             <div class="col-9">
@@ -1029,9 +1028,32 @@
             .toggleClass("grey-cap", value == 3);
     };
 
-    function xx() {
-        var dialog = $('#dialog');
+    function openDialog() {
+        var dialog = $('#dialogEdit');
+        var numOfSam = $("#numOfSam").data("kendoNumericTextBox");
+        numOfSam.value(@Model.numberSample);
+        var comboCustomers = $("#customers").data("kendoComboBox");
+        comboCustomers.value(@Model.customerCode);
+        var comboContact = $("#contact").data("kendoComboBox");
+        comboContact.value(@Model.contactID);
+        var date = document.getElementById("flag9").innerHTML;
+        var dateRt = document.getElementById("flag9").innerHTML;
+        var f = converDate(date);
+        var h = converDate(dateRt);
+        //var NewDate = kendo.toString(this.value(), 'MM/dd/yyyy');
+        //var datetimepicker = $('#datetimepicker').val();
+        var datePik = new Date(f);
+        var datePikRet = new Date(h);
+        $("#datetimepicker").data('kendoDateTimePicker').value(datePik);
+        $('#datetimepickerReturn').data('kendoDateTimePicker').value(datePikRet);
+        $('#requestNoId').val(document.getElementById("flag4").innerHTML);
         dialog.data("kendoDialog").open();
     }
-
+    function converDate (date) {
+        var b = date.split(' ')[0];
+        var c = b.split('/');
+        var d = c[1] + "/" + c[0] + "/" + c[2]
+        var f = d + " " + date.split(' ')[1]
+        return f;
+    }
 </script>

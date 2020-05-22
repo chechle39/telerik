@@ -29,11 +29,7 @@ namespace DRLab.Web.Areas.API.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var result = await _specificationDataService.GetAll();
-            ViewData["categories"] = result.ToList();
-            ViewData["defaultvalue"] = result.First();
             return View();
-
         }
       
         public IActionResult Privacy()
@@ -63,20 +59,18 @@ namespace DRLab.Web.Areas.API.Controllers
             }
             return Json((await _customer_ItemService.GetListCustomerItem()).ToDataSourceResult(request, ModelState));
         }
-        public ActionResult Update_Customer([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<E00T_Customer_ItemViewModel> data_info)
+        public async Task<ActionResult> Update_CustomerAsync([DataSourceRequest] DataSourceRequest request, E00T_Customer_ItemViewModel data_info)
         {
             if (data_info != null && ModelState.IsValid)
             {
-                foreach (var data in data_info)
-                {
-                    if (data != null)
-                    {
-                        _customer_ItemService.Update(data);
-                    }
-                }
+               
+                    
+                     await   _customer_ItemService.Update(data_info);
+                    
+                
             }
 
-            return Json(data_info.ToDataSourceResult(request, ModelState));
+            return Json((await _customer_ItemService.GetListCustomerItem()).ToDataSourceResult(request, ModelState));
         }
         public ActionResult Destroy_Customer([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<E00T_Customer_ItemViewModel> data_info)
         {

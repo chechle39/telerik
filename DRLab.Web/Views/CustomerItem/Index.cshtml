@@ -12,13 +12,13 @@
              columns.Bound(p => p.address);
              columns.Bound(p => p.note).Hidden();
              columns.Bound(p => p.email).Hidden();
-             columns.Command(command => command.Edit()).Width(100);
-             columns.Command(command => command.Destroy()).Width(100);
+             columns.Command(command => command.Edit().Text(" ")).Width(100);
+             columns.Command(command => command.Destroy().Text(" ")).Width(100);
          })
           .ClientRowTemplate(
               "<tr data-uid='#: uid #'>" +
                "<td class='details'>" +
-                   "<span class='title'>#: contactName #</span><br>" +
+                   "<span class='title'>contactName#: contactName #</span><br>" +
                    "<span class='description'>Email : #: email#</span><br>" +
                "</td>" +
                "<td class='details1'>" +
@@ -51,8 +51,14 @@
         .HtmlAttributes(new { style = "height:350px;" })
         .DataSource(dataSource => dataSource
         .Custom()
-        .Batch(true)      
+        .Batch(true)
         .PageSize(20)
+         .Transport(transport => transport
+              .Create(read => read.Action("Create_Customer", "CustomerItem"))
+                .Read(read => read.Action("Read_Customer", "CustomerItem"))
+                .Update(read => read.Action("Update_Customer", "CustomerItem"))
+                .Destroy(read => read.Action("Destroy_Customer", "CustomerItem"))
+        )
         .Schema(schema =>
         {
             schema.Model(model =>
@@ -60,7 +66,7 @@
                 model.Id(p => p.contactID);
                 model.Field(p => p.contactID);
                 model.Field(p => p.customerCode).DefaultValue("asdas").ToString();
-                model.Field(p => p.contactName);
+                model.Field(p => p.contactName).DefaultValue("asdas").ToString(); ;
                 model.Field(p => p.note);
                 model.Field(p => p.email);
                 model.Field(p => p.address);

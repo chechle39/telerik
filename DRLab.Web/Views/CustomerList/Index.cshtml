@@ -10,7 +10,7 @@
         columns.Bound(p => p.contactEmail).Title(("Contact Email"));
         columns.Bound(p => p.city).Title(("City"));
         columns.Bound(p => p.note).Title(("Note"));
-        columns.Command(command => command.Destroy()).Width(100);
+        columns.Command(command => command.Destroy().Text(" ")).Width(100);
         columns.Command(c =>
         {
             c.Custom("RefreshRecord").Text("Add Item").Click("customCom");
@@ -75,8 +75,10 @@
                     var dataSource = new kendo.data.DataSource({
                         data: response,
                         pageSize: 20,
-                    });                    
+                    });     
+                    console.log(grid);
                     grid.setDataSource(dataSource);
+                   
                 },
                 error: function () {
                 }            

@@ -181,7 +181,14 @@ function filter_requests() {
         var requestNo = $('#requestNo').val();
 
         var vat = $('#vat').val();
-
+        if (numOfSam === "" || customers === "" || requestNo === "") {
+            var notification = $("#notification").data("kendoNotification");
+            notification.show({
+                title: "Wrong Save",
+                message: "Save error numOfSam or customers null "
+            }, "error");
+            return false;
+        }
         var datetimepicker = $('#datetimepicker').val();
         var datetimepickerReturn = $('#datetimepickerReturn').val();
         var lenthx;
@@ -223,8 +230,8 @@ function filter_requests() {
 
                                 render += Mustache.render(template, {
                                     requestNo: response.requestNo,
-                                    receivceDate: drlab.dateTimeFormatJson(response.receivceDate),
-                                    dateOfSendingResult: drlab.dateTimeFormatJson(response.dateOfSendingResult),
+                                    receivceDate: response.receivceDate,
+                                    dateOfSendingResult: response.dateOfSendingResult,
                                     contactName: itemSelected.contactName,
                                     contactEmail: itemSelected.contactEmail,
                                     companyName: itemSelected.companyName
@@ -283,8 +290,8 @@ function filter_requests() {
 
                                 render += Mustache.render(template, {
                                     requestNo: response.requestNo,
-                                    receivceDate: drlab.dateTimeFormatJson(response.receivceDate),
-                                    dateOfSendingResult: drlab.dateTimeFormatJson(response.dateOfSendingResult),
+                                    receivceDate: response.receivceDate,
+                                    dateOfSendingResult: response.dateOfSendingResult,
                                     contactName: itemSelected.contactName,
                                     contactEmail: itemSelected.contactEmail,
                                     companyName: itemSelected.companyName

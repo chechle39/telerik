@@ -14,7 +14,7 @@
             <form>
                 <div class="form-group row">
                     <label for="staticEmail" class="col-sm-4 col-form-label custom-font-weight">Khoảng thời gian</label>
-                    <div class="col-sm-11">
+                    <div class="col-sm-12">
                         @(Html.Kendo().DropDownList()
                                         .Name("day")
                                         .DataTextField("Text")
@@ -49,14 +49,14 @@
                     <div id="hideLabbel" class="col-sm-4">
 
                     </div>
-                    <div class="col-sm-11 row">
-                        <div class="col-sm-5">
+                    <div class="col-sm-12 row">
+                        <div class="col-sm-6">
                             <div id="hideFrom">
 
                             </div>
 
                         </div>
-                        <div class="col-sm-5">
+                        <div class="col-sm-6">
                             <div id="hideTo">
 
                             </div>
@@ -68,7 +68,7 @@
                 </div>
                 <div class="form-group row">
                     <label for="staticEmail" class="col-sm-4 col-form-label custom-font-weight">Khách hàng</label>
-                    <div class="col-sm-11">
+                    <div class="col-sm-12">
                         @(Html.Kendo().MultiSelect()
                         .Name("multiselect")
                         .DataTextField("companyName")

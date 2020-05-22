@@ -18,7 +18,7 @@ namespace DRLab.Data.ViewModels
         public string method { get; set; }
         [Display(Name = "Unit")]
         public string unit { get; set; }
-        [Display(Name = "turnAround Time")]
+        [Display(Name = "TurnAround Time")]
         public double turnAroundTime { get; set; }
         
         public bool reformTestResult { get; set; }

@@ -22,8 +22,8 @@
 
         render += Mustache.render(template, {
             requestNo: document.getElementById("flag4").innerHTML,
-            receivceDate: drlab.dateTimeFormatJson(document.getElementById("flag3").innerHTML),
-            dateOfSendingResult: drlab.dateTimeFormatJson(document.getElementById("flag2").innerHTML),
+            receivceDate: document.getElementById("flag3").innerHTML,
+            dateOfSendingResult: document.getElementById("flag2").innerHTML,
             contactName: document.getElementById("flag6").innerHTML,
             contactEmail: document.getElementById("flag5").innerHTML,
             companyName: document.getElementById("flag7").innerHTML
@@ -54,28 +54,60 @@
                             success: function (responseCbbMatrix) {
 
                                 //comboAddSpecification.select(comboAddSpecification.dataSource._pristineData.indexOf(comboAddSpecification.dataSource._pristineData.filter(x => x.specification === response[0].specification)[0]));
-                                console.log(response);
                                 var grid = $("#Grid").data("kendoGrid");
                                 myarr = [];
                                 reponseGetById = response;
-                                $('#simpleCode').val(response[0].sampleCode);
-                                $('#innerCode').val(response[0].LVNCode);
-                                $('#simpleName').val(response[0].sampleName);
-                                $('#descriptionCustomer').val(response[0].sampleDescription);
-                                $('#remarkToLab').val(response[0].remarkToLab);
-                                $('#sampleMatrix').val(response[0].sampleMatrix);
-                                $('#weight').val(response[0].weight);
-                                $('#templateMark').val('');
-                                $('#tat').val('');
+                                if (response.length > 0) {
+                                    $('#simpleCode').val(response[0].sampleCode);
+                                    $('#innerCode').val(response[0].LVNCode);
+                                    $('#simpleName').val(response[0].sampleName);
+                                    $('#descriptionCustomer').val(response[0].sampleDescription);
+                                    $('#remarkToLab').val(response[0].remarkToLab);
+                                    $('#sampleMatrix').val(response[0].sampleMatrix);
+                                    $('#weight').val(response[0].weight);
+                                    $('#templateMark').val('');
+                                    $('#tat').val('');
+                                    var dataSource = new kendo.data.DataSource({
+                                        data: response[0].Data,
+                                        pageSize: 20,
+                                    });
+                                    grid.setDataSource(dataSource);
+                                } else {
+                                    var requestNo = ["SampleCode", "InLabCode"];
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/GetCounter/GetCounterString",
+                                        data: JSON.stringify(requestNo),
+                                        dataType: "json",
+                                        contentType: "application/json",
+                                        success: function (response) {
+                                            $('#simpleCode').val(response.sampleCode);
+                                            $('#innerCode').val(response.inLabCode);
+                                        },
+                                        error: function () {
+                                        }
+                                    });
+                                    var grid1 = $("#Grid").data("kendoGrid");
+                                    
+                                    $('#simpleName').val('');
+                                    $('#descriptionCustomer').val('');
+                                    $('#remarkToLab').val('');
+                                    $('#sampleMatrix').val('');
+                                    $('#weight').val('');
+                                    $('#templateMark').val('');
+                                    $('#tat').val('');
+                                    var dataSource = new kendo.data.DataSource({
+                                        data: [],
+                                        pageSize: 20,
+                                    });
+                                    grid1.setDataSource(dataSource);
+                                }
+                                
 
-                                var dataSource = new kendo.data.DataSource({
-                                    data: response[0].Data,
-                                    pageSize: 20,
-                                });
-                                grid.setDataSource(dataSource);
+                               
+                                
                                 const data = { "req_per_page": 1, "page_no": 1 };
                                 pagination(data, parseInt(document.getElementById("flag").innerHTML));
-                                console.log(responseCbb);
                                 var comboAddSpecification = $("#addSpecification").data("kendoComboBox");
                                 var dataSource = new kendo.data.DataSource({
                                     data: responseCbb
@@ -227,7 +259,7 @@
     }
 
 
-    var dialog = $('#dialog'),
+    var dialog = $('#dialogEdit'),
         undo = $("#undo");
 
     undo.click(function () {
@@ -241,10 +273,11 @@
 
     dialog.kendoDialog({
         width: "450px",
-        title: "New Request",
+        title: "Edit Request",
         closable: false,
         modal: false,
         content: "",
+        visible: false,
         actions: [
             { text: 'Cancel' },
             {
@@ -296,7 +329,7 @@
                 success: function (response) {
                     lenthx = response;
                     isCheck = true;
-                    var notification = $("#notification").data("kendoNotification");
+                    var notification = $("#notificationEdit").data("kendoNotification");
                     notification.show({
                         message: "Save Successful"
                     }, "success");
@@ -312,8 +345,8 @@
 
                     render += Mustache.render(template, {
                         requestNo: response.requestNo,
-                        receivceDate: drlab.dateTimeFormatJson(response.receivceDate),
-                        dateOfSendingResult: drlab.dateTimeFormatJson(response.dateOfSendingResult),
+                        receivceDate: response.receivceDate,
+                        dateOfSendingResult: response.dateOfSendingResult,
                         contactName: itemSelected.contactName,
                         contactEmail: itemSelected.contactEmail,
                         companyName: itemSelected.companyName
@@ -326,7 +359,7 @@
                     return true;
                 },
                 error: function () {
-                    var notification = $("#notification").data("kendoNotification");
+                    var notification = $("#notificationEdit").data("kendoNotification");
                     notification.show({
                         title: "Wrong Save",
                         message: "Save error check requestNo"
@@ -356,7 +389,7 @@
                 processData: false,
                 success: function (response) {
                     isCheck = true;
-                    var notification = $("#notification").data("kendoNotification");
+                    var notification = $("#notificationEdit").data("kendoNotification");
                     notification.show({
                         message: "Update Successful"
                     }, "success");
@@ -372,8 +405,8 @@
 
                     render += Mustache.render(template, {
                         requestNo: response.requestNo,
-                        receivceDate: drlab.dateTimeFormatJson(response.receivceDate),
-                        dateOfSendingResult: drlab.dateTimeFormatJson(response.dateOfSendingResult),
+                        receivceDate: response.receivceDate,
+                        dateOfSendingResult: response.dateOfSendingResult,
                         contactName: itemSelected.contactName,
                         contactEmail: itemSelected.contactEmail,
                         companyName: itemSelected.companyName
@@ -385,7 +418,7 @@
                     isCheck = true;
                 },
                 error: function () {
-                    var notification = $("#notification").data("kendoNotification");
+                    var notification = $("#notificationEdit").data("kendoNotification");
                     notification.show({
                         title: "Wrong Save",
                         message: "Uppdate error check requestNo"

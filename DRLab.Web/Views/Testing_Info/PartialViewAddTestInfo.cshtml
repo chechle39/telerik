@@ -1,70 +1,199 @@
-﻿@(Html.Kendo().Grid<DRLab.Data.ViewModels.E08T_Testing_InfoViewModel1>()
-    .Name("Testing_combobox")
-    .Columns(columns =>
-    {
-        columns.Bound(p => p.analysisCode).Hidden();
-        columns.ForeignKey(p => p.specification, (System.Collections.IEnumerable)ViewData["categories"], "specification", "specification").EditorTemplateName("ValueView").Hidden();
-        columns.Bound(p => p.newspecification).Width(400).Hidden();
-        columns.Bound(p => p.method).Width(400).Hidden();
-        columns.Bound(p => p.unit).Hidden();
-        columns.Bound(p => p.turnAroundTime).Hidden();
-        columns.Bound(p => p.reformTestResult).Hidden();
-        columns.Bound(p => p.note).Hidden();
-        columns.Command(command => command.Edit().UpdateText("Insert")).Hidden();
-    })
-    .ToolBar(toolbar => toolbar.Create().Text(" "))
-    .Editable(editable => editable.Mode(GridEditMode.PopUp).Window(w => w.Title("New Testing Info")))
-    .DataSource(dataSource => dataSource
-        .Ajax()
-         // .Events(events => events.Error("error_handler"))
-         .Model(model => model.Id(p => p.analysisCode))
-         .Model(model => model.Field(p => p.specification))
-        .Model(model => model.Field(p => p.newspecification))
-        .Model(model => model.Field(p => p.method))
-        .Model(model => model.Field(p => p.unit))
-        .Model(model => model.Field(p => p.turnAroundTime))
-        .Model(model => model.Field(p => p.reformTestResult))
-        .Model(model => model.Field(p => p.note))
-        .Create(read => read.Action("Create_TestingInfoRequest", "Testing_Info"))
-        .Read(read => read.Action("Read_Testing_Info", "Testing_Info"))
+﻿@*@(Html.Kendo().Grid<DRLab.Data.ViewModels.E08T_Testing_InfoViewModel1>()
+        .Name("Testing_combobox")
+        .Columns(columns =>
+        {
+            columns.Bound(p => p.analysisCode).Hidden();
+            columns.ForeignKey(p => p.specification, (System.Collections.IEnumerable)ViewData["categories"], "specification", "specification").EditorTemplateName("ValueView").Hidden();
+            columns.Bound(p => p.newspecification).Width(400).Hidden();
+            columns.Bound(p => p.method).Width(400).Hidden();
+            columns.Bound(p => p.unit).Hidden();
+            columns.Bound(p => p.turnAroundTime).Hidden();
+            columns.Bound(p => p.reformTestResult).Hidden();
+            columns.Bound(p => p.note).Hidden();
+            columns.Command(command => command.Edit().UpdateText("Insert")).Hidden();
+        })
+        .ToolBar(toolbar => toolbar.Create().Text(" "))
+        .Editable(editable => editable.Mode(GridEditMode.PopUp).Window(w => w.Title("New Testing Info")))
+        .DataSource(dataSource => dataSource
+            .Ajax()
+             // .Events(events => events.Error("error_handler"))
+             .Model(model => model.Id(p => p.analysisCode))
+             .Model(model => model.Field(p => p.specification))
+            .Model(model => model.Field(p => p.newspecification))
+            .Model(model => model.Field(p => p.method))
+            .Model(model => model.Field(p => p.unit))
+            .Model(model => model.Field(p => p.turnAroundTime))
+            .Model(model => model.Field(p => p.reformTestResult))
+            .Model(model => model.Field(p => p.note))
+            .Create(read => read.Action("Create_TestingInfoRequest", "Testing_Info"))
+            .Read(read => read.Action("Read_Testing_Info", "Testing_Info"))
+        )
     )
-)
-    <script type="text/javascript">
-        function error_handler(e) {
-            if (e.errors) {
-                var message = "Errors:\n";
-                $.each(e.errors, function (key, value) {
-                    if ('errors' in value) {
-                        $.each(value.errors, function () {
-                            message += this + "\n";
-                        });
-                    }
-                });
-                alert(message);
+        <script type="text/javascript">
+            function error_handler(e) {
+                if (e.errors) {
+                    var message = "Errors:\n";
+                    $.each(e.errors, function (key, value) {
+                        if ('errors' in value) {
+                            $.each(value.errors, function () {
+                                message += this + "\n";
+                            });
+                        }
+                    });
+                    alert(message);
+                }
             }
-        }
-    </script>
-    <style>
-        .k-header.k-grid-toolbar {
-            border: 0;
-            background: none;
-        }
+        </script>
+        <style>
+            .k-header.k-grid-toolbar {
+                border: 0;
+                background: none;
+            }
 
-        .k-grid-toolbar {
-            width: 60px;
-            border: 0;
-            background: none;
-        }
+            .k-grid-toolbar {
+                width: 60px;
+                border: 0;
+                background: none;
+            }
 
-        .k-grid.k-widget.k-grid-display-block.k-editable {
-            border: 0;
-        }
+            .k-grid.k-widget.k-grid-display-block.k-editable {
+                border: 0;
+            }
 
-        label:not(.form-check-label):not(.custom-file-label) {
-            font-weight: 400;
-            text-align: left;
-        }
-        .editor-label {
-            text-align:left!important;
-        }
-    </style>
+            label:not(.form-check-label):not(.custom-file-label) {
+                font-weight: 400;
+                text-align: left;
+            }
+            .editor-label {
+                text-align:left!important;
+            }
+        </style>*@
+
+@model string
+<kendo-dialog name="@Model" title="New customer" width="500" modal="true" visible="false">
+    <content>
+        <form asp-controller="CustomerList" asp-action="Create_CustomerRequest" id="createCustomerForm" method="post">
+            <div class="row mb-2">
+                <div class="col-3">
+                    <span style="vertical-align: sub;">Analysis Code</span>
+                </div>
+                <div class="col-9">
+                    @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new { style = "width: 100%" })
+                    .Name("analysisCode")
+                    )
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3">
+                    <span style="vertical-align: sub;">Specification</span>
+                </div>
+                <div class="col-9">
+                    @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new { style = "width: 100%" })
+                    .Name("specification")
+                    )
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3">
+                    <span style="vertical-align: sub;">New Specification</span>
+                </div>
+                <div class="col-9">
+                    @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new { style = "width: 100%" })
+                    .Name("newspecification")
+                    )
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3">
+                    <span style="vertical-align: sub;">Method</span>
+                </div>
+                <div class="col-9">
+                    @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new { style = "width: 100%" })
+                    .Name("method")
+                    )
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3">
+                    <span style="vertical-align: sub;">Unit</span>
+                </div>
+                <div class="col-9">
+                    @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new { style = "width: 100%" })
+                    .Name("unit")
+                    )
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3">
+                    <span style="vertical-align: sub;">Turn Around Time</span>
+                </div>
+                <div class="col-9">
+                    @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new { style = "width: 100%" })
+                    .Name("turnAroundTime")
+                    )
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3">
+                    <span style="vertical-align: sub;">Reform Test Result</span>
+                </div>
+                <div class="col-9">
+                    @(Html.Kendo().CheckBox().Name("reformTestResult").Checked(true))
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3">
+                    <span style="vertical-align: sub;">Note</span>
+                </div>
+                <div class="col-9">
+                    @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new { style = "width: 100%" })
+                    .Name("note")
+                    )
+                </div>
+            </div>
+        </form>
+    </content>
+    <actions>
+        <action text="Cancel">
+        </action>
+        <action text="Save" title="Save" action="onSave" primary="true">
+        </action>
+    </actions>
+    <popup-animation>
+        <open duration="500" effects="fade:in" />
+        <close duration="500" effects="fade:out" />
+    </popup-animation>
+</kendo-dialog>
+<script>
+    function onSave() {
+        console.log("ok");
+        const form = $("#createCustomerForm");
+        const requestUrl = "/CustomerList/Create_CustomerRequest";
+        console.log(requestUrl);
+        const data = {
+            customerCode: form.find("customerCode").val(),
+            companyName: form.find("companyName").val(),
+            companyAddress: form.find("companyAddress").val(),
+            province: form.find("province").val(),
+            contactName: form.find("contactName").val(),
+            contactEmail: form.find("contactEmail").val(),
+            note: form.find("note").val(),
+        };
+        $.post({
+            url: requestUrl,
+            data: data,
+            dataType: 'json',
+            success: function (result) {
+                console.log(result);
+            },
+        });
+        return false;
+    }
+</script>

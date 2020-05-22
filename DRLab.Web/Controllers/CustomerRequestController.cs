@@ -33,8 +33,24 @@ namespace DRLab.Web.Controllers
         {
             var result = await _specificationDataService.GetAll();
             ViewData["categories"] = result.ToList();
-            ViewData["Analysis"] = await _e00T_CustomerService.GetAnalysisByRequestNo(requestNo);
-            return View(await _e08T_AnalysisRequest_InfoService.GetRequestInfoByRequestNo(requestNo));
+            var data = await _e08T_AnalysisRequest_InfoService.GetRequestInfoByRequestNo(requestNo);
+            var rp = new AnalysisRequest_InfoStringDate()
+            {
+                requestNo = data.requestNo,
+                address = data.address,
+                contactID = data.contactID,
+                contactName = data.contactName,
+                customerCode = data.customerCode,
+                customerID = data.customerID,
+                dateOfSendingResult = data.dateOfSendingResult.Value.ToString("dd/MM/yyyy hh:mm"),
+                email = data.email,
+                note = data.note,
+                numberSample = data.numberSample,
+                receivceDate = data.receivceDate.Value.ToString("dd/MM/yyyy hh:mm"),
+
+            };
+            
+            return View(rp);
         }
         [HttpPost]
         public async Task<IActionResult> SaveEntityAnalysisRequestData([FromBody] List<CreateCustomeRequest> request)
@@ -56,11 +72,26 @@ namespace DRLab.Web.Controllers
                 return new BadRequestObjectResult(allErrors);
             }
             await _e08T_AnalysisRequest_InfoService.SaveAnalysisRequestInfo(req);
-            return new OkObjectResult(req);
+            var rp = new E08T_AnalysisRequest_InfoViewModelStringDate()
+            {
+                contactID = req.contactID,
+                receivceDate = req.receivceDate.Value.ToString("dd/MM/yyyy hh:mm"),
+                dateOfSendingResult = req.dateOfSendingResult.Value.ToString("dd/MM/yyyy hh:mm"),
+                customerID = req.customerID,
+                note = req.note,
+                numberSample = req.numberSample,
+                orderConfim = req.orderConfim,
+                priceID = req.priceID,
+                printVAT = req.printVAT,
+                requestNo = req.requestNo,
+                status = req.status,
+                testReportContactID = req.testReportContactID,
+            };
+            return new OkObjectResult(rp);
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateEntity(E08T_AnalysisRequest_InfoViewModel req)
+        public async Task<IActionResult> UpdateEntity([FromBody]E08T_AnalysisRequest_InfoViewModel req)
         {
             if (!ModelState.IsValid)
             {
@@ -68,7 +99,22 @@ namespace DRLab.Web.Controllers
                 return new BadRequestObjectResult(allErrors);
             }
             await _e08T_AnalysisRequest_InfoService.UpdateAnalysisRequestInfo(req);
-            return new OkObjectResult(req);
+            var rp = new E08T_AnalysisRequest_InfoViewModelStringDate()
+            {
+                contactID = req.contactID,
+                receivceDate = req.receivceDate.Value.ToString("dd/MM/yyyy hh:mm"),
+                dateOfSendingResult = req.dateOfSendingResult.Value.ToString("dd/MM/yyyy hh:mm"),
+                customerID = req.customerID,
+                note = req.note,
+                numberSample = req.numberSample,
+                orderConfim = req.orderConfim,
+                priceID = req.priceID,
+                printVAT = req.printVAT,
+                requestNo = req.requestNo,
+                status = req.status,
+                testReportContactID = req.testReportContactID,
+            };
+            return new OkObjectResult(rp);
         }
         public async Task<List<E00T_CustomerViewModel>> GetCustomers(string text)
         {

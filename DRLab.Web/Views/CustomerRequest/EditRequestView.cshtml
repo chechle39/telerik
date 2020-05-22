@@ -8,7 +8,7 @@
     </script>
 }
 <div id="example">
-    <div id="dialog">
+    <div id="dialogEdit">
         <div id="horizontal-form">
 
             <form class="form-horizontal" role="form" id="frmMaintainance">
@@ -32,15 +32,14 @@
                             <label class="custom-font-weight control-label no-padding-right">Customer</label>
 
                         </div>
-                        <div class="col-sm-8">
-                            <div class="row m-0">
-                                <div class="col-10 cus p-0">
-                                    @(Html.Kendo().ComboBox()
+                        <div class="col-sm-8 row">
+                            <div class="col-10 cus">
+                                @(Html.Kendo().ComboBox()
                                 .Name("customers")
                                 .Placeholder("Select customer")
                                 .DataTextField("companyName")
                                 .DataValueField("customerCode")
-                                .HtmlAttributes(new { style = "width: 100%;margin-top: -4px;" })
+                                .HtmlAttributes(new { style = "width: 108%;height: 95%;margin-top: -4px;" })
                                 .Events(e =>
                                 {
                                     e.Change("onChangecustomer").Select("onSelectcustomer");
@@ -62,27 +61,15 @@
                             )
 
 
-                                </div>
-                                <div class="col-2 spanSty p-0 text-right">
-                                    <span style="margin-top: -2px;">
-                                        @await Html.PartialAsync("../CustomerList/PartialViewAddCustomer", "CreateCustomerDiaLog")
-                                        @(Html.Kendo().Button()
-                                        .Name("CreateCustomerBtn")
-                                        .HtmlAttributes(new { @class = "hide-on-narrow" })
-                                        .Icon("plus")
-                                        .Events(ev => ev.Click("openCustomerDialog"))
-                                    )
-                                        <script>
-                                            function openCustomerDialog() {
-                                                $('#CreateCustomerDiaLog').data("kendoDialog").open();
-                                            }
-                                        </script>
-                                    </span>
-                                </div>
+                            </div>
+                            <div class="col-1 spanSty">
+                                <span style="margin-top: -2px;">
+                                    @*@await Html.PartialAsync("../CustomerList/PartialViewAddCustomer")*@
+                                </span>
                             </div>
                         </div>
-                        
-                        
+
+
                     </div>
 
                 </div>
@@ -256,13 +243,15 @@
     .form-group {
         margin-bottom: 0 !important
     }
+
     .spanSty {
-        margin-top: -4px;
+        margin-top: -8px;
+        margin-left: 1px;
         height: 10px;
     }
+
     .k-grid-add {
         margin-left: 3px !important;
         margin-top: -3px;
     }
-  
 </style>

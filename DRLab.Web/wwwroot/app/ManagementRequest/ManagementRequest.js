@@ -59,18 +59,24 @@ var ManagementRequestController = function () {
         var lastday = new Date(curr.setDate(last)).toUTCString();
 
         const data = {
-            startDate: new Date(firstday).toLocaleDateString(),
-            endDate: new Date(lastday).toLocaleDateString(),
+            startDate: convertDate(new Date(firstday).toLocaleDateString()),
+            endDate: convertDate(new Date(lastday).toLocaleDateString()),
         }
 
         return data;
+    }
+
+    function convertDate(date) {
+        var b = date.split('/');
+        var d = b[1] + "/" + b[0] + "/" + b[2]
+        return d;
     }
 
     var dialog = $('#dialog');
 
 
     dialog.kendoDialog({
-        width: "400px",
+        width: "360px",
         title: "Search",
         closable: false,
         modal: false,
@@ -96,12 +102,12 @@ var ManagementRequestController = function () {
                 loadData();
                 break;
             case 1:
-                searchData(startDate1.toLocaleDateString(), endDate1.toLocaleDateString());
+                searchData(convertDate(startDate1.toLocaleDateString()), convertDate(endDate1.toLocaleDateString()));
                 break;
             case 2:
                 var initialSart = datepicker.value.split("/");
                 var initialTo = datepickerto.value.split("/");
-                searchData([initialSart[1], initialSart[0], initialSart[2]].join('/'), [initialTo[1], initialTo[0], initialTo[2]].join('/'));
+                searchData(datepicker.value, datepickerto.value);
                 break;
             default:
                 loadData();

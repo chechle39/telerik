@@ -29,7 +29,7 @@
                         <!-- general form elements -->
                         <div class="card">
                             <div id="ticketsForm" class="k-form k-form-vertical" kendo-validator="true">
-                                <div class="card-header row" style="margin-left: 0px;">
+                                <div class="card-header row" >
 
                                     <div class="col-4">
                                         <h3 class="card-title" style="font-size: 25px">Request Management </h3><h6 onclick=onClicSearch() id="btnsearch" style="margin-left: 12px;margin-top: 10px;cursor: pointer;" class="fas fa-search"></h6>
@@ -102,7 +102,7 @@
                                                     .Text(" ")
                                                     .HtmlAttributes(new { style = "width:43%" });
                                                 command.Custom("Destroy")
-                                                    .IconClass("k-icon k-i-close")
+                                                    .IconClass("k-icon k-i-trash")
                                                     .Click("showDeleteConfirmation")
                                                     .Text(" ")
                                                     .HtmlAttributes(new { style = "width:43%" });
@@ -456,8 +456,8 @@
 <script id="delete-confirmation" type="text/x-kendo-template">
     <p class="delete-message">Are you sure?</p>
 
-    <button class="delete-confirm k-button">Yes</button>
-    <a href="#" class="delete-cancel">No</a>
+    <button class="delete-confirm k-button" style="float: right">Yes</button>
+    <a href="#" class="delete-cancel"  style="float: right">No</a>
 </script>
 <script id="successTemplate" type="text/x-kendo-template">
     <div class="upload-success">
