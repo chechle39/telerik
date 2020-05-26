@@ -68,7 +68,7 @@ var ManagementRequestController = function () {
 
     function convertDate(date) {
         var b = date.split('/');
-        var d = b[1] + "/" + b[0] + "/" + b[2]
+        var d = b[0] + "/" + b[1] + "/" + b[2]
         return d;
     }
 

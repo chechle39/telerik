@@ -1,0 +1,65 @@
+:root {
+  --theme-accent: #ff804d;
+  --theme-info: #46b8e0;
+  --theme-success: #90bf4f;
+  --theme-warning: #ffc857;
+  --theme-error: #e14d6b;
+  --theme-text-color: #000000;
+  --theme-bg-color: #e3eef4;
+  --theme-base-text: #ffffff;
+  --theme-base-bg: #447a99;
+  --theme-hovered-text: #ffffff;
+  --theme-hovered-bg: #1b4b66;
+  --theme-selected-text: #ffffff;
+  --theme-selected-bg: #ff804d;
+}
+
+.Drlab__background--accent {
+  background: #ff804d;
+}
+
+.Drlab__color--accent {
+  color: #ff804d;
+}
+
+.Drlab__background--info {
+  background: #46b8e0;
+}
+
+.Drlab__color--info {
+  color: #46b8e0;
+}
+
+.Drlab__background--success {
+  background: #90bf4f;
+}
+
+.Drlab__color--success {
+  color: #90bf4f;
+}
+
+.Drlab__background--warning {
+  background: #ffc857;
+}
+
+.Drlab__color--warning {
+  color: #ffc857;
+}
+
+.Drlab__background--error {
+  background: #e14d6b;
+}
+
+.Drlab__color--error {
+  color: #e14d6b;
+}
+
+.Drlab__background {
+  background: #447a99;
+}
+
+.Drlab__text {
+  background: #000000;
+}
+
+/*# sourceMappingURL=index.css.map */

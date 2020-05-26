@@ -46,7 +46,7 @@
 
 
                                     </div>
-                                    <div class="col-3">
+                                    <div class="col-3" style="display: flex;flex-direction: column;justify-content: center;">
                                         @(Html.Kendo().DropDownList()
                                         .Name("color")
                                         .DataTextField("Text")
@@ -63,13 +63,13 @@
                                         },
                                         })
                                     .Value("1")
-                                    .HtmlAttributes(new { style = "width: 100%" })
+                                    .HtmlAttributes(new { style = "width: 100%", @class = "k-dropdown--clear" })
                                         )
                                     </div>
                                     <div class="col-5">
                                         <div style="float:right">
-                                            <button onclick="SaveEntity()" type="submit" class="btn btn-raised">Save</button>
-                                            <button class="btn btn-cancel">Cancel</button>
+                                            <button onclick="SaveEntity()" type="submit" class="k-button k-primary px-3 py-2">Save</button>
+                                            <button class="k-button px-3 py-2">Cancel</button>
                                         </div>
 
                                     </div>
@@ -87,7 +87,7 @@
                                     </div>
                                     <div class="form-group row" style="    padding-bottom: 15px;
 ">
-                                        <div class="col-2">
+                                        <div class="col-1">
                                             <span style="color: #922999;text-decoration: underline double;">Sample List</span>
                                         </div>
 
@@ -151,18 +151,28 @@
                                             </div>
                                         </div>
 
-                                        <div class="row col-5">
+                                        <div class="row col-3">
                                             <span>Weight</span>
                                             <div class="col-sm-9 mr-t">
                                                 @(Html.Kendo().TextBox()
                                                 .Name("weight")
-                                                .HtmlAttributes(new { placeholder = "Weight", style = "width: 50%;height: calc(1.42857143em + 10px);margin-left: 45px", })
+                                                .HtmlAttributes(new { placeholder = "Weight", style = "width: 87%;height: calc(1.42857143em + 10px);margin-left: 45px", })
                                                 )
                                             </div>
 
                                         </div>
-                                    </div>
 
+                                        <div class="col-4 row" style="margin-left: 2%;">
+                                            <span style="padding-right: 35px;">TAT (+/-)</span>
+                                            <div class="col-sm-2 mr-t">
+                                                @(Html.Kendo().TextBox()
+                                            .Name("tat")
+                                            .HtmlAttributes(new { placeholder = "TAT", style = "width: 80%;height: calc(1.42857143em + 10px);" })
+                                            )
+                                            </div>
+                                            <span>Done</span>
+                                        </div>
+                                    </div>
                                     <div class="form-group row margin-left-0">
 
                                         <div class="col-3 row">
@@ -173,7 +183,7 @@
                                                 .Placeholder("Select Sample Matrix")
                                                 .DataTextField("sampleMatrix")
                                                 .DataValueField("matrixID")
-                                                .HtmlAttributes(new { style = "width:143%; height:calc(1.42857143em + 10px);margin-left: 5px" })
+                                                .HtmlAttributes(new {style = "width:143%; height:calc(1.42857143em + 10px);margin-left: 5px" })
 
                                                 .AutoBind(false)
                                                 .DataSource(source =>
@@ -213,16 +223,38 @@
                                                     })
                                                     .ServerFiltering(true);
                                                 })
-                                                    )
+                                                )
                                                 </div>
-                                                <div class="col-1" style="padding-left: 0px;max-width: 1.333333%;margin-top: -5px;">
-                                                    @*<span style="margin-top: -2px;">
-                                                        @await Html.PartialAsync("../Testing_Info/PartialViewAddTestInfo")
-                                                    </span>*@
+                                                <div class="col-1" style="padding-left: 6px;max-width: 1.333333%;margin-top: 0px">
+                                                    <span style="margin-top: -2px;">
+                                                        @await Html.PartialAsync("../Testing_Info/PartialViewAddTestInfo", "AddTestInfo")
+                                                        @(Html.Kendo().Button()
+                                                        .Name("AddTestInfoBtn")
+                                                        .HtmlAttributes(new { @class = "hide-on-narrow" })
+                                                        .Icon("plus")
+                                                        .Events(ev => ev.Click("openAddTestInfoDialog"))
+                                                    )
+                                                        <script>
+                                                            function openAddTestInfoDialog() {
+                                                                $('#AddTestInfo').data("kendoDialog").open();
+                                                            }
+                                                        </script>
+                                                    </span>
                                                 </div>
 
                                             </div>
 
+                                        </div>
+                                        <div class="col-3 row" style="margin-left: -24px;">
+                                            <span>Template Mark</span>
+                                            <div class="col-sm-5 mr-t">
+                                                @(Html.Kendo().TextBox()
+                                            .Name("templateMark")
+                                            .HtmlAttributes(new { placeholder = "Template Mark", style = "width: 100%;height: calc(1.42857143em + 10px);" })
+                                            )
+                                            </div>
+                                            <span>Save</span>
+                                            <span class="pd-left-30">Get</span>
                                         </div>
                                     </div>
                                     <div style="margin-bottom: 25px;">
@@ -230,7 +262,7 @@
 
                                     </div>
 
-                                    <div class="form-group row margin-left-0">
+                                    @*<div class="form-group row margin-left-0">
 
                                         <div class="col-5 row">
                                             <span>Template Mark</span>
@@ -254,7 +286,7 @@
                                             </div>
                                             <span>Done</span>
                                         </div>
-                                    </div>
+                                    </div>*@
 
                                     <div class="form-group row">
 
@@ -268,7 +300,7 @@
                                             columns.Bound(p => p.method).Title("Method").Width("25%");
                                             columns.Bound(p => p.LOD).Title("LOD");
                                             columns.Bound(p => p.unit).Title("Unit");
-                                            columns.Bound(p => p.Price).Title("Price").Width("10%");
+                                            columns.Bound(p => p.Price).Title("Price").Width("10%").Format("{0:n2}");
                                             columns.Bound(p => p.Urgent).Title("% Urgent");
                                             columns.Bound(p => p.TAT).Title("TAT");
                                             columns.Command(command => { command.Destroy().IconClass("k-icon k-i-trash"); }).Width(100);
@@ -642,13 +674,13 @@
         $('#templateMark').val(response[page_no - 1].templateMark);
         $('#tat').val(response[page_no - 1].tat);
         comboboxsampleMatrix.select(parseInt(response[page_no - 1].sampleMatrix));
-        if (response[page_no - 1].addSpecificationValue.length > 0) {
-            $("#addSpecification").data("kendoComboBox").value(comboAddSpecification.dataSource._pristineData.filter(x => x.specification === response[page_no - 1].addSpecificationValue)[0].analysisCode);
+        //if (response[page_no - 1].addSpecificationValue.length > 0) {
+        //    $("#addSpecification").data("kendoComboBox").value(comboAddSpecification.dataSource._pristineData.filter(x => x.specification === response[page_no - 1].addSpecificationValue)[0].analysisCode);
 
-        } else {
-            comboAddSpecification.select(parseInt(response[page_no - 1].addSpecification));
-        }
-
+        //} else {
+        //    comboAddSpecification.select(parseInt(response[page_no - 1].addSpecification));
+        //}
+        comboAddSpecification.select(-1)
         // comboAddSpecification.select(parseInt(response[page_no - 1].addSpecification));
         var dataSource = new kendo.data.DataSource({
             data: response[page_no - 1].data,
@@ -765,9 +797,9 @@
             SaveAnalysisRequestData(saveRequest);
         }
     }
-
+    var mess;
     function SaveAnalysisRequestData(SaveRq) {
-        // var check = verify(SaveRq);
+         var check = verify(SaveRq);
         //if (check === true) {
 
         //}
@@ -787,10 +819,19 @@
             },
             error: function () {
                 var notification = $("#notificationEdit").data("kendoNotification");
-                notification.show({
-                    title: "Wrong Save",
-                    message: "Save error"
-                }, "error");
+                if (check === false) {
+                      notification.show({
+                        title: "Wrong Save",
+                        message: mess
+                        }, "error");
+                } else {
+                    notification.show({
+                        title: "Wrong Save",
+                        message: "Save error"
+                    }, "error");
+                }
+               
+               
             }
         });
     }
@@ -808,12 +849,12 @@
             }
         }
         if (string1.length > 0) {
-            var mess = 'Save error samplematrix of sample lisst' + string.substring(0, string.length - 1);
-            var notification = $("#notificationEdit").data("kendoNotification");
-            notification.show({
-                title: "Wrong Save",
-                message: mess
-            }, "error");
+            mess = 'Save error samplematrix of sample lisst' + string.substring(0, string.length - 1);
+            //var notification = $("#notificationEdit").data("kendoNotification");
+            //notification.show({
+            //    title: "Wrong Save",
+            //    message: mess
+            //}, "error");
             return false
         } else {
             return true
@@ -864,16 +905,13 @@
         height: 30px !important;
     }
 
-    .info-custummer {
-        background: #47478c;
-    }
 
     .margin-left-0 {
         margin-left: 0px;
     }
 
     .form-group {
-        margin-bottom: 5px !important;
+        margin-bottom: 8px !important;
     }
 
 
@@ -976,6 +1014,11 @@
 
     .span {
     }
+    .k-dropdown .k-dropdown-wrap {
+        color: black !important;
+        background-color: white !important;
+        background-image: none !important;
+    }
 </style>
 <script id="errorTemplate" type="text/x-kendo-template">
     <div class="wrong-pass">
@@ -1005,7 +1048,7 @@
 
         <div class="form-group row">
             <div class="col-3">
-                <span>{{companyName}}</span>
+                <span style="color: blue;">{{companyName}}</span>
             </div>
             <div class="col-9">
                 <span style="color: orange;" class="mr-left">{{contactName}}, {{contactEmail}}</span>

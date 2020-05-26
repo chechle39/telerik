@@ -69,131 +69,181 @@
             }
         </style>*@
 
-@model string
-<kendo-dialog name="@Model" title="New customer" width="500" modal="true" visible="false">
-    <content>
-        <form asp-controller="CustomerList" asp-action="Create_CustomerRequest" id="createCustomerForm" method="post">
-            <div class="row mb-2">
-                <div class="col-3">
-                    <span style="vertical-align: sub;">Analysis Code</span>
-                </div>
-                <div class="col-9">
-                    @(Html.Kendo().TextBox()
-                    .HtmlAttributes(new { style = "width: 100%" })
+    @model string
+    <kendo-dialog name="@Model" title="New Testing" width="500" modal="true" visible="false">
+        <content>
+            <form asp-controller="Testing_Info" asp-action="TestingInfo_CreatePopup" id="createTesting_InfoForm" method="post">
+                <div class="row mb-2">
+                    <div class="col-3">
+                        <span style="vertical-align: sub;">Analysis Code</span>
+                    </div>
+                    <div class="col-9">
+                        @(Html.Kendo().TextBox()
                     .Name("analysisCode")
-                    )
+                    .HtmlAttributes(new { style = "width: 100%" }))
+                    </div>
                 </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-3">
-                    <span style="vertical-align: sub;">Specification</span>
+                <div class="row mb-2">
+                    <div class="col-3">
+                        <span style="vertical-align: sub;">Specification</span>
+                    </div>
+                    <div class="col-9">
+                        @(Html.Kendo().ComboBox()
+                                .Name("specification")
+                                .Placeholder("Select specification")
+                                .DataTextField("specification")
+                                .DataValueField("specification")
+                                .HtmlAttributes(new { style = "width: 100%;margin-top: -4px;" })
+                                .Events(e =>
+                                {
+                                    e.Change("onChangecustomer").Select("onSelectcustomer");
+                                })
+                                .DataSource(source =>
+                                {
+                                    source.Read(read =>
+                                    {
+                                        read.Action("GetspecificationItem", "Testing_Info");
+                                    }).ServerFiltering(true);
+                                })
+                                .Filter("startswith")
+                                .Height(300)
+                                .HeaderTemplate("<div class=\"dropdown-header k-widget k-header\">" +
+                                    "<span>Specification</span>" +
+                                        "</div>")
+                                .Template(
+                                "<span class=\"k-state-default\"><h6>#: data.specification #</h6></span>")
+                            ).
+
+                    </div>
                 </div>
-                <div class="col-9">
-                    @(Html.Kendo().TextBox()
-                    .HtmlAttributes(new { style = "width: 100%" })
-                    .Name("specification")
-                    )
-                </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-3">
-                    <span style="vertical-align: sub;">New Specification</span>
-                </div>
-                <div class="col-9">
-                    @(Html.Kendo().TextBox()
+                <div class="row mb-2">
+                    <div class="col-3">
+                        <span style="vertical-align: sub;">New Specification</span>
+                    </div>
+                    <div class="col-9">
+                        @(Html.Kendo().TextBox()
                     .HtmlAttributes(new { style = "width: 100%" })
                     .Name("newspecification")
                     )
+                    </div>
                 </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-3">
-                    <span style="vertical-align: sub;">Method</span>
-                </div>
-                <div class="col-9">
-                    @(Html.Kendo().TextBox()
+                <div class="row mb-2">
+                    <div class="col-3">
+                        <span style="vertical-align: sub;">Method</span>
+                    </div>
+                    <div class="col-9">
+                        @(Html.Kendo().TextBox()
                     .HtmlAttributes(new { style = "width: 100%" })
                     .Name("method")
                     )
+                    </div>
                 </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-3">
-                    <span style="vertical-align: sub;">Unit</span>
-                </div>
-                <div class="col-9">
-                    @(Html.Kendo().TextBox()
+                <div class="row mb-2">
+                    <div class="col-3">
+                        <span style="vertical-align: sub;">Unit</span>
+                    </div>
+                    <div class="col-9">
+                        @(Html.Kendo().TextBox()
                     .HtmlAttributes(new { style = "width: 100%" })
                     .Name("unit")
                     )
+                    </div>
                 </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-3">
-                    <span style="vertical-align: sub;">Turn Around Time</span>
-                </div>
-                <div class="col-9">
-                    @(Html.Kendo().TextBox()
+                <div class="row mb-2">
+                    <div class="col-3">
+                        <span style="vertical-align: sub;">Turn Around Time</span>
+                    </div>
+                    <div class="col-9">
+                        @(Html.Kendo().TextBox()
                     .HtmlAttributes(new { style = "width: 100%" })
                     .Name("turnAroundTime")
                     )
+                    </div>
                 </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-3">
-                    <span style="vertical-align: sub;">Reform Test Result</span>
+                <div class="row mb-2">
+                    <div class="col-3">
+                        <span style="vertical-align: sub;">Reform Test Result</span>
+                    </div>
+                    <div class="col-9">
+                        @(Html.Kendo().CheckBox().Name("reformTestResult").Checked(true))
+                    </div>
                 </div>
-                <div class="col-9">
-                    @(Html.Kendo().CheckBox().Name("reformTestResult").Checked(true))
-                </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-3">
-                    <span style="vertical-align: sub;">Note</span>
-                </div>
-                <div class="col-9">
-                    @(Html.Kendo().TextBox()
+                <div class="row mb-2">
+                    <div class="col-3">
+                        <span style="vertical-align: sub;">Note</span>
+                    </div>
+                    <div class="col-9">
+                        @(Html.Kendo().TextBox()
                     .HtmlAttributes(new { style = "width: 100%" })
                     .Name("note")
                     )
+                    </div>
                 </div>
-            </div>
-        </form>
-    </content>
-    <actions>
-        <action text="Cancel">
-        </action>
-        <action text="Save" title="Save" action="onSave" primary="true">
-        </action>
-    </actions>
-    <popup-animation>
-        <open duration="500" effects="fade:in" />
-        <close duration="500" effects="fade:out" />
-    </popup-animation>
-</kendo-dialog>
-<script>
-    function onSave() {
-        console.log("ok");
-        const form = $("#createCustomerForm");
-        const requestUrl = "/CustomerList/Create_CustomerRequest";
-        console.log(requestUrl);
-        const data = {
-            customerCode: form.find("customerCode").val(),
-            companyName: form.find("companyName").val(),
-            companyAddress: form.find("companyAddress").val(),
-            province: form.find("province").val(),
-            contactName: form.find("contactName").val(),
-            contactEmail: form.find("contactEmail").val(),
-            note: form.find("note").val(),
-        };
-        $.post({
-            url: requestUrl,
-            data: data,
-            dataType: 'json',
-            success: function (result) {
-                console.log(result);
-            },
-        });
-        return false;
-    }
-</script>
+            </form>
+        </content>
+        <actions>
+            <action text="Cancel">
+            </action>
+            <action text="Save" title="Save" action="onSavetesting" primary="true">
+            </action>
+        </actions>
+        <popup-animation>
+            <open duration="500" effects="fade:in" />
+            <close duration="500" effects="fade:out" />
+        </popup-animation>
+    </kendo-dialog>
+    <script>
+        function onSavetesting() {
+            var analysisCode = $('#analysisCode').val();
+            var specification = $('#specification').val();
+            var newspecification = $('#newspecification').val();
+            var method = $('#method').val();
+            var unit = $('#unit').val();
+            var turnAroundTime = $('#turnAroundTime').val();
+            var reformTestResult = $('#reformTestResult').val();
+            var note = $('#note').val();
+            const requestUrl = "/Testing_Info/TestingInfo_CreatePopup";
+            const data = {
+                analysisCode: analysisCode,
+                specification: specification,
+                newspecification: newspecification,
+                method: method,
+                unit: unit,
+                turnAroundTime: turnAroundTime,
+                reformTestResult: reformTestResult,
+                note: note,
+            };
+            $.post({
+                url: requestUrl,
+                data: data,
+                dataType: 'json',
+                success: function (result) {
+                    $('#analysisCode').val("");                   
+                    $('#method').val("");
+                    $('#unit').val("");
+                    $('#turnAroundTime').val("");
+                    $('#reformTestResult').val("");
+                    $('#note').val("");                 
+                    $('#AddTestInfo').data("kendoDialog").close();
+                    var combobox = $("#specification").data("kendoComboBox");                  
+                    combobox.select(function (dataItem) {
+                        return dataItem.name === " ";
+                    });
+                    var notification = $("#notification").data("kendoNotification");
+                    notification.show({
+                        message: "Insert Successful"
+                    }, "success");
+                },
+                error: function () {
+                    var notification = $("#notification").data("kendoNotification");
+                    notification.show({
+                        title: "Wrong Save",
+                        message: "Uppdate error"
+                    }, "error");
+                    var dialog = $('#AddTestInfo');
+                    dialog.data("kendoDialog").open();
+                }
+            });
+            return false;
+        }
+    </script>

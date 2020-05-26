@@ -3,18 +3,17 @@
     .Name("CustomerList")
     .Columns(columns =>
     {
-
         columns.Bound(p => p.companyName).Title(("Company Name"));
         columns.Bound(p => p.companyAddress).Title(("Company Address"));
         columns.Bound(p => p.contactName).Title(("Contact Name"));
         columns.Bound(p => p.contactEmail).Title(("Contact Email"));
         columns.Bound(p => p.city).Title(("City"));
         columns.Bound(p => p.note).Title(("Note"));
-        columns.Command(command => command.Destroy().Text(" ")).Width(100);
+        columns.Command(command => command.Destroy().IconClass("k-icon k-i-trash").Text("Delete")).Width(100);
         columns.Command(c =>
         {
-            c.Custom("RefreshRecord").Text("Add Item").Click("customCom");
-        }).Width(110);
+            c.Custom("RefreshRecord").IconClass("k-icon k-i-edit").Text("Contact").Click("customCom");
+        }).Width(100);
 
     })
     .ToolBar(toolbar =>
@@ -34,6 +33,7 @@
     .Batch(true)
     .PageSize(20)
     .ServerOperation(false)
+    .Events(events => {events.RequestEnd("onRequestEnd"); })
     .Model(model =>
     {
         model.Id(p => p.customerCode);
@@ -54,42 +54,82 @@
 
 @await Html.PartialAsync("../CustomerItem/Index", "CustomerItem")
 
-
+@(Html.Kendo().Notification()
+    .Name("notiCustomer")
+    .Position(p => p.Pinned(true).Top(30).Right(30))
+    .Stacking(NotificationStackingSettings.Down)
+    .Templates(t =>
+    {
+        t.Add().Type("success").ClientTemplateID("successTemplate");
+        t.Add().Type("error").ClientTemplateID("errorTemplate");
+    })
+)
     <script type="text/javascript">
-        var gridxxx = [];
+        var Datagrid = [];
+        var Datacode = [];
         function customCom(e) {
             var grid = e.sender;
-            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));  
-            var a = dataItem.customerCode;           
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+            var a = dataItem.customerCode;
             var grid = $("#gridCustomer").data("kendoGrid");
+
             $.ajax({
                 type: "GET",
                 url: "/CustomerRequest/GetCustomersItemByCode",
                 data: { id: a },
                 dataType: "Json",
-                success: function (response) {                  
-                    data = response;                   
+                success: function (response) {
+                    data = response;
                     schemaTotal(data);
                     autoSync: true;
-                    gridxxx = response;
+                    Datagrid = response;
+                    Datacode = a;
                     var dataSource = new kendo.data.DataSource({
                         data: response,
                         pageSize: 20,
-                    });     
-                    console.log(grid);
+                    });
                     grid.setDataSource(dataSource);
-                   
                 },
                 error: function () {
-                }            
+                }
             });
-           
+
             $("#CustomerItem").data("kendoWindow").center();
             $("#CustomerItem").data("kendoWindow").open();
         }
+        function onRequestEnd(e) {
+            //Check request type
+            if (e.type == "create" || e.type == "update") {
+                //check for errors in the response
+                if (e.response != null || e.response.Errors == null) {
+                    var notification = $("#notiCustomer").data("kendoNotification");
+                    notification.show({
+                        message: "Insert Successful"
+                    }, "success");
+                //} if (e.response.Errors != null) {
+                //    var notification = $("#notiCustomer").data("kendoNotification");
+                //    notification.show({
+                //        title: "Wrong Save",
+                //        message: "Uppdate error"
+                //    }, "error");
+                }
+            }
+        }
     </script>
 
-
+<script id="errorTemplate" type="text/x-kendo-template">
+    <div class="wrong-pass">
+        <img src="@Url.Content("~/Shared/error-icon.png")" />
+        <h3>#= title #</h3>
+        <p>#= message #</p>
+    </div>
+</script>
+<script id="successTemplate" type="text/x-kendo-template">
+    <div class="upload-success">
+        <img src="@Url.Content("~/Shared/success-icon.png")" />
+        <h3>#= message #</h3>
+    </div>
+</script>
 <style>
     .product-photo {
         display: inline-block;
@@ -113,5 +153,151 @@
 
     .k-window {
         display: none;
+    }
+
+    .k-pager-info {
+        display: inherit !important;
+    }
+
+    .k-grid-content {
+        height: auto !important;
+    }
+
+    .k-grid tbody tr {
+        line-height: 14px;
+    }
+
+    /*.k-button {
+        height: 30px;
+    }*/
+
+    .btn-raised {
+        background-color: #92d050 !important;
+        color: #fff !important;
+        border-color: #92d050;
+    }
+
+    .btn-cancel {
+        color: #fff;
+        background-color: #868e96;
+        border-color: #868e96;
+    }
+
+    .k-grid-update {
+        height: 30px !important;
+        width: 76px;
+    }
+
+    .k-grid-cancel {
+        height: 30px !important;
+    }
+
+
+    .margin-left-0 {
+        margin-left: 0px;
+    }
+
+    .form-group {
+        margin-bottom: 8px !important;
+    }
+
+
+    .demo-section p {
+        margin: 3px 0 20px;
+        line-height: 50px;
+    }
+
+    .demo-section .k-button {
+        width: 250px;
+    }
+
+
+    /* Notifications */
+    .k-notification h3 {
+        padding: 30px 10px 5px;
+        font-size: 1em;
+        line-height: normal;
+    }
+
+    .k-notification img {
+        margin: 20px;
+        float: left;
+    }
+
+
+    /* Info template */
+    .new-mail {
+        width: 300px;
+        height: 100px;
+    }
+
+    /* Error template */
+    .wrong-pass {
+        width: 300px;
+        height: 100px;
+    }
+
+    /* Success template */
+    .upload-success {
+        width: 300px;
+        height: 50px;
+    }
+
+
+    /* For Bootstrap v4 theme */
+    .k-bootstrap-v4 .k-notification h3 {
+        padding: 10px 10px 5px;
+    }
+
+    .k-bootstrap-v4 .k-notification img {
+        margin: 10px 20px 0 0;
+    }
+
+    .k-bootstrap-v4 .new-mail,
+    .k-bootstrap-v4 .wrong-pass,
+    .k-bootstrap-v4 .upload-success {
+        width: calc( 300px - 2.5rem );
+        height: calc( 100px - 1.5rem );
+    }
+
+
+    /* For Material v2 theme */
+    .k-material-v2 .k-notification h3 {
+        padding: 10px 10px 5px;
+    }
+
+    .k-material-v2 .k-notification img {
+        margin: 10px 20px 0 0;
+    }
+
+    .k-material-v2 .new-mail,
+    .k-material-v2 .wrong-pass,
+    .k-material-v2 .upload-success {
+        width: 270px;
+        height: 70px;
+    }
+
+
+    .pad-25 {
+        padding-bottom: 25px;
+    }
+    /*.k-editable {
+        background-color: white !important;
+    }
+    .k-grid-add {
+        height: 30px;
+        margin-top: -10px;
+    }*/
+    .mr-t {
+        margin-top: -4px;
+    }
+
+    .span {
+    }
+
+    .k-dropdown .k-dropdown-wrap {
+        color: black !important;
+        background-color: white !important;
+        background-image: none !important;
     }
 </style>

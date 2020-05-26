@@ -47,7 +47,6 @@ namespace DRLab.Data.Repositories
         public async Task<bool> SaveCustomerItem(E00T_Customer_ItemViewModel SaveCustomerItemrequest)
         {
             var saveCustomerItemrequest = Mapper.Map<E00T_Customer_ItemViewModel, E00T_Customer_Item>(SaveCustomerItemrequest);
-
             Entities.Add(saveCustomerItemrequest);
             return await Task.FromResult(true);
         }

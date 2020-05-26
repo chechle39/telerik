@@ -1,11 +1,11 @@
-﻿var customerDetailController = function () {
+﻿var recordResultController = function () {
     var self = this;
     var sampleListCount;
     var reponseGetById;
     this.initialize = function () {
         initForm();
     }
-    
+
     $("#btnCancel").on('click', function () {
         $('#exampleModal').modal('hide');
         $('#exampleModal').css('display', 'none');
@@ -14,7 +14,7 @@
         $('#exampleModal').modal('hide');
         $('#exampleModal').css('display', 'none');
     });
-   
+
     function initForm() {
         var requestNo = ["RequestNo", "SampleCode", "InLabCode"];
         var template = $('#table-template').html();
@@ -35,7 +35,7 @@
             data: { requestNo: document.getElementById("flag4").innerHTML },
             dataType: "Json",
             success: function (response) {
-                
+
                 $.ajax({
                     type: "GET",
                     url: "/Testing_Info/GetTestingInfoCombobox",
@@ -43,7 +43,7 @@
                     dataType: "json",
 
                     success: function (responseCbb) {
-                        
+
                         //comboAddSpecification.select(comboAddSpecification.dataSource._pristineData.indexOf(comboAddSpecification.dataSource._pristineData.filter(x => x.specification === response[0].specification)[0]));
                         $.ajax({
                             type: "GET",
@@ -88,7 +88,7 @@
                                         }
                                     });
                                     var grid1 = $("#Grid").data("kendoGrid");
-                                    
+
                                     $('#simpleName').val('');
                                     $('#descriptionCustomer').val('');
                                     $('#remarkToLab').val('');
@@ -102,10 +102,10 @@
                                     });
                                     grid1.setDataSource(dataSource);
                                 }
-                                
 
-                               
-                                
+
+
+
                                 const data = { "req_per_page": 1, "page_no": 1 };
                                 pagination(data, parseInt(document.getElementById("flag").innerHTML));
                                 //var comboAddSpecification = $("#addSpecification").data("kendoComboBox");

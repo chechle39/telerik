@@ -68,7 +68,46 @@ namespace DRLab.Data.Repositories
             }
             return listGridManagementViewModel;
         }
+        public async Task<List<GridManagementViewModel>> GetRequestInfoSample(SerchSampleManagement request)
+        {
+            var data = await Entities.AsNoTracking().ToListAsync();
+            var listGridManagementViewModel = new List<GridManagementViewModel>();
+            foreach (var item in data)
+            {
+                // var customerItem = await _e00T_Customer_ItemRepository.GetCustomerItemById(item.contactID);
+                var cus = await _e00T_CustomerRepository.GetCustomerById(item.customerID);
+                var objGridManagementViewModel = new GridManagementViewModel()
+                {
+                    companyName = cus.Count > 0 ? cus[0].companyName : null,
+                    contactName = cus.Count > 0 ? cus[0].contactName : null,
+                    dateOfSendingResult = item.dateOfSendingResult,
+                    receivceDate = item.receivceDate,
+                    requestNo = item.requestNo,
+                    status = item.status,
+                    customerCode = cus.Count > 0 ? cus[0].customerCode : null
+                };
+                listGridManagementViewModel.Add(objGridManagementViewModel);
+            }
+            if (!string.IsNullOrEmpty(request.StartDate))
+            {
+                DateTime start = DateTime.Parse(request.StartDate, new CultureInfo("en-CA"));
 
+                listGridManagementViewModel = listGridManagementViewModel.Where(x => x.receivceDate >= start).ToList();
+            }
+            if (!string.IsNullOrEmpty(request.EndDate))
+            {
+                DateTime end = DateTime.Parse(request.EndDate, new CultureInfo("en-CA"));
+
+                listGridManagementViewModel = listGridManagementViewModel.Where(x => x.receivceDate <= end).ToList();
+            }
+            var rq = JsonConvert.DeserializeObject<string[]>(request.Customer[0]);
+            if (rq.Count() > 0)
+            {
+
+                listGridManagementViewModel = listGridManagementViewModel.Where(t => rq.Contains(t.customerCode)).ToList();
+            }
+            return listGridManagementViewModel;
+        }
         public async Task<bool> SaveAnalysisRequestInfo(E08T_AnalysisRequest_InfoViewModel SaveAnalysisRequestInforequest)
         {
             var saveAnalysisRequestInforequest = Mapper.Map<E08T_AnalysisRequest_InfoViewModel, E08T_AnalysisRequest_Info>(SaveAnalysisRequestInforequest);

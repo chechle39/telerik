@@ -103,7 +103,7 @@ function render_table_rows(rows, req_per_page, page_no) {
     const all_data = window.btoa(JSON.stringify(myarr));
     $(".pagination").empty();
     if (data.req_per_page !== 'ALL') {
-        let pager = `<a href="#" id="prev_link" onclick=active_page('prev',\"${all_data}\",${data.req_per_page})>&laquo;</a>` +
+        let pager = `<a href="#" id="prev_link" onclick=active_page('prev',\"${all_data}\",${data.req_per_page})><span class="k-icon k-i-arrow-60-left"></span></a>` +
             `<a href="#" class="active" onclick=active_page(this,\"${all_data}\",${data.req_per_page})>1</a>`;
         const total_page = Math.ceil(parseInt(myarr.length) / parseInt(data.req_per_page));
         if (total_page < pagination_visible_pages) {
@@ -120,7 +120,7 @@ function render_table_rows(rows, req_per_page, page_no) {
                 pager += `<a href="#" style="display:none;" onclick=active_page(this,\"${all_data}\",${data.req_per_page})>${num}</a>`;
             }
         }
-        pager += `<a href="#" id="next_link" onclick=active_page('next',\"${all_data}\",${data.req_per_page})>&raquo;</a>`;
+        pager += `<a href="#" id="next_link" onclick=active_page('next',\"${all_data}\",${data.req_per_page})><span class="k-icon k-i-arrow-60-right"></span></a>`;
         $(".pagination").append(pager);
     } else {
         render_table_rows(all_data, myarr.length, 1);

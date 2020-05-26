@@ -60,7 +60,7 @@ namespace DRLab.Web.Controllers
                 {
                     
                         await _testDataService.Create(data);
-                    
+                        results.Add(data);
                 }
             }
 
@@ -107,11 +107,22 @@ namespace DRLab.Web.Controllers
         {
             return await _testDataService.GetE08TTestingInfoBySpecId(id);
         }
-        public async Task<ActionResult> Create_TestingInfoRequest([DataSourceRequest] DataSourceRequest request,E08T_Testing_InfoViewModel1 testinfo_request)
-        {           
-           await _testDataService.CreateWithCombobox(testinfo_request);             
+       
+        public async Task<List<E00T_SpecificationViewModel>> GetspecificationItem()
+        {
 
-           return Json((await _testDataService.GetAllTesting_Info()).ToDataSourceResult(request, ModelState));
+            return await _specificationDataService.GetAll();
+        }
+        [HttpPost]
+        public async Task<ActionResult> TestingInfo_CreatePopup([DataSourceRequest] DataSourceRequest request, E08T_Testing_PopupViewModel data_info)
+        {
+
+            if (data_info != null)
+            {
+                await _testDataService.CreatePopup(data_info);
+            }
+          
+            return new OkObjectResult(data_info);
         }
     }
 }

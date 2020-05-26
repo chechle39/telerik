@@ -1,0 +1,54 @@
+@import "./variables";
+
+:root{
+    --theme-accent: #{$accent};
+    --theme-info: #{$info};
+    --theme-success: #{$success};
+    --theme-warning: #{$warning};
+    --theme-error: #{$error};
+    --theme-text-color: #{$text-color};
+    --theme-bg-color: #{$bg-color};
+    --theme-base-text: #{$base-text};
+    --theme-base-bg: #{$base-bg};
+    --theme-hovered-text: #{$hovered-text};
+    --theme-hovered-bg: #{$hovered-bg};
+    --theme-selected-text: #{$selected-text};
+    --theme-selected-bg: #{$selected-bg};
+}
+
+.Drlab__background--accent{
+    background: $accent;
+}
+.Drlab__color--accent{
+    color: $accent;
+}
+.Drlab__background--info{
+    background: $info;
+}
+.Drlab__color--info{
+    color: $info;
+}
+.Drlab__background--success{
+    background: $success;
+}
+.Drlab__color--success{
+    color: $success;
+}
+.Drlab__background--warning{
+    background: $warning;
+}
+.Drlab__color--warning{
+    color: $warning;
+}
+.Drlab__background--error{
+    background: $error;
+}
+.Drlab__color--error{
+    color: $error;
+}
+.Drlab__background{
+    background: $base-bg;
+}
+.Drlab__text{
+    background: $text-color;
+}

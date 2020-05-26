@@ -7,9 +7,10 @@ namespace DRLab.Data.ViewModels
 {
     public class E00T_Customer_ItemViewModel
     {
+   
         [Display(Name = "Contact ID")]
         public long contactID { get; set; }        
-        [Display(Name = "Customer Code")]
+        [Display(Name = "Customer Code")]      
         public string customerCode { get; set; }     
         [Display(Name = "Contact Name")]
         public string contactName { get; set; }        

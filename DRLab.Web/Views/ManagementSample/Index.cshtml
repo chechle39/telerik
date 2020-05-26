@@ -13,9 +13,9 @@
 )
 @using Kendo.Mvc
 @section Scripts{
-    <script src="~/app/ManagementRequest/ManagementRequest.js" asp-append-version="true"></script>
+    <script src="~/app/ManagementSample/ManagementSample.js" asp-append-version="true"></script>
     <script>
-        var rq = new ManagementRequestController();
+        var rq = new ManagementSampleController();
         rq.initialize();
     </script>
 }
@@ -29,10 +29,10 @@
                         <!-- general form elements -->
                         <div class="card">
                             <div id="ticketsForm" class="k-form k-form-vertical" kendo-validator="true">
-                                <div class="card-header row">
+                                <div class="card-header row" style="margin-left: 0px;">
 
                                     <div class="col-4">
-                                        <h3 class="card-title" style="font-size: 25px">Request Management </h3><h6 onclick=onClicSearch() id="btnsearch" style="margin-left: 12px;margin-top: 10px;cursor: pointer;" class="fas fa-search"></h6>
+                                        <h3 class="card-title" style="font-size: 25px">Sample Management </h3><h6 onclick=onClicSearch() id="btnsearch" style="margin-left: 12px;margin-top: 10px;cursor: pointer;" class="fas fa-search"></h6>
                                         <div id="dayTem"></div>
                                     </div>
                                     <div class="col-3">
@@ -70,14 +70,44 @@
                                     .Value("0")
                                     .HtmlAttributes(new { style = "width: 100%", @class = "k-dropdown--clear" })
                                     )
-                                    </div>
+                                    </div>                                   
                                     <div class="col-5">
                                         <div style="float:right">
+                                            <button onclick="exportexcel()" class="k-button k-primary px-3 py-2" >Export</button>
                                             <button onclick="refresh()" class="k-button px-3 py-2">Refresh</button>
                                         </div>
 
                                     </div>
-
+                                </div>
+                                <div  class="row" style=" margin-left: 12px; margin-top: 25px">
+                                    <div class="col-3">
+                                        @(Html.Kendo().DropDownList()
+                                        .Name("color1")
+                                        .DataTextField("Text")
+                                        .DataValueField("Value")
+                                        .Events(e => e.Change("change").Select("onSelectAction"))
+                                        .BindTo(new List<SelectListItem>() {
+                                        new SelectListItem() {
+                                            Text = "Request Actions",
+                                            Value = "0"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Open Request",
+                                            Value = "1"
+                                        },                                        
+                                        new SelectListItem() {
+                                                Text = "Testing Report",
+                                                Value = "2"
+                                        },
+                                        new SelectListItem() {
+                                                Text = "Validation",
+                                                Value = "3"
+                                        },                                       
+                                        })
+                                    .Value("0")
+                                    .HtmlAttributes(new { style = "width: 100%" })
+                                    )
+                                    </div>
                                 </div>
                                 <!-- /.card-header -->
                                 <!-- form start -->
@@ -87,29 +117,30 @@
                                         .HtmlAttributes(new { style = "height:auto;" })
                                         .Columns(columns =>
                                         {
-                                           columns.Select().Width(50);
-                                            columns.Bound(p => p.requestNo).Title("Request No#");
-                                            columns.Bound(p => p.receivceDate).Title("Receive Date").Format("{0:MM/dd/yyyy}");
-                                            columns.Bound(p => p.companyName).Title("Customer Name");
-                                            columns.Bound(p => p.contactName).Title("Contact Name");
-                                            columns.Bound(p => p.dateOfSendingResult).Format("{0:MM/dd/yyyy}").Title("Expected Date");
-                                            columns.Bound(p => p.status).Title("Request Status");
+                                            columns.Select().Title(" ").Width(50);
+                                            columns.Bound(p => p.requestNo).Title("Request No#").Width(120);
+                                            columns.Bound(p => p.receivceDate).Title("Receive Date").Format("{0:MM/dd/yyyy}").Width(120);
+                                            columns.Bound(p => p.companyName).Title("Customer Name").Width(200);
+                                            columns.Bound(p => p.dateOfSendingResult).Format("{0:MM/dd/yyyy}").Title("Expected Date").Width(120);
+                                            columns.Bound(p => p.dateOfSendingResult).Format("{0:MM/dd/yyyy}").Title("Completed On").Width(120);
+                                            columns.Bound(p => p.status).Title("Lab Code");
+                                            columns.Bound(p => p.status).Title("Sample Code").Width(120);
+                                            columns.Bound(p => p.status).Title("Sample Name").Width(120);
+                                            columns.Bound(p => p.status).Title("Total");
+                                            columns.Bound(p => p.status).Title("Accept");
+                                            columns.Bound(p => p.status).Title("Reject");
+                                            columns.Bound(p => p.status).Title("Approve");
+                                            columns.Bound(p => p.status).Title("Status");
                                             columns.Command(command =>
                                             {
-                                                command.Custom("Edit")
-                                                 .IconClass("k-icon k-i-edit")
-                                                  .Click("showEdit")
-                                                    .Text("Edit")
-                                                    .HtmlAttributes(new { style = "width:43%" });
                                                 command.Custom("Destroy")
                                                     .IconClass("k-icon k-i-trash")
                                                     .Click("showDeleteConfirmation")
-                                                    .Text("Delete")
-                                                    .HtmlAttributes(new { style = "width:49%" });
-                                            }).Width("12%");
+                                                    .Text("Delete");
+                                            }).Width(100);
                                         })
-                                         .Events(ev => ev.Change("onChangex"))
-                                       
+
+                                        .Events(ev => ev.Change("onChangex"))
                                         .Pageable()
                                         .Sortable()
                                         .Scrollable()
@@ -131,7 +162,7 @@
                                             })
                                             .Data(d => "schemaData")
                                             .Total(t => "schemaTotal");
-                                        })))
+                                        })))                                 
                                 </div>
                                 <!-- /.card-body -->
 
@@ -156,6 +187,9 @@
     function refresh() {
         reLoadData();
     }
+    function exportexcel() {
+      
+    }
     $("#dialog").data("kendoDialog").close();
     function showDeleteConfirmation(e) {
         var deleteRequest = [];
@@ -179,7 +213,7 @@
                 if ($(this).hasClass("delete-confirm")) {
                     $.ajax({
                         type: "POST",
-                        url: "/ManagementRequest/DeletedAnalysisRequestInfo",
+                        url: "/ManagementSample/DeletedAnalysisRequestInfo",
                         data: JSON.stringify(deleteRequest),
                         dataType: "json",
                         contentType: "application/json",
@@ -208,10 +242,8 @@
         //console.log("The selected product ids are: [" + this.selectedKeyNames().join(", ") + "]");
     }
 
-    function showEdit(e) {
-        e.preventDefault();
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        window.location.href = '/CustomerRequest/DetailCustomer/?' +"requestNo=" + dataItem.requestNo;
+    function showEdit() {
+
     }
     function schemaData() {
 
@@ -263,7 +295,19 @@
     };
     function onSelectAction(e) {
         var dataItem = this.dataItem(e.item);
+        var grid = $("#grid").data("kendoGrid");
+        var row = $(e.target).closest("tr");
+
+        if (row.hasClass("k-state-selected")) {
+            setTimeout(function (e) {
+                var grid = $("#grid").data("kendoGrid");
+                grid.clearSelection();
+            })
+        } else {
+            grid.clearSelection();
+        };
         if (dataItem.Value === "5") {
+
             var deleteRequest = [];
 
             e.preventDefault();
@@ -274,7 +318,7 @@
                 resizable: false,
                 modal: true
             });
-
+           
             kendoWindow.data("kendoWindow")
                 .content($("#delete-confirmation").html())
                 .center().open();
@@ -285,7 +329,7 @@
                     if ($(this).hasClass("delete-confirm")) {
                         $.ajax({
                             type: "POST",
-                            url: "/ManagementRequest/DeletedAnalysisRequestInfo",
+                            url: "/ManagementSample/DeletedAnalysisRequestInfo",
                             data: JSON.stringify(deleteRequest),
                             dataType: "json",
                             contentType: "application/json",
@@ -319,7 +363,7 @@
         }
         $.ajax({
             type: "GET",
-            url: "/ManagementRequest/GetManagementRequestList",
+            url: "/ManagementSample/GetManagementSampletList",
             data: {
                 startDate: date.split('-')[0],
                 endDate: date.split('-')[1],
@@ -442,19 +486,15 @@
     .k-material-v2 .k-notification img {
         margin: 10px 20px 0 0;
     }
-    .form-group {
-        margin-bottom: 8px !important;
+    .k-widget k-dropdown {
+        margin-left: 12px!important;
+        margin-top: 25px!important;
     }
     .k-material-v2 .new-mail,
     .k-material-v2 .wrong-pass,
     .k-material-v2 .upload-success {
         width: 270px;
         height: 70px;
-    }
-    .k-dropdown .k-dropdown-wrap {
-        color: black !important;
-        background-color: white !important;
-        background-image: none !important;
     }
 </style>
 <script id="date-templateData" type="x-tmpl-mustache">
@@ -463,8 +503,8 @@
 <script id="delete-confirmation" type="text/x-kendo-template">
     <p class="delete-message">Are you sure?</p>
 
-    <button class="delete-confirm k-button" style="float: right">Yes</button>
-    <a href="#" class="delete-cancel"  style="float: right">No</a>
+    <button class="delete-confirm k-button">Yes</button>
+    <a href="#" class="delete-cancel">No</a>
 </script>
 <script id="successTemplate" type="text/x-kendo-template">
     <div class="upload-success">

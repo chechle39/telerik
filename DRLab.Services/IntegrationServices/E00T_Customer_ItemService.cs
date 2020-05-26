@@ -26,12 +26,11 @@ namespace DRLab.Services.IntegrationServices
 
         public async Task<bool> Create(E00T_Customer_ItemViewModel Data)
         {
-            
-                await _e00T_Customer_ItemRepository.SaveCustomerItem(Data);
-                _uow.SaveChanges();
-                return await Task.FromResult(true);         
-            
-           
+          
+              await _e00T_Customer_ItemRepository.SaveCustomerItem(Data);
+              _uow.SaveChanges();
+            return await Task.FromResult(true);
+
         }
 
         public void Destroy(long id)

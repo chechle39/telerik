@@ -25,7 +25,7 @@ namespace DRLab.Data.ViewModels
         [Display(Name = "Note")]
         public string note { get; set; }
     }
-    public class E08T_Testing_InfoViewModel1
+    public class E08T_Testing_PopupViewModel
     {
      
         [Display(Name = "Analysis Code")]

@@ -59,8 +59,17 @@ namespace DRLab.Services.IntegrationServices
        
         public async Task<E08T_Testing_InfoViewModel> Create(E08T_Testing_InfoViewModel Data)
         {
-            var requestNo = new[] { "AnalysisCode" };           
-            var code = await _getRequestNoDapperService.GetRequestNo(requestNo);
+            string analysisCode ;
+            if (Data.analysisCode == null)
+            {
+                var requestNo = new[] { "AnalysisCode" };
+                var code = await _getRequestNoDapperService.GetRequestNo(requestNo);
+                analysisCode = code.analysisCode;
+            }
+            else {
+                analysisCode = Data.analysisCode;
+            }
+         
             var resultId = new List<E00T_SpecificationViewModel>();
             resultId = await _Specifi.GetbyName(Data.specification);
             if(resultId.Count > 0)
@@ -68,7 +77,7 @@ namespace DRLab.Services.IntegrationServices
                 var client = new E08T_Testing_Info()
                 {
 
-                    analysisCode = code.analysisCode,
+                    analysisCode = analysisCode,
                     specID = resultId[0].specID,
                     specification = Data.specification,
                     method = Data.method,
@@ -92,7 +101,7 @@ namespace DRLab.Services.IntegrationServices
                 newSpecif = await _Specifi.GetbyName(Data.specification);
                 var client = new E08T_Testing_Info()
                 {
-                    analysisCode = code.analysisCode,
+                    analysisCode = analysisCode,
                     specID = newSpecif[0].specID,
                     specification = Data.specification,
                     method = Data.method,
@@ -137,11 +146,12 @@ namespace DRLab.Services.IntegrationServices
                 _uow.SaveChanges();
             }
             else {
+                var newSpecif = await _Specifi.GetbyName(Data.specification);
                 var client = new E08T_Testing_Info()
                 {
 
                     analysisCode = Data.analysisCode,
-                    specID = Data.specID,
+                    specID = newSpecif[0].specID,
                     specification = Data.specification,
                     method = Data.method,
                     unit = Data.unit,
@@ -174,7 +184,7 @@ namespace DRLab.Services.IntegrationServices
             return await _e08T_Testing_InfoRepository.GetE08TTestingInfoBySpecId(analysisCode);
         }
 
-        public async Task<E08T_Testing_InfoViewModel1> CreateWithCombobox(E08T_Testing_InfoViewModel1 Data)
+        public async Task<E08T_Testing_PopupViewModel> CreatePopup(E08T_Testing_PopupViewModel Data)
         {
             if (Data.newspecification != null)
             {

@@ -16,6 +16,7 @@ namespace DRLab.Data.Entities
 
     public partial class E00T_Customer_Item
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public E00T_Customer_Item()
         {
            

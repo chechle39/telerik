@@ -1,0 +1,177 @@
+﻿@addTagHelper *, Kendo.Mvc
+@section Scripts{
+
+    <script src="~/app/ManagementRequest/index.js" asp-append-version="true"></script>
+    <script>
+        var management = new ManagementRequestController();
+        management.initialize();
+    </script>
+}
+<div id="example">
+    <div id="dialog">
+        <div id="horizontal-form">
+
+            <form>
+                <div class="form-group row">
+                    <label for="staticEmail" class="col-sm-4 col-form-label custom-font-weight">Khoảng thời gian</label>
+                    <div class="col-sm-12">
+                        @(Html.Kendo().DropDownList()
+                                        .Name("day")
+                                        .DataTextField("Text")
+                                        .DataValueField("Value")
+                                         .Events(e =>
+                                            {
+                                                e.Change("onChange").Select("onSelect");
+                                            })
+                                        .BindTo(new List<SelectListItem>() {
+                                        new SelectListItem() {
+                                            Text = "Tuần này",
+                                            Value = "0"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Tháng này",
+                                            Value = "1"
+                                        },
+                                        new SelectListItem() {
+                                                Text = "Tùy chọn",
+                                                Value = "2"
+                                        },
+
+                                        })
+                                    .Value("0")
+                                    .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
+                        )
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <div id="hideLabbel" class="col-sm-4">
+
+                    </div>
+                    <div class="col-sm-12 row">
+                        <div class="col-sm-6">
+                            <div id="hideFrom">
+
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6">
+                            <div id="hideTo">
+
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <label for="staticEmail" class="col-sm-4 col-form-label custom-font-weight">Khách hàng</label>
+                    <div class="col-sm-12">
+                        @(Html.Kendo().DropDownList()
+                        .Name("multiselect")
+                        .DataTextField("companyName")
+                        .DataValueField("customerCode")
+                        .DataSource(source =>
+                        {
+                            source.Read(read =>
+                            {
+                                read.Action("GetCustomers", "CustomerRequest");
+                            })
+                            .ServerFiltering(true);
+                        })
+                         .Value("0")
+                         .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
+                    )
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var startDate1;
+    var endDate1;
+    var checkDate;
+    function onChange() {
+
+        var checkDay = $("#day").val();
+        switch (parseInt(checkDay)) {
+            case 0:
+                $('#hideFrom').html("");
+                $('#hideTo').html("");
+                $('#hideLabbel').html("");
+                checkDate = 0;
+                break;
+            case 1:
+                $('#hideFrom').html("");
+                $('#hideTo').html("");
+                $('#hideLabbel').html("");
+
+                var date = new Date();
+                startDate1 = new Date(date.getFullYear(), date.getMonth(), 1);
+                endDate1 = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+                checkDate = 1;
+                break;
+            case 2:
+                var templateFrom = $('#from-template').html();
+                var templateTo = $('#to-template').html();
+                var templateLb = $('#lb-template').html();
+                var renderFrom = "";
+                renderFrom += Mustache.render(templateFrom, {
+
+                });
+                var renderTo = "";
+                renderTo += Mustache.render(templateTo, {
+
+                });
+                var renderLb = "";
+                renderLb += Mustache.render(templateLb, {
+
+                });
+                $('#hideFrom').html(renderFrom);
+                $('#hideTo').html(renderTo);
+                $('#hideLabbel').html(renderLb);
+                checkDate = 2;
+                break;
+            default:
+        }
+    }
+    function onSelect() {
+
+    }
+
+</script>
+
+<style>
+    #example {
+        min-height: 350px;
+    }
+
+    .form-group {
+        margin-bottom: 0 !important
+    }
+</style>
+<script id="from-template" type="x-tmpl-mustache">
+    @(Html.Kendo().DatePicker()
+    .Name("datepicker")
+    .Value(DateTime.Now)
+    .Format("dd/MM/yyyy")
+    .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
+    )
+</script>
+<script id="to-template" type="x-tmpl-mustache">
+    @(Html.Kendo().DatePicker()
+    .Name("datepickerto")
+    .Value(DateTime.Now)
+    .Format("dd/MM/yyyy")
+    .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
+   )
+</script>
+<script id="lb-template">
+    <label for="inputPassword" class="col-form-label custom-font-weight">Tùy chọn thời gian</label>
+
+</script>

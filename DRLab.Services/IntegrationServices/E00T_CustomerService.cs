@@ -31,8 +31,7 @@ namespace DRLab.Services.IntegrationServices
         {
 
             var customer = new E00T_Customer()
-            {
-                customerCode = Data.customerCode,
+            {                
                 companyName = Data.companyName,
                 companyAddress = Data.companyAddress,
                 contactName = Data.contactName,

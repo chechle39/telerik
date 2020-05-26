@@ -72,18 +72,7 @@
 @model string
 <kendo-dialog name="@Model" title="New customer" width="500" modal="true" visible="false">
     <content>
-        <form asp-controller="CustomerList" asp-action="Create_CustomerRequest" id="createCustomerForm"  method="post">
-            <div class="row mb-2">
-                <div class="col-3">
-                    <span style="vertical-align: sub;">Customer Code</span>
-                </div>
-                <div class="col-9">
-                    @(Html.Kendo().TextBox()
-                    .HtmlAttributes(new { style = "width: 100%" })
-                    .Name("customerCode")
-                    )
-                </div>
-            </div>
+        <form asp-controller="CustomerList" asp-action="Create_CustomerRequest" id="createCustomerForm"  method="post">  
             <div class="row mb-2">
                 <div class="col-3">
                     <span style="vertical-align: sub;">Company Name</span>
@@ -146,7 +135,7 @@
                 <div class="col-9">
                     @(Html.Kendo().TextBox()
                     .HtmlAttributes(new { style = "width: 100%" })
-                    .Name("note")
+                    .Name("notecustomer")
                     )
                 </div>
             </div>
@@ -165,26 +154,46 @@
 </kendo-dialog>
 <script>
     function onSave() {
-        console.log("ok");
-        const form = $("#createCustomerForm");
-        const requestUrl = "/CustomerList/Create_CustomerRequest";
-        console.log(requestUrl);
-        const data = {
-            customerCode: form.find("customerCode").val(),
-            companyName: form.find("companyName").val(),
-            companyAddress: form.find("companyAddress").val(),
-            province: form.find("province").val(),
-            contactName: form.find("contactName").val(),
-            contactEmail: form.find("contactEmail").val(),
-            note: form.find("note").val(),
+        var companyName = $('#companyName').val();
+        var companyAddress = $('#companyAddress').val();
+        var province = $('#province').val();
+        var contactName = $('#contactName').val();
+        var contactEmail = $('#contactEmail').val();
+        var note = $('#notecustomer').val(); 
+        const requestUrl = "/CustomerList/Create_CustomerRequest";       
+        const data = {           
+            companyName: companyName,
+            companyAddress: companyAddress,
+            city: province,
+            contactName: contactName,
+            contactEmail: contactEmail,
+            note: note,
         };
         $.post({
             url: requestUrl,
             data: data,
             dataType: 'json',
             success: function (result) {
-                console.log(result);
+                $('#companyName').val('')
+                $('#companyAddress').val('')
+                $('#province').val('')
+                $('#contactName').val('')
+                $('#contactEmail').val('')
+                $('#notecustomer').val('')
+                $('#CreateCustomerDiaLog').data("kendoDialog").close();
+                var notification = $("#notification").data("kendoNotification");
+                notification.show({
+                    message: "Insert Successful"
+                }, "success");
             },
+            error: function () {
+                var notification = $("#notification").data("kendoNotification");
+                notification.show({
+                    title: "Wrong Save",
+                    message: "Uppdate error"
+                }, "error");
+               
+            }
         });
         return false;
     }

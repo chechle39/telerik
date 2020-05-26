@@ -64,6 +64,8 @@ namespace DRLab.Web
             services.AddTransient<IE00T_SampleMatrixService, E00T_SampleMatrixService>();
             services.AddTransient<IE08T_Testing_InfoRepository, E08T_Testing_InfoRepository>();
             services.AddTransient<IGetRequestNoDapperService, GetRequestNoDapperService>();
+            services.AddTransient<IE08T_WorkingOrder_ItemRepository, E08T_WorkingOrder_ItemRepository>();
+            services.AddTransient<IE08T_WorkingOrder_ItemService, E08T_WorkingOrder_ItemService>();
             services.AddScoped<DbContext, DataBaseContext>();
             services.AddControllers().AddJsonOptions(jsonOptions =>
             {

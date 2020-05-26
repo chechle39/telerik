@@ -11,7 +11,7 @@ namespace DRLab.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<E00T_Customer> builder)
         {
-            builder.Property(e => e.customerCode).ValueGeneratedNever();
+            builder.Property(e => e.customerCode).ValueGeneratedOnAdd();
         }
     }
 }

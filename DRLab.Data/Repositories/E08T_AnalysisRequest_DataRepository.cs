@@ -29,7 +29,7 @@ namespace DRLab.Data.Repositories
                 {
                     foreach (var iitem in item.Data)
                     {
-                        var check = Entities.Where(x => x.LVNCode == item.LVNCode && x.requestNo == item.requestNo).AsNoTracking().ToList();
+                        var check = Entities.Where(x => x.analysisCode == iitem.analysisCode && x.requestNo == item.requestNo && x.LVNCode == item.LVNCode).AsNoTracking().ToList();
                         if (check.Count() == 0)
                         {
                             var e08T_AnalysisRequest_Data = new E08T_AnalysisRequest_Data()
@@ -64,8 +64,8 @@ namespace DRLab.Data.Repositories
                                 precision = null,
                                 price = iitem.Price,
                                 requestNo = item.requestNo,
-                                sampleMatrix = item.sampleMatrix,
-                                specification = item.specification,
+                                sampleMatrix = item.sampleMatrix != null ? item.sampleMatrix : check[0].sampleMatrix, 
+                                specification = item.specification != null ? item.specification : check[0].specification,
                                 specMark = null,
                                 turnAroundDay = null,
                                 unit = iitem.unit,
@@ -80,7 +80,7 @@ namespace DRLab.Data.Repositories
                 {
                     foreach (var iii in item.Deleted)
                     {
-                        var checkDelete = Entities.Where(x => x.analysisCode == iii.analysisCode && x.requestNo == item.requestNo).AsNoTracking().ToList();
+                        var checkDelete = Entities.Where(x => x.analysisCode == iii.analysisCode && x.requestNo == item.requestNo && x.LVNCode == item.LVNCode).AsNoTracking().ToList();
 
                         if (checkDelete.Count() > 0)
                         {
@@ -95,8 +95,8 @@ namespace DRLab.Data.Repositories
                                 precision = null,
                                 price = iii.Price,
                                 requestNo = item.requestNo,
-                                sampleMatrix = item.sampleMatrix,
-                                specification = item.specification,
+                                sampleMatrix = item.sampleMatrix != null ? iii.sampleMatrix : checkDelete[0].sampleMatrix,
+                                specification = item.specification != null ? iii.specification : checkDelete[0].specification,
                                 specMark = null,
                                 turnAroundDay = null,
                                 unit = iii.unit,
@@ -136,49 +136,42 @@ namespace DRLab.Data.Repositories
             foreach(var item in data)
             {
                 var listGridManagementViewModel = new List<GridManagementViewModel>();
-                try
+                var e00T_CustomerGridViewModel = new List<E00T_CustomerGridViewModel>();
+                var analysisData = await Entities.Where(x => x.LVNCode == item.LVNCode).ToListAsync();
+                foreach (var iitem in analysisData)
                 {
-                    var e00T_CustomerGridViewModel = new List<E00T_CustomerGridViewModel>();
-                    var analysisData = await Entities.Where(x => x.LVNCode == item.LVNCode).ToListAsync();
-                    foreach (var iitem in analysisData)
+                    var dataCustomerGridViewModel = new E00T_CustomerGridViewModel()
                     {
-                        var dataCustomerGridViewModel = new E00T_CustomerGridViewModel()
-                        {
-                            analysisCode = iitem.analysisCode,
-                            LOD = iitem.LOD,
-                            Mark = null,
-                            max = iitem.max,
-                            method = iitem.method,
-                            min = iitem.min,
-                            Price = Convert.ToInt32(iitem.price),
-                            sampleMatrix = iitem.sampleMatrix,
-                            specification = iitem.specification,
-                            TAT = null,
-                            unit = iitem.unit,
-                            Urgent = iitem.urgentRate,
+                        analysisCode = iitem.analysisCode,
+                        LOD = iitem.LOD,
+                        Mark = null,
+                        max = iitem.max,
+                        method = iitem.method,
+                        min = iitem.min,
+                        Price = Convert.ToInt32(iitem.price),
+                        sampleMatrix = iitem.sampleMatrix,
+                        specification = iitem.specification,
+                        TAT = null,
+                        unit = iitem.unit,
+                        Urgent = iitem.urgentRate,
 
-                        };
-                        e00T_CustomerGridViewModel.Add(dataCustomerGridViewModel);
-                    }
-                    var createCustomeRequest = new CreateCustomeRequest()
-                    {
-                        Data = e00T_CustomerGridViewModel,
-                        specification = analysisData[0].specification,
-                        LVNCode = item.LVNCode,
-                        remarkToLab = item.remarkToLab,
-                        requestNo = item.requestNo,
-                        sampleCode = item.sampleCode,
-                        sampleDescription = item.sampleDescription,
-                        sampleMatrix = analysisData[0].sampleMatrix,
-                        sampleName = item.sampleName,
-                        weight = item.weight,
                     };
-                    dataList.Add(createCustomeRequest);
-                } catch (Exception ex)
-                {
-
+                    e00T_CustomerGridViewModel.Add(dataCustomerGridViewModel);
                 }
-                
+                var createCustomeRequest = new CreateCustomeRequest()
+                {
+                    Data = e00T_CustomerGridViewModel.Count() > 0 ? e00T_CustomerGridViewModel : null,
+                    specification = analysisData.Count() > 0 ? analysisData[0].specification : null,
+                    LVNCode = item.LVNCode,
+                    remarkToLab = item.remarkToLab,
+                    requestNo = item.requestNo,
+                    sampleCode = item.sampleCode,
+                    sampleDescription = item.sampleDescription,
+                    sampleMatrix = analysisData.Count() > 0 ? analysisData[0].sampleMatrix : null,
+                    sampleName = item.sampleName,
+                    weight = item.weight,
+                };
+                dataList.Add(createCustomeRequest);
             }
             return dataList;
         }

@@ -3,7 +3,6 @@
     .Name(Model)
     .Title("Customer Item")
     .Content(
-
     (Html.Kendo().Grid<DRLab.Data.ViewModels.E00T_Customer_ItemViewModel>()
         .Name("gridCustomer")
          .Columns(columns =>
@@ -12,17 +11,17 @@
              columns.Bound(p => p.address);
              columns.Bound(p => p.note).Hidden();
              columns.Bound(p => p.email).Hidden();
+             columns.Command(command => command.Destroy().IconClass("k-icon k-i-trash").Text("Delete")).Width(100);
              columns.Command(command => command.Edit().Text(" ")).Width(100);
-             columns.Command(command => command.Destroy().Text(" ")).Width(100);
          })
           .ClientRowTemplate(
               "<tr data-uid='#: uid #'>" +
                "<td class='details'>" +
-                   "<span class='title'>contactName#: contactName #</span><br>" +
+                   "<span class='title'>Contact Name:#: contactName #</span><br>" +
                    "<span class='description'>Email : #: email#</span><br>" +
                "</td>" +
                "<td class='details1'>" +
-                   "<span class='title'>Address : #: address#</span><br>" +
+                   "<span  class='title'>Address : #: address#</span><br>" +
                    "<span class='description'>Note : #: note#</span><br>" +
                "</td>" +
                  "<td style='width:80px'>" +
@@ -31,42 +30,34 @@
                   "<span class='k-icon k-delete'></span>Delete</a>" +
                   "</td>" +
                    "<td style='width:80px'>" +
-                      "<a class='k-button k-button-icontext k-grid-edit'" +
+                      "<a onclick='EditRow(+ #=contactName # +)' class='k-button k-button-icontext'" +
 
-                  "<span class='k-icon k-edit'></span>edit</a>" +
+                  "<span class='k-icon k-edit'></span>Edit</a>" +
                   "</td>" +
                "</tr>"
            )
 
           .ToolBar(toolbar =>
           {
-              toolbar.Create().Text("Add Customer Item");
+              toolbar.Custom().Text("Add Contact").HtmlAttributes(new { onclick = "customCreate()" });
           })
         .Editable(editable => editable.Mode(GridEditMode.PopUp))
-        .Pageable()
-        .Navigatable()
         .Sortable()
         .Scrollable()
-        .Filterable()
         .HtmlAttributes(new { style = "height:350px;" })
         .DataSource(dataSource => dataSource
         .Custom()
         .Batch(true)
         .PageSize(20)
-         .Transport(transport => transport
-              .Create(read => read.Action("Create_Customer", "CustomerItem"))
-                .Read(read => read.Action("Read_Customer", "CustomerItem"))
-                .Update(read => read.Action("Update_Customer", "CustomerItem"))
-                .Destroy(read => read.Action("Destroy_Customer", "CustomerItem"))
-        )
+
         .Schema(schema =>
         {
             schema.Model(model =>
             {
                 model.Id(p => p.contactID);
                 model.Field(p => p.contactID);
-                model.Field(p => p.customerCode).DefaultValue("asdas").ToString();
-                model.Field(p => p.contactName).DefaultValue("asdas").ToString(); ;
+                model.Field(p => p.customerCode).ToString();
+                model.Field(p => p.contactName);
                 model.Field(p => p.note);
                 model.Field(p => p.email);
                 model.Field(p => p.address);
@@ -85,12 +76,24 @@
     )
 )
 
+@await Html.PartialAsync("../CustomerItem/CreateCustomerItem")
 <script type="text/javascript">
+    function EditRow(a) {
+
+        var grid = $("#gridCustomer").getKendoGrid();
+
+        wnd.content(detailsTemplate(dataItem));
+        wnd.center().open()
+    }
+    function customCreate(e) {
+        $("#dialogCusItem").data("kendoDialog").center();
+        $("#dialogCusItem").data("kendoDialog").open();
+    }
     function schemaData() {
-        return gridxxx;
+        return Datagrid;
     }
     function schemaTotal(response) {
-        return gridxxx.length;
+        return Datagrid.length;
     }
 </script>
 @section HeadContent {
@@ -137,6 +140,10 @@
             background: -o-linear-gradient(top, rgba(0,0,0,0.2) 0%,rgba(0,0,0,0.1) 100%);
             background: -ms-linear-gradient(top, rgba(0,0,0,0.2) 0%,rgba(0,0,0,0.1) 100%);
             background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%,rgba(0,0,0,0.1) 100%);
+        }
+
+        .k-widget k-window {
+            display: none;
         }
     </style>
 }

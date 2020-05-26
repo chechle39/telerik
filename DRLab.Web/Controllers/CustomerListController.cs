@@ -36,20 +36,19 @@ namespace DRLab.Web.Controllers
         }
         public async Task<ActionResult> Create_Customer([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<E00T_CustomerViewModel> data_info)
         {
-            var results = new List<E00T_CustomerViewModel>();
+            var result = new List<E00T_CustomerViewModel>();
 
-            if (data_info != null && ModelState.IsValid)
-            {
+          
                 foreach (var data in data_info)
                 {
                     if (data !=null) {
                         await _customerService.Create(data);
-                        
+                        result.Add(data);
                     }
 
                 }
-            }
-            return Json((await _customerService.GetListCustomer()).ToDataSourceResult(request, ModelState));
+           
+            return Json(result.ToDataSourceResult(request, ModelState));
         }
         public ActionResult Update_Customer([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<E00T_CustomerViewModel> data_info)
         {
@@ -81,14 +80,10 @@ namespace DRLab.Web.Controllers
 
             return Json(data_info.ToDataSourceResult(request, ModelState));
         }
-
+        [HttpPost]
         public async Task<ActionResult> Create_CustomerRequest([DataSourceRequest] DataSourceRequest request, E00T_CustomerViewModel customer_request)
         {
-           
-            if (customer_request != null && ModelState.IsValid){
-             
-                        await _customerService.Create(customer_request);                                      
-            }        
+            await _customerService.Create(customer_request);                                      
             return Json((await _customerService.GetListCustomer()).ToDataSourceResult(request, ModelState));
         }
 

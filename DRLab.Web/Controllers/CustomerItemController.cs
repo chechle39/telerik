@@ -9,6 +9,7 @@ using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 
 namespace DRLab.Web.Areas.API.Controllers
@@ -41,51 +42,39 @@ namespace DRLab.Web.Areas.API.Controllers
            
             return Json((await _customer_ItemService.GetListCustomerItem()).ToDataSourceResult(request));
         }
-        public async Task<ActionResult> Create_Customer([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<E00T_Customer_ItemViewModel> data_info)
+        [HttpPost]
+        public async Task<ActionResult> Create_Customer([FromBody]E00T_Customer_ItemViewModel req)
         {
-            var results = new List<E00T_Customer_ItemViewModel>();
-
-            if (data_info != null && ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                foreach (var data in data_info)
-                {
-                    if (data != null)
-                    {
-                        await _customer_ItemService.Create(data);
-                        results.Add(data);
-                    }
-
-                }
+                IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
+                return new BadRequestObjectResult(allErrors);
             }
-            return Json((await _customer_ItemService.GetListCustomerItem()).ToDataSourceResult(request, ModelState));
+            try {
+                await _customer_ItemService.Create(req);
+            } catch (Exception ex) { 
+            }
+            return new OkObjectResult(req);
         }
-        public async Task<ActionResult> Update_CustomerAsync([DataSourceRequest] DataSourceRequest request, E00T_Customer_ItemViewModel data_info)
+        public async Task<ActionResult> Update_Customer([DataSourceRequest] DataSourceRequest request, E00T_Customer_ItemViewModel data_info)
         {
             if (data_info != null && ModelState.IsValid)
-            {
-               
-                    
-                     await   _customer_ItemService.Update(data_info);
-                    
-                
+            {                  
+                     await   _customer_ItemService.Update(data_info);                   
             }
 
             return Json((await _customer_ItemService.GetListCustomerItem()).ToDataSourceResult(request, ModelState));
         }
-        public ActionResult Destroy_Customer([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<E00T_Customer_ItemViewModel> data_info)
+        public async Task<ActionResult> Destroy_Customer([DataSourceRequest] DataSourceRequest request, E00T_Customer_ItemViewModel data_info)
         {
-            if (data_info.Any())
-            {
-                foreach (var data in data_info)
-                {
-                    if (data != null)
+           
+                    if (data_info != null)
                     {
-                        _customer_ItemService.Destroy(data.contactID);
+                        _customer_ItemService.Destroy(data_info.contactID);
                     }
-                }
-            }
 
-            return Json(data_info.ToDataSourceResult(request, ModelState));
+
+            return Json((await _customer_ItemService.GetListCustomerItem()).ToDataSourceResult(request, ModelState));
         }
 
        
