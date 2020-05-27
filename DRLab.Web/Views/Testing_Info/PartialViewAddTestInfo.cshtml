@@ -80,7 +80,7 @@
                     <div class="col-9">
                         @(Html.Kendo().TextBox()
                     .Name("analysisCode")
-                    .HtmlAttributes(new { style = "width: 100%" }))
+                    .HtmlAttributes(new { placeholder = "AnalysisCode", required = "required", style = "width: 100%" }))
                     </div>
                 </div>
                 <div class="row mb-2">
@@ -122,7 +122,7 @@
                     </div>
                     <div class="col-9">
                         @(Html.Kendo().TextBox()
-                    .HtmlAttributes(new { style = "width: 100%" })
+                    .HtmlAttributes(new { placeholder = "Create new a Specification", style = "width: 100%" })
                     .Name("newspecification")
                     )
                     </div>
@@ -133,7 +133,7 @@
                     </div>
                     <div class="col-9">
                         @(Html.Kendo().TextBox()
-                    .HtmlAttributes(new { style = "width: 100%" })
+                    .HtmlAttributes(new { placeholder = "Method", style = "width: 100%" })
                     .Name("method")
                     )
                     </div>
@@ -144,7 +144,7 @@
                     </div>
                     <div class="col-9">
                         @(Html.Kendo().TextBox()
-                    .HtmlAttributes(new { style = "width: 100%" })
+                    .HtmlAttributes(new { placeholder = "Unit", style = "width: 100%" })
                     .Name("unit")
                     )
                     </div>
@@ -155,7 +155,7 @@
                     </div>
                     <div class="col-9">
                         @(Html.Kendo().TextBox()
-                    .HtmlAttributes(new { style = "width: 100%" })
+                    .HtmlAttributes(new { placeholder = "Turn Around Time", style = "width: 100%" })
                     .Name("turnAroundTime")
                     )
                     </div>
@@ -174,7 +174,7 @@
                     </div>
                     <div class="col-9">
                         @(Html.Kendo().TextBox()
-                    .HtmlAttributes(new { style = "width: 100%" })
+                    .HtmlAttributes(new { placeholder = "Note", style = "width: 100%" })
                     .Name("note")
                     )
                     </div>
@@ -213,37 +213,46 @@
                 reformTestResult: reformTestResult,
                 note: note,
             };
-            $.post({
-                url: requestUrl,
-                data: data,
-                dataType: 'json',
-                success: function (result) {
-                    $('#analysisCode').val("");                   
-                    $('#method').val("");
-                    $('#unit').val("");
-                    $('#turnAroundTime').val("");
-                    $('#reformTestResult').val("");
-                    $('#note').val("");                 
-                    $('#AddTestInfo').data("kendoDialog").close();
-                    var combobox = $("#specification").data("kendoComboBox");                  
-                    combobox.select(function (dataItem) {
-                        return dataItem.name === " ";
-                    });
-                    var notification = $("#notification").data("kendoNotification");
-                    notification.show({
-                        message: "Insert Successful"
-                    }, "success");
-                },
-                error: function () {
-                    var notification = $("#notification").data("kendoNotification");
-                    notification.show({
-                        title: "Wrong Save",
-                        message: "Uppdate error"
-                    }, "error");
-                    var dialog = $('#AddTestInfo');
-                    dialog.data("kendoDialog").open();
-                }
-            });
+            if ((analysisCode != null && specification != null) && (analysisCode != '' && specification != '')) {
+                $.post({
+                    url: requestUrl,
+                    data: data,
+                    dataType: 'json',
+                    success: function (result) {
+                        $('#analysisCode').val("");
+                        $('#method').val("");
+                        $('#unit').val("");
+                        $('#turnAroundTime').val("");
+                        $('#reformTestResult').val("");
+                        $('#note').val("");
+                        $('#AddTestInfo').data("kendoDialog").close();
+                        var combobox = $("#specification").data("kendoComboBox");
+                        combobox.select(function (dataItem) {
+                            return dataItem.name === " ";
+                        });
+                        var notification = $("#notification").data("kendoNotification");
+                        notification.show({
+                            message: "Insert Successful"
+                        }, "success");
+                    },
+                    error: function () {
+                        var notification = $("#notification").data("kendoNotification");
+                        notification.show({
+                            title: "Wrong Save",
+                            message: "Uppdate error"
+                        }, "error");
+                        var dialog = $('#AddTestInfo');
+                        dialog.data("kendoDialog").open();
+                    }
+                });
+            } else {
+                var notification = $("#notification").data("kendoNotification");
+                notification.show({
+                    title: "Wrong Save",
+                    message: "Please enter AnalysisCode or Specification"
+                }, "error");
+            }
+        
             return false;
         }
     </script>

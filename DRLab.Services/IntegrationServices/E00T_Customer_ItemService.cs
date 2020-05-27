@@ -52,6 +52,10 @@ namespace DRLab.Services.IntegrationServices
             return await _e00T_Customer_ItemRepository.GetE00T_Customer_ItemByCode(code);
         }
 
+        public async Task<List<E00T_Customer_ItemViewModel>> GetCustomerItemById(long id)
+        {
+            return await _e00T_Customer_ItemRepository.GetCustomerItemById(id);
+        }
         public async Task<IEnumerable<E00T_Customer_ItemViewModel>> GetListCustomerItem()
         {
             var test = _test.GetAll().ProjectTo<E00T_Customer_ItemViewModel>().AsEnumerable();

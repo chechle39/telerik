@@ -12,7 +12,8 @@ namespace DRLab.Services.Interfaces
         Task<IEnumerable<E00T_Customer_ItemViewModel>> GetListCustomerItem();
         Task<bool> Create(E00T_Customer_ItemViewModel Data);
         Task<bool> Update(E00T_Customer_ItemViewModel Data);
-        public void Destroy(long id);
+        public void Destroy(long id); 
         Task<List<E00T_Customer_ItemViewModel>> GetE00T_Customer_ItemByCode(string code);
+        Task<List<E00T_Customer_ItemViewModel>> GetCustomerItemById(long id);
     }
 }

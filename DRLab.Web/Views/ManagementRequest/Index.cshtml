@@ -35,7 +35,7 @@
                                         <h3 class="card-title" style="font-size: 25px">Request Management </h3><h6 onclick=onClicSearch() id="btnsearch" style="margin-left: 12px;margin-top: 10px;cursor: pointer;" class="fas fa-search"></h6>
                                         <div id="dayTem"></div>
                                     </div>
-                                    <div class="col-3">
+                                    <div class="col-2">
                                         @(Html.Kendo().DropDownList()
                                         .Name("color")
                                         .DataTextField("Text")
@@ -71,7 +71,7 @@
                                     .HtmlAttributes(new { style = "width: 100%", @class = "k-dropdown--clear" })
                                     )
                                     </div>
-                                    <div class="col-5">
+                                    <div class="col-6">
                                         <div style="float:right">
                                             <button onclick="refresh()" class="k-button px-3 py-2">Refresh</button>
                                         </div>

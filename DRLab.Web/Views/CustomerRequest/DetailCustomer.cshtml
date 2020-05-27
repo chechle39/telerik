@@ -46,12 +46,12 @@
 
 
                                     </div>
-                                    <div class="col-3" style="display: flex;flex-direction: column;justify-content: center;">
+                                    <div class="col-2" style="display: flex;flex-direction: column;justify-content: center;">
                                         @(Html.Kendo().DropDownList()
                                         .Name("color")
                                         .DataTextField("Text")
                                         .DataValueField("Value")
-                                        .Events(e => e.Change("change"))
+                                        .Events(e => e.Change("changeDR"))
                                         .BindTo(new List<SelectListItem>() {
                                         new SelectListItem() {
                                             Text = "Print Request",
@@ -66,7 +66,7 @@
                                     .HtmlAttributes(new { style = "width: 100%", @class = "k-dropdown--clear" })
                                         )
                                     </div>
-                                    <div class="col-5">
+                                    <div class="col-6">
                                         <div style="float:right">
                                             <button onclick="SaveEntity()" type="submit" class="k-button k-primary px-3 py-2">Save</button>
                                             <button class="k-button px-3 py-2">Cancel</button>
@@ -291,7 +291,7 @@
                                     <div class="form-group row">
 
                                         @(Html.Kendo().Grid<DRLab.Data.ViewModels.E00T_CustomerGridViewModel>()
-                                        .Name("Grid")
+                                        .Name("GridCustomerEdit")
                                         .HtmlAttributes(new { style = "height:auto;" })
                                         .Columns(columns =>
                                         {
@@ -355,6 +355,13 @@
     myData = [];
     var specdata = [];
     var curent;
+    function changeDR(e) {
+        //var value = $("#color").val();
+        //$("#cap")
+        //    .toggleClass("black-cap", value == 1)
+        //    .toggleClass("orange-cap", value == 2)
+        //    .toggleClass("grey-cap", value == 3);
+    };
     function customFunction(input) {
 
         if (input.attr('name') === "time" && input.val() == "14:00") {
@@ -388,7 +395,7 @@
     }
 
     function onSelectaddSpecification(e) {
-        var grid = $("#Grid").data("kendoGrid");
+        var grid = $("#GridCustomerEdit").data("kendoGrid");
         specdata = grid.dataSource._pristineData;
         //grid.bind("save", grid_save);
         var dataItem = this.dataItem(e.item.index());
@@ -448,7 +455,7 @@
                 dataType: "Json",
                 success: function (response) {
                     console.log(response);
-                    var grid = $("#Grid").data("kendoGrid");
+                    var grid = $("#GridCustomerEdit").data("kendoGrid");
                     myarr = [];
                     reponseGetById = response;
                     if (response.length > 0) {
@@ -628,7 +635,7 @@
     var response = [];
     function render_table_rows(rows, req_per_page, page_no, curent) {
         response = rows;
-        var grid = $("#Grid").data("kendoGrid");
+        var grid = $("#GridCustomerEdit").data("kendoGrid");
         var comboboxsampleMatrix = $("#sampleMatrix").data("kendoComboBox");
         var comboAddSpecification = $("#addSpecification").data("kendoComboBox");
         response[curent - 1].simpleName = $('#simpleName').val();
@@ -691,7 +698,7 @@
 
     function handerDataGridDeleted(request) {
         var myGrid = [];
-        var grid = $("#Grid").data("kendoGrid");
+        var grid = $("#GridCustomerEdit").data("kendoGrid");
         for (var i = 0; i < grid.dataSource._destroyed.length; i++) {
             var object = {
                 analysisCode: grid.dataSource._destroyed[i].analysisCode,
@@ -711,7 +718,7 @@
     }
     function handerDataGrid(request) {
         var myGrid = [];
-        var grid = $("#Grid").data("kendoGrid");
+        var grid = $("#GridCustomerEdit").data("kendoGrid");
         for (var i = 0; i < grid._data.length; i++) {
             var object = {
                 analysisCode: grid._data[i].analysisCode,
@@ -734,7 +741,7 @@
         if (response.length > 0) {
             var x = checkClass(document.getElementsByClassName('active'))
             var cr = parseInt(x[0].innerText);
-            var grid = $("#Grid").data("kendoGrid");
+            var grid = $("#GridCustomerEdit").data("kendoGrid");
             var comboboxsampleMatrix = $("#sampleMatrix").data("kendoComboBox");
             var comboAddSpecification = $("#addSpecification").data("kendoComboBox");
             response[cr - 1].simpleName = $('#simpleName').val();
@@ -1063,13 +1070,7 @@
 </script>
 <script>
 
-    function change() {
-        var value = $("#color").val();
-        $("#cap")
-            .toggleClass("black-cap", value == 1)
-            .toggleClass("orange-cap", value == 2)
-            .toggleClass("grey-cap", value == 3);
-    };
+  
 
     function openDialog() {
         var dialog = $('#dialogEdit');

@@ -74,7 +74,7 @@
     }
     function onRequestEnd(e) {
         //Check request type
-        if (e.type == "create" || e.type == "update") {
+        if (e.type == "create") {
             //check for errors in the response
             if (e.response != null || e.response.Errors == null) {
                 var notification = $("#noti").data("kendoNotification");
@@ -87,6 +87,21 @@
             //        title: "Wrong Save",
             //        message: "Insert error"
             //    }, "error");
+            }
+        }
+        if (e.type == "update") {
+            //check for errors in the response
+            if (e.response != null || e.response.Errors == null) {
+                var notification = $("#noti").data("kendoNotification");
+                notification.show({
+                    message: "Update Successful"
+                }, "success");
+                //} if (e.response.Errors != null) {
+                //    var notification = $("#notification").data("kendoNotification");
+                //    notification.show({
+                //        title: "Wrong Save",
+                //        message: "Insert error"
+                //    }, "error");
             }
         }
     }

@@ -6,6 +6,7 @@ namespace DRLab.Data.ViewModels
 {
     public class RecordResultGridViewModel
     {
+        public string WOID { get; set; }
         [Display(Name = "Specification")]
         public string specification { get; set; }
         [Display(Name = "Method")]

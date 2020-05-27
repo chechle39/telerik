@@ -8,7 +8,7 @@ namespace DRLab.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<E08T_WorkingOrder_Item> builder)
         {
-            builder.Property(e => e.WOID).ValueGeneratedOnAdd();
+            builder.HasKey(e => new { e.RequestNo, e.LVNCode, e.WOID,e.AnalysisCode });
         }
     }
 }

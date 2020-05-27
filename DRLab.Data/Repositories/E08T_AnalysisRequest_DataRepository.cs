@@ -136,42 +136,49 @@ namespace DRLab.Data.Repositories
             foreach(var item in data)
             {
                 var listGridManagementViewModel = new List<GridManagementViewModel>();
-                var e00T_CustomerGridViewModel = new List<E00T_CustomerGridViewModel>();
-                var analysisData = await Entities.Where(x => x.LVNCode == item.LVNCode).ToListAsync();
-                foreach (var iitem in analysisData)
+                try
                 {
-                    var dataCustomerGridViewModel = new E00T_CustomerGridViewModel()
+                    var e00T_CustomerGridViewModel = new List<E00T_CustomerGridViewModel>();
+                    var analysisData = await Entities.Where(x => x.LVNCode == item.LVNCode).ToListAsync();
+                    foreach (var iitem in analysisData)
                     {
-                        analysisCode = iitem.analysisCode,
-                        LOD = iitem.LOD,
-                        Mark = null,
-                        max = iitem.max,
-                        method = iitem.method,
-                        min = iitem.min,
-                        Price = Convert.ToInt32(iitem.price),
-                        sampleMatrix = iitem.sampleMatrix,
-                        specification = iitem.specification,
-                        TAT = null,
-                        unit = iitem.unit,
-                        Urgent = iitem.urgentRate,
+                        var dataCustomerGridViewModel = new E00T_CustomerGridViewModel()
+                        {
+                            analysisCode = iitem.analysisCode,
+                            LOD = iitem.LOD,
+                            Mark = null,
+                            max = iitem.max,
+                            method = iitem.method,
+                            min = iitem.min,
+                            Price = Convert.ToInt32(iitem.price),
+                            sampleMatrix = iitem.sampleMatrix,
+                            specification = iitem.specification,
+                            TAT = null,
+                            unit = iitem.unit,
+                            Urgent = iitem.urgentRate,
 
+                        };
+                        e00T_CustomerGridViewModel.Add(dataCustomerGridViewModel);
+                    }
+                    var createCustomeRequest = new CreateCustomeRequest()
+                    {
+                        Data = e00T_CustomerGridViewModel.Count() > 0 ? e00T_CustomerGridViewModel : null,
+                        specification = analysisData.Count() > 0 ? analysisData[0].specification : null,
+                        LVNCode = item.LVNCode,
+                        remarkToLab = item.remarkToLab,
+                        requestNo = item.requestNo,
+                        sampleCode = item.sampleCode,
+                        sampleDescription = item.sampleDescription,
+                        sampleMatrix = analysisData.Count() > 0 ? analysisData[0].sampleMatrix : null,
+                        sampleName = item.sampleName,
+                        weight = item.weight,
                     };
-                    e00T_CustomerGridViewModel.Add(dataCustomerGridViewModel);
-                }
-                var createCustomeRequest = new CreateCustomeRequest()
+                    dataList.Add(createCustomeRequest);
+                } catch (Exception ex)
                 {
-                    Data = e00T_CustomerGridViewModel.Count() > 0 ? e00T_CustomerGridViewModel : null,
-                    specification = analysisData.Count() > 0 ? analysisData[0].specification : null,
-                    LVNCode = item.LVNCode,
-                    remarkToLab = item.remarkToLab,
-                    requestNo = item.requestNo,
-                    sampleCode = item.sampleCode,
-                    sampleDescription = item.sampleDescription,
-                    sampleMatrix = analysisData.Count() > 0 ? analysisData[0].sampleMatrix : null,
-                    sampleName = item.sampleName,
-                    weight = item.weight,
-                };
-                dataList.Add(createCustomeRequest);
+
+                }
+                
             }
             return dataList;
         }

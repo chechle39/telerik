@@ -79,7 +79,7 @@
                 </div>
                 <div class="col-9">
                     @(Html.Kendo().TextBox()
-                    .HtmlAttributes(new { style = "width: 100%" })
+                    .HtmlAttributes(new { placeholder = "Company Name", required = "required", style = "width: 100%" })
                     .Name("companyName")
                     )
                 </div>
@@ -90,7 +90,7 @@
                 </div>
                 <div class="col-9">
                     @(Html.Kendo().TextBox()
-                    .HtmlAttributes(new { style = "width: 100%" })
+                    .HtmlAttributes(new { placeholder = "Company Address", style = "width: 100%" })
                     .Name("companyAddress")
                     )
                 </div>
@@ -101,7 +101,7 @@
                 </div>
                 <div class="col-9">
                     @(Html.Kendo().TextBox()
-                    .HtmlAttributes(new { style = "width: 100%" })
+                    .HtmlAttributes(new { placeholder = "Province", style = "width: 100%" })
                     .Name("province")
                     )
                 </div>
@@ -112,7 +112,7 @@
                 </div>
                 <div class="col-9">
                     @(Html.Kendo().TextBox()
-                    .HtmlAttributes(new { style = "width: 100%" })
+                    .HtmlAttributes(new { placeholder = "Contact Name", style = "width: 100%" })
                     .Name("contactName")
                     )
                 </div>
@@ -123,7 +123,7 @@
                 </div>
                 <div class="col-9">
                     @(Html.Kendo().TextBox()
-                    .HtmlAttributes(new { style = "width: 100%" })
+                    .HtmlAttributes(new { placeholder = "Contact Email", style = "width: 100%" })
                     .Name("contactEmail")
                     )
                 </div>
@@ -134,7 +134,7 @@
                 </div>
                 <div class="col-9">
                     @(Html.Kendo().TextBox()
-                    .HtmlAttributes(new { style = "width: 100%" })
+                    .HtmlAttributes(new { placeholder = "Note", style = "width: 100%" })
                     .Name("notecustomer")
                     )
                 </div>
@@ -169,32 +169,40 @@
             contactEmail: contactEmail,
             note: note,
         };
-        $.post({
-            url: requestUrl,
-            data: data,
-            dataType: 'json',
-            success: function (result) {
-                $('#companyName').val('')
-                $('#companyAddress').val('')
-                $('#province').val('')
-                $('#contactName').val('')
-                $('#contactEmail').val('')
-                $('#notecustomer').val('')
-                $('#CreateCustomerDiaLog').data("kendoDialog").close();
-                var notification = $("#notification").data("kendoNotification");
-                notification.show({
-                    message: "Insert Successful"
-                }, "success");
-            },
-            error: function () {
-                var notification = $("#notification").data("kendoNotification");
-                notification.show({
-                    title: "Wrong Save",
-                    message: "Uppdate error"
-                }, "error");
-               
-            }
-        });
+        if (companyName != null && companyName !='') {
+            $.post({
+                url: requestUrl,
+                data: data,
+                dataType: 'json',
+                success: function (result) {
+                    $('#companyName').val('')
+                    $('#companyAddress').val('')
+                    $('#province').val('')
+                    $('#contactName').val('')
+                    $('#contactEmail').val('')
+                    $('#notecustomer').val('')
+                    $('#CreateCustomerDiaLog').data("kendoDialog").close();
+                    var notification = $("#notification").data("kendoNotification");
+                    notification.show({
+                        message: "Insert Successful"
+                    }, "success");
+                },
+                error: function () {
+                    var notification = $("#notification").data("kendoNotification");
+                    notification.show({
+                        title: "Wrong Save",
+                        message: "Uppdate error"
+                    }, "error");
+
+                }
+            });
+        } else {
+            var notification = $("#notification").data("kendoNotification");
+            notification.show({
+                title: "Wrong Save",
+                message: "Please! Enter Company Name"               
+            }, "error");
+        }
         return false;
     }
 </script>

@@ -1,6 +1,9 @@
 ﻿using DRLab.Data.ViewModels;
 using DRLab.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DRLab.Web.Controllers
@@ -41,6 +44,18 @@ namespace DRLab.Web.Controllers
         public async Task<IActionResult> GetRecordResultList(SearchRecordResult rq)
         {
             return Ok(await _e08T_WorkingOrder_ItemService.GetE08TWorkingOrderItemByFkAll(rq));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateEntity([FromBody]List<RecordResultGridViewModel> req)
+        {
+            if (!ModelState.IsValid)
+            {
+                IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
+                return new BadRequestObjectResult(allErrors);
+            }
+            await _e08T_WorkingOrder_ItemService.UpdateWorkingOrderItem(req);
+            return new OkObjectResult(req);
         }
     }
 }

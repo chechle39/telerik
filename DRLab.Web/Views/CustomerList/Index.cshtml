@@ -9,12 +9,8 @@
         columns.Bound(p => p.contactEmail).Title(("Contact Email"));
         columns.Bound(p => p.city).Title(("City"));
         columns.Bound(p => p.note).Title(("Note"));
-        columns.Command(command => command.Destroy().IconClass("k-icon k-i-trash").Text("Delete")).Width(100);
-        columns.Command(c =>
-        {
-            c.Custom("RefreshRecord").IconClass("k-icon k-i-edit").Text("Contact").Click("customCom");
-        }).Width(100);
-
+        columns.Command(command => { command.Destroy().IconClass("k-icon k-i-trash").Text("Delete"); command.Custom("RefreshRecord").IconClass("k-icon k-i-edit").Text("Contact").Click("customCom"); }).Width(200);
+       
     })
     .ToolBar(toolbar =>
     {
@@ -99,19 +95,34 @@
         }
         function onRequestEnd(e) {
             //Check request type
-            if (e.type == "create" || e.type == "update") {
+            if (e.type == "create") {
                 //check for errors in the response
                 if (e.response != null || e.response.Errors == null) {
                     var notification = $("#notiCustomer").data("kendoNotification");
                     notification.show({
                         message: "Insert Successful"
                     }, "success");
-                //} if (e.response.Errors != null) {
-                //    var notification = $("#notiCustomer").data("kendoNotification");
-                //    notification.show({
-                //        title: "Wrong Save",
-                //        message: "Uppdate error"
-                //    }, "error");
+                } if (e.response.Errors != null) {
+                    var notification = $("#notiCustomer").data("kendoNotification");
+                    notification.show({
+                        title: "Wrong Save",
+                        message: "Uppdate error"
+                    }, "error");
+                }
+            }
+            if (e.type == "update") {
+                //check for errors in the response
+                if (e.response != null || e.response.Errors == null) {
+                    var notification = $("#notiCustomer").data("kendoNotification");
+                    notification.show({
+                        message: "Insert Successful"
+                    }, "success");
+                } if (e.response.Errors != null) {
+                    var notification = $("#notiCustomer").data("kendoNotification");
+                    notification.show({
+                        title: "Wrong Save",
+                        message: "Uppdate error"
+                    }, "error");
                 }
             }
         }

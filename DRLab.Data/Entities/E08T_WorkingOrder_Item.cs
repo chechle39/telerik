@@ -6,8 +6,9 @@ namespace DRLab.Data.Entities
 {
     public partial class E08T_WorkingOrder_Item
     { 
-        [Key]
+        
         public string WOID { get; set; }
+        [Key]
         public string RequestNo { get; set; }
         public string LVNCode { get; set; }
         public string AnalysisCode { get; set; }
@@ -33,7 +34,7 @@ namespace DRLab.Data.Entities
         public string TechComment { get; set; }
         public string Method { get; set; }
         public string LOD { get; set; }
-       // [ForeignKey("WOID")]
+        [ForeignKey("WOID")]
         public virtual E08T_WorkingOrder_Info E08T_WorkingOrder_Info { get; set; }
     }
 }

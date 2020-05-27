@@ -1,7 +1,5 @@
 ﻿var recordResultController = function () {
     var self = this;
-    var sampleListCount;
-    var reponseGetById;
     this.initialize = function () {
         initForm();
     }
@@ -31,108 +29,94 @@
         $('#tbl-content').html(render);
         $.ajax({
             type: "GET",
-            url: "/CustomerRequest/GetAnalysisByRequestNo",
+            url: "/RecordResult/GetRecordResultList",
             data: { requestNo: document.getElementById("flag4").innerHTML },
-            dataType: "Json",
+            dataType: "json",
             success: function (response) {
 
-                $.ajax({
-                    type: "GET",
-                    url: "/Testing_Info/GetTestingInfoCombobox",
-                    data: { text: "" },
-                    dataType: "json",
+                myarr = [];
+                reponseGetById = response;
+                if (response.length > 0) {
+                    $('#simpleCode').val(response[0].sampleCode);
+                    $('#innerCode').val(response[0].LVNCode);
+                    $('#simpleName').val(response[0].sampleName);
+                    $('#descriptionCustomer').val(response[0].sampleDescription);
+                    $('#remarkToLab').val(response[0].remarkToLab);
+                    $('#sampleMatrix').val(response[0].sampleMatrix);
+                    $('#weight').val(response[0].weight);
+                    $('#templateMark').val('');
+                    $('#tat').val('');
+                    if (response[0].Data !== null) {
+                        var grid = $("#Grid").data("kendoGrid");
+                        var dataSource = new kendo.data.DataSource({
+                            data: response[0].Data,
+                            pageSize: 20,
+                            schema: {
 
-                    success: function (responseCbb) {
-
-                        //comboAddSpecification.select(comboAddSpecification.dataSource._pristineData.indexOf(comboAddSpecification.dataSource._pristineData.filter(x => x.specification === response[0].specification)[0]));
-                        $.ajax({
-                            type: "GET",
-                            url: "/SampleMatrix/GetSampleMatrix",
-                            data: { text: "" },
-                            dataType: "json",
-
-                            success: function (responseCbbMatrix) {
-
-                                //comboAddSpecification.select(comboAddSpecification.dataSource._pristineData.indexOf(comboAddSpecification.dataSource._pristineData.filter(x => x.specification === response[0].specification)[0]));
-                                var grid = $("#Grid").data("kendoGrid");
-                                myarr = [];
-                                reponseGetById = response;
-                                if (response.length > 0) {
-                                    $('#simpleCode').val(response[0].sampleCode);
-                                    $('#innerCode').val(response[0].LVNCode);
-                                    $('#simpleName').val(response[0].sampleName);
-                                    $('#descriptionCustomer').val(response[0].sampleDescription);
-                                    $('#remarkToLab').val(response[0].remarkToLab);
-                                    $('#sampleMatrix').val(response[0].sampleMatrix);
-                                    $('#weight').val(response[0].weight);
-                                    $('#templateMark').val('');
-                                    $('#tat').val('');
-                                    var dataSource = new kendo.data.DataSource({
-                                        data: response[0].Data,
-                                        pageSize: 20,
-                                    });
-                                    grid.setDataSource(dataSource);
-                                } else {
-                                    var requestNo = ["SampleCode", "InLabCode"];
-                                    $.ajax({
-                                        type: "POST",
-                                        url: "/GetCounter/GetCounterString",
-                                        data: JSON.stringify(requestNo),
-                                        dataType: "json",
-                                        contentType: "application/json",
-                                        success: function (response) {
-                                            $('#simpleCode').val(response.sampleCode);
-                                            $('#innerCode').val(response.inLabCode);
+                                model: {
+                                    fields: {
+                                        specification: {
+                                            editable: false
                                         },
-                                        error: function () {
-                                        }
-                                    });
-                                    var grid1 = $("#Grid").data("kendoGrid");
+                                        Mark: {
+                                            editable: false
+                                        },
+                                        method: {
+                                            editable: false
 
-                                    $('#simpleName').val('');
-                                    $('#descriptionCustomer').val('');
-                                    $('#remarkToLab').val('');
-                                    $('#sampleMatrix').val('');
-                                    $('#weight').val('');
-                                    $('#templateMark').val('');
-                                    $('#tat').val('');
-                                    var dataSource = new kendo.data.DataSource({
-                                        data: [],
-                                        pageSize: 20,
-                                    });
-                                    grid1.setDataSource(dataSource);
+                                        },
+                                        LOD: {
+                                            editable: false
+
+                                        },
+
+                                        unit: {
+                                            editable: false
+
+                                        },
+
+                                        ExpectationDate: {
+                                            editable: false
+
+                                        },
+                                        ReviewResult: {
+                                            editable: false
+
+                                        },
+                                    }
+
                                 }
-
-
-
-
-                                const data = { "req_per_page": 1, "page_no": 1 };
-                                pagination(data, parseInt(document.getElementById("flag").innerHTML));
-                                //var comboAddSpecification = $("#addSpecification").data("kendoComboBox");
-                                //var dataSource = new kendo.data.DataSource({
-                                //    data: responseCbb
-                                //});
-                                //comboAddSpecification.setDataSource(dataSource);
-                                //comboAddSpecification.dataSource._pristineData = responseCbb;
-                                //var combosampleMatrix = $("#sampleMatrix").data("kendoComboBox");
-                                //var dataSource1 = new kendo.data.DataSource({
-                                //    data: responseCbbMatrix
-                                //});
-                                //combosampleMatrix.setDataSource(dataSource1);
-                                //combosampleMatrix.dataSource._pristineData = responseCbbMatrix;
-                                //$("#sampleMatrix").data("kendoComboBox").value(responseCbbMatrix.filter(x => x.sampleMatrix === response[0].sampleMatrix)[0].matrixID);
-                                //$("#addSpecification").data("kendoComboBox").value(responseCbb.filter(x => x.specification === response[0].specification)[0].analysisCode);
-
-                            },
-                            error: function () {
-
                             }
                         });
-                    },
-                    error: function () {
-
+                        grid.setDataSource(dataSource);
+                    } else {
+                        var grid = $("#Grid").data("kendoGrid");
+                        var dataSource = new kendo.data.DataSource({
+                            data: [],
+                            pageSize: 20,
+                        });
+                        grid.setDataSource(dataSource);
                     }
-                });
+
+                } else {
+
+                    $('#simpleCode').val('');
+                    $('#innerCode').val('');
+                    $('#simpleName').val('');
+                    $('#descriptionCustomer').val('');
+                    $('#remarkToLab').val('');
+                    $('#sampleMatrix').val('');
+                    $('#weight').val('');
+                    $('#templateMark').val('');
+                    $('#tat').val('');
+                    var dataSource = new kendo.data.DataSource({
+                        data: [],
+                        pageSize: 20,
+                    });
+                    grid1.setDataSource(dataSource);
+                }
+                const data = { "req_per_page": 1, "page_no": 1 };
+                pagination(data, parseInt(document.getElementById("flag").innerHTML));
             },
             error: function () {
             }

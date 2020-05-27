@@ -26,39 +26,62 @@ namespace DRLab.Data.Repositories
             
             foreach (var item in analysisRequest_Info)
             {
+                List<E08T_WorkingOrder_Item> workingOrderItem;
                 var recordResultGridViewModel = new List<RecordResultGridViewModel>();
-                var workingOrderItem = await Entities.Where(x => x.LVNCode == item.LVNCode && x.RequestNo == item.requestNo).ToListAsync();
-                foreach (var iii in workingOrderItem)
+                workingOrderItem = await Entities.Where(x => x.RequestNo == item.requestNo && x.LVNCode == item.LVNCode).AsNoTracking().ToListAsync();
+                if (workingOrderItem.Count()>0)
                 {
-                    var RecordResult = new RecordResultGridViewModel()
+                    foreach (var iii in workingOrderItem)
                     {
-                        ExpectationDate = iii.ExpectationDate,
-                        LOD = iii.LOD,
-                        Mark = null,
-                        method = iii.Method,
-                        Result = Convert.ToInt32(iii.Result),
-                        ResultText = iii.ResultText,
-                        ReviewResult = iii.ReviewResult,
-                        specification = iii.Specification,
-                        unit = iii.Unit,
+                        var RecordResult = new RecordResultGridViewModel()
+                        {
+                            ExpectationDate = iii.ExpectationDate,
+                            LOD = iii.LOD,
+                            Mark = null,
+                            method = iii.Method,
+                            Result = Convert.ToInt32(iii.Result),
+                            ResultText = iii.ResultText,
+                            ReviewResult = iii.ReviewResult,
+                            specification = iii.Specification,
+                            unit = iii.Unit,
+                            WOID = iii.WOID,
+                        };
+                        recordResultGridViewModel.Add(RecordResult);
+                    }
+                    var getRecordResult = new GetRecordResult()
+                    {
+                        Data = recordResultGridViewModel,
+                        LVNCode = item.LVNCode,
+                        remarkToLab = item.remarkToLab,
+                        requestNo = item.requestNo,
+                        sampleCode = item.sampleCode,
+                        sampleDescription = item.sampleDescription,
+                        sampleName = item.sampleName,
+                        weight = item.weight
                     };
-                    recordResultGridViewModel.Add(RecordResult);
-                }
-                var getRecordResult = new GetRecordResult()
-                {
-                    Data = recordResultGridViewModel,
-                    LVNCode = item.LVNCode,
-                    remarkToLab = item.remarkToLab,
-                    requestNo = item.requestNo,
-                    sampleCode = item.sampleCode,
-                    sampleDescription = item.sampleDescription,
-                    sampleName = item.sampleName,
-                    weight = item.weight
-                };
-                dataList.Add(getRecordResult);
+                    dataList.Add(getRecordResult);
+                }    
             }
           
             return dataList;
+        }
+
+        public async Task<bool> UpdateWorkingOrderItem(List<RecordResultGridViewModel> request)
+        {
+            
+            foreach (var item in request)
+            {
+                var checkExits = await Entities.Where(x => x.WOID == item.WOID).AsNoTracking().ToListAsync();
+                if (checkExits.Count() > 0)
+                {
+                    var obj = checkExits[0];
+                    obj.Result = item.Result;
+                    obj.ResultText = item.ResultText;
+                    Entities.Update(obj);
+                }
+               
+            }
+            return await Task.FromResult(true);
         }
     }
 }

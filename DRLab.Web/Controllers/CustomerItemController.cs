@@ -56,6 +56,7 @@ namespace DRLab.Web.Areas.API.Controllers
             }
             return new OkObjectResult(req);
         }
+        [HttpPost]
         public async Task<ActionResult> Update_Customer([DataSourceRequest] DataSourceRequest request, E00T_Customer_ItemViewModel data_info)
         {
             if (data_info != null && ModelState.IsValid)
@@ -65,12 +66,13 @@ namespace DRLab.Web.Areas.API.Controllers
 
             return Json((await _customer_ItemService.GetListCustomerItem()).ToDataSourceResult(request, ModelState));
         }
-        public async Task<ActionResult> Destroy_Customer([DataSourceRequest] DataSourceRequest request, E00T_Customer_ItemViewModel data_info)
+       
+        public async Task<ActionResult> Destroy_Customer([DataSourceRequest] DataSourceRequest request, long Id)
         {
            
-                    if (data_info != null)
+                    if (Id != null)
                     {
-                        _customer_ItemService.Destroy(data_info.contactID);
+                        _customer_ItemService.Destroy(Id);
                     }
 
 

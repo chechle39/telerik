@@ -58,11 +58,11 @@
     color: #FFF;
 }
 
-    .home__chart .card-header {
-        background: #4bacc6;
-        color: var(--gray-dark);
-        font-size: 1.1rem;
-    }
+.home__chart .card-header {
+    background: var(--theme-base-bg);
+    color: var(--theme-base-text);
+    font-size: 1.1rem;
+}
 
     .home__chart .card-body>* {
         padding: 10px 20px;

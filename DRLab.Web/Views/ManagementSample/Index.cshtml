@@ -35,7 +35,7 @@
                                         <h3 class="card-title" style="font-size: 25px">Sample Management </h3><h6 onclick=onClicSearch() id="btnsearch" style="margin-left: 12px;margin-top: 10px;cursor: pointer;" class="fas fa-search"></h6>
                                         <div id="dayTem"></div>
                                     </div>
-                                    <div class="col-3">
+                                    <div class="col-2">
                                         @(Html.Kendo().DropDownList()
                                         .Name("color")
                                         .DataTextField("Text")
@@ -68,10 +68,10 @@
                                         },
                                         })
                                     .Value("0")
-                                    .HtmlAttributes(new { style = "width: 100%", @class = "k-dropdown--clear" })
+                                    .HtmlAttributes(new { style = "width: 35%", @class = "k-dropdown--clear" })
                                     )
                                     </div>                                   
-                                    <div class="col-5">
+                                    <div class="col-6">
                                         <div style="float:right">
                                             <button onclick="exportexcel()" class="k-button k-primary px-3 py-2" >Export</button>
                                             <button onclick="refresh()" class="k-button px-3 py-2">Refresh</button>
@@ -79,7 +79,7 @@
 
                                     </div>
                                 </div>
-                                <div  class="row" style=" margin-left: 12px; margin-top: 25px">
+                                <div  class="row" style=" margin-left: 12px;margin-bottom:12px">
                                     <div class="col-3">
                                         @(Html.Kendo().DropDownList()
                                         .Name("color1")
@@ -89,12 +89,12 @@
                                         .BindTo(new List<SelectListItem>() {
                                         new SelectListItem() {
                                             Text = "Request Actions",
-                                            Value = "0"
+                                            Value = "0",                                            
                                         },
                                         new SelectListItem() {
                                             Text = "Open Request",
                                             Value = "1"
-                                        },                                        
+                                        },
                                         new SelectListItem() {
                                                 Text = "Testing Report",
                                                 Value = "2"
@@ -102,10 +102,10 @@
                                         new SelectListItem() {
                                                 Text = "Validation",
                                                 Value = "3"
-                                        },                                       
+                                        },
                                         })
                                     .Value("0")
-                                    .HtmlAttributes(new { style = "width: 100%" })
+                                    .HtmlAttributes(new { style = "width: 35%", @class = "k-dropdown--clear" })
                                     )
                                     </div>
                                 </div>
@@ -295,19 +295,7 @@
     };
     function onSelectAction(e) {
         var dataItem = this.dataItem(e.item);
-        var grid = $("#grid").data("kendoGrid");
-        var row = $(e.target).closest("tr");
-
-        if (row.hasClass("k-state-selected")) {
-            setTimeout(function (e) {
-                var grid = $("#grid").data("kendoGrid");
-                grid.clearSelection();
-            })
-        } else {
-            grid.clearSelection();
-        };
         if (dataItem.Value === "5") {
-
             var deleteRequest = [];
 
             e.preventDefault();
@@ -318,7 +306,7 @@
                 resizable: false,
                 modal: true
             });
-           
+
             kendoWindow.data("kendoWindow")
                 .content($("#delete-confirmation").html())
                 .center().open();
@@ -329,7 +317,7 @@
                     if ($(this).hasClass("delete-confirm")) {
                         $.ajax({
                             type: "POST",
-                            url: "/ManagementSample/DeletedAnalysisRequestInfo",
+                            url: "/ManagementRequest/DeletedAnalysisRequestInfo",
                             data: JSON.stringify(deleteRequest),
                             dataType: "json",
                             contentType: "application/json",

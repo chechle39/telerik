@@ -40,7 +40,7 @@
 
 
                                     </div>
-                                    <div class="col-3" style="display: flex;flex-direction: column;justify-content: center;">
+                                    <div class="col-2" style="display: flex;flex-direction: column;justify-content: center;">
                                         @(Html.Kendo().DropDownList()
                                         .Name("color")
                                         .DataTextField("Text")
@@ -60,7 +60,7 @@
                                     .HtmlAttributes(new { style = "width: 100%", @class = "k-dropdown--clear" })
                                     )
                                     </div>
-                                    <div class="col-5">
+                                    <div class="col-6">
                                         <div style="float:right">
                                             <button onclick="SaveEntity()" type="submit" class="k-button k-primary px-3 py-2">Save</button>
                                             <button class="k-button px-3 py-2">Cancel</button>
@@ -229,29 +229,25 @@
                                                         .Icon("plus")
                                                         .Events(ev => ev.Click("openAddTestInfoDialog"))
                                                     )
-                                                        @*<script>
+                                                        <script>
                                                             function openAddTestInfoDialog() {
                                                                 $('#AddTestInfo').data("kendoDialog").open();
-                                                                var requestNo = ["RequestNo", "SampleCode", "InLabCode", "AnalysisCode"];
+                                                                var requestNo = ["AnalysisCode"];
                                                                 return $.ajax({
                                                                     type: "POST",
                                                                     url: "/GetCounter/GetCounterString",
                                                                     data: JSON.stringify(requestNo),
                                                                     dataType: "json",
                                                                     contentType: "application/json",
-                                                                    success: function (response) {
-                                                                        $('#requestNo').val(response.requestNo);
-                                                                        $('#analysisCode').val(response.analysisCode);
-                                                                        $('#simpleCode').val(response.sampleCode);
-                                                                        $('#innerCode').val(response.inLabCode);
-                                                                        $('#vat').val(0)
+                                                                    success: function (response) {                                                                     
+                                                                        $('#analysisCode').val(response.analysisCode);                                                                     
                                                                     },
                                                                     error: function () {
 
                                                                     }
                                                                 });
                                                             }
-                                                        </script>*@
+                                                        </script>
                                                     </span>
                                                 </div>
 

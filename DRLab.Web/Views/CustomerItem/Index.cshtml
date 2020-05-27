@@ -1,7 +1,7 @@
 ﻿@model string
 @(Html.Kendo().Window()
     .Name(Model)
-    .Title("Customer Item")
+    .Title("Contact")
     .Content(
     (Html.Kendo().Grid<DRLab.Data.ViewModels.E00T_Customer_ItemViewModel>()
         .Name("gridCustomer")
@@ -11,8 +11,8 @@
              columns.Bound(p => p.address);
              columns.Bound(p => p.note).Hidden();
              columns.Bound(p => p.email).Hidden();
-             columns.Command(command => command.Destroy().IconClass("k-icon k-i-trash").Text("Delete")).Width(100);
-             columns.Command(command => command.Edit().Text(" ")).Width(100);
+             columns.Command(command => command.Destroy().IconClass("k-icon k-i-trash").Text("Delete")).Width(80);
+             columns.Command(command => command.Edit().Text(" ")).Width(80);
          })
           .ClientRowTemplate(
               "<tr data-uid='#: uid #'>" +
@@ -25,13 +25,11 @@
                    "<span class='description'>Note : #: note#</span><br>" +
                "</td>" +
                  "<td style='width:80px'>" +
-                      "<a class='k-button k-button-icontext k-grid-delete'" +
-
+                      "<a onclick = 'deleteRow(#= contactID #)' class='k-button k-button-icontext'" +
                   "<span class='k-icon k-delete'></span>Delete</a>" +
                   "</td>" +
                    "<td style='width:80px'>" +
-                      "<a onclick='EditRow(+ #=contactName # +)' class='k-button k-button-icontext'" +
-
+                      "<a onclick = 'editRow(#= contactID #)' class='k-button k-button-icontext'" +
                   "<span class='k-icon k-edit'></span>Edit</a>" +
                   "</td>" +
                "</tr>"
@@ -44,7 +42,7 @@
         .Editable(editable => editable.Mode(GridEditMode.PopUp))
         .Sortable()
         .Scrollable()
-        .HtmlAttributes(new { style = "height:350px;" })
+        .HtmlAttributes(new { style = "height:330px;" })
         .DataSource(dataSource => dataSource
         .Custom()
         .Batch(true)
@@ -78,14 +76,94 @@
 
 @await Html.PartialAsync("../CustomerItem/CreateCustomerItem")
 <script type="text/javascript">
-    function EditRow(a) {
+    var Datacode = [];
+    var DatacontactID = null;
+    function editRow(contact_ID) {                  
+            var grid = $("#gridCustomer").data("kendoGrid");
+            $.ajax({
+                type: "GET",
+                url: "/CustomerRequest/GetCustomersItemById",
+                data: { id: contact_ID },
+                dataType: "Json",
+                success: function (response) {
+                    data = response;                
+                    $('#contactName').val(data[0].contactName);
+                    $('#email').val(data[0].email);
+                    $('#address').val(data[0].address);
+                    $('#note').val(data[0].note);                   
+                    Datacode = data[0].customerCode;
+                    DatacontactID = data[0].contactID;
+                },
+                error: function () {
+                }
+            });
+            $("#dialogCusItem").data("kendoDialog").center();
+            $("#dialogCusItem").data("kendoDialog").open();       
+    }
+    function deleteRow(contact_ID) {
+        var kendoWindow = $("<div />").kendoWindow({
+            title: "Confirm",
+            resizable: false,
+            modal: true
+        });
 
-        var grid = $("#gridCustomer").getKendoGrid();
+        kendoWindow.data("kendoWindow")
+            .content($("#delete-confirmation").html())
+            .center().open();
 
-        wnd.content(detailsTemplate(dataItem));
-        wnd.center().open()
+        kendoWindow
+            .find(".delete-confirm,.delete-cancel")
+            .click(function () {
+                if ($(this).hasClass("delete-confirm")) {
+                     $.ajax({
+                        type: "GET",
+                        url: "/CustomerItem/Destroy_Customer",
+                        data: { id: contact_ID },
+                        dataType: "Json",
+                        success: function (response) {
+                            var notification = $("#notiCustomerItem").data("kendoNotification");
+                            notification.show({
+                                message: "Delete Successful"
+                            }, "success");   
+                            Loaddata();
+                        },
+                        error: function () {
+                            var notification = $("#notiCustomerItem").data("kendoNotification");
+                            notification.show({
+                                title: "Wrong Save",
+                                message: "Delete error"
+                            }, "error");
+                        }
+                    });
+                }
+
+                kendoWindow.data("kendoWindow").close();
+            })
+            .end()
+        //$.ajax({
+        //    type: "GET",
+        //    url: "/CustomerItem/Destroy_Customer",
+        //    data: { id: contact_ID },
+        //    dataType: "Json",
+        //    success: function (response) {
+        //        var notification = $("#notiCustomerItem").data("kendoNotification");
+        //        notification.show({
+        //            message: "Delete Successful"
+        //        }, "success");                    
+        //    },
+        //    error: function () {
+        //        var notification = $("#notiCustomerItem").data("kendoNotification");
+        //        notification.show({
+        //            title: "Wrong Save",
+        //            message: "Delete error"
+        //        }, "error");
+        //    }
+        //});
     }
     function customCreate(e) {
+        var DatacontactID = null;
+        var titledialog = "Add Contact"
+        $("#dialogCusItem input").val("");
         $("#dialogCusItem").data("kendoDialog").center();
         $("#dialogCusItem").data("kendoDialog").open();
     }
@@ -95,6 +173,12 @@
     function schemaTotal(response) {
         return Datagrid.length;
     }
+</script>
+<script id="delete-confirmation" type="text/x-kendo-template">
+    <p class="delete-message">Are you sure?</p>
+
+    <button class="delete-confirm k-button" style="float: right">Yes</button>
+    <a href="#" class="delete-cancel" style="float: right">No</a>
 </script>
 @section HeadContent {
     <style>

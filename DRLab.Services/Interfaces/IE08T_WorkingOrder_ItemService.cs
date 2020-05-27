@@ -9,5 +9,6 @@ namespace DRLab.Services.Interfaces
     public interface IE08T_WorkingOrder_ItemService
     {
         Task<List<GetRecordResult>> GetE08TWorkingOrderItemByFkAll(SearchRecordResult request);
+        Task<bool> UpdateWorkingOrderItem(List<RecordResultGridViewModel> request);
     }
 }

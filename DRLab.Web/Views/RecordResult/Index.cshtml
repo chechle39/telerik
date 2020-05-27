@@ -3,7 +3,7 @@
     ViewData["Title"] = "DetailCustomer";
 }
 @section Scripts{
-    <script src="~/app/RecordResult/RecordResult.js" asp-append-version="true"></script>
+    <script src="~/app/RecordResult/RecordResult.js"></script>
     <script>
         var detailObj = new recordResultController();
         detailObj.initialize();
@@ -54,11 +54,11 @@
                                         .Events(e => e.Change("change"))
                                         .BindTo(new List<SelectListItem>() {
                                         new SelectListItem() {
-                                            Text = "Print Request",
+                                            Text = "More Function",
                                             Value = "1"
                                         },
                                         new SelectListItem() {
-                                                Text = "Export For Lab",
+                                                Text = "Export Excel",
                                                 Value = "2"
                                         },
                                         })
@@ -146,7 +146,7 @@
                                         <div class="col-5 row">
                                             <span>Remark To Lab</span>
                                             <div class="col-sm-9 mr-t">
-                                                <textarea disabled id="remarkToLab" disabled placeholder="Remark To Lab" class="k-textbox" style="margin-left: 2px;width: 100%;height: calc(1.42857143em + 10px)"></textarea>
+                                                <textarea disabled id="remarkToLab"  placeholder="Remark To Lab" class="k-textbox" style="margin-left: 2px;width: 100%;height: calc(1.42857143em + 10px)"></textarea>
 
                                             </div>
                                         </div>
@@ -178,21 +178,21 @@
 
                                     <div class="form-group row">
 
-                                        @(Html.Kendo().Grid<DRLab.Data.ViewModels.E00T_CustomerGridViewModel>()
+                                        @(Html.Kendo().Grid<DRLab.Data.ViewModels.RecordResultGridViewModel>()
                                         .Name("Grid")
                                         .HtmlAttributes(new { style = "height:auto;" })
                                         .Columns(columns =>
                                         {
-                                            columns.Bound(p => p.specification).Title("Specification").Width("25%");
+                                            columns.Bound(p => p.specification).Title("Specification").Width("20%");
                                             columns.Bound(p => p.Mark).Title("Mark");
-                                            columns.Bound(p => p.method).Title("Method").Width("25%");
-                                            columns.Bound(p => p.LOD).Title("LOD");
+                                            columns.Bound(p => p.method).Title("Method").Width("20%");
                                             columns.Bound(p => p.unit).Title("Unit");
-                                            columns.Bound(p => p.Price).Title("Price").Width("10%").Format("{0:n2}")
+                                            columns.Bound(p => p.LOD).Title("LOD");
+                                            columns.Bound(p => p.Result).Title("Result").Width("10%").Format("{0:n2}")
 ;
-                                            columns.Bound(p => p.Urgent).Title("% Urgent");
-                                            columns.Bound(p => p.TAT).Title("TAT");
-                                            columns.Command(command => { command.Destroy().IconClass("k-icon k-i-trash"); }).Width(100);
+                                            columns.Bound(p => p.ResultText).Title("Text Result").Width("10%");
+                                            columns.Bound(p => p.ExpectationDate).Title("Expectation Date").Width("10%");
+                                            columns.Bound(p => p.ReviewResult).Title("Review Status");
                                         })
                                         .Navigatable()
                                         .Editable(editable => editable.Mode(GridEditMode.InCell))
@@ -207,16 +207,17 @@
                                         {
                                             schema.Model(model =>
                                             {
-                                                model.Id(p => p.analysisCode);
-                                                model.Field(p => p.analysisCode).Editable(false).From("analysisCode");
+                                                model.Id(p => p.WOID);
+                                                model.Field(p => p.WOID).Editable(false).From("WOID");
                                                 model.Field(p => p.specification).From("specification");
                                                 model.Field(p => p.Mark).From("Mark");
                                                 model.Field(p => p.method).From("method");
-                                                model.Field(p => p.LOD).From("LOD");
                                                 model.Field(p => p.unit).From("unit");
-                                                model.Field(p => p.Price).From("Price");
-                                                model.Field(p => p.Urgent).From("Urgent");
-                                                model.Field(p => p.TAT).From("TAT");
+                                                model.Field(p => p.LOD).From("LOD");
+                                                model.Field(p => p.Result).From("Result");
+                                                model.Field(p => p.ResultText).From("ResultText");
+                                                model.Field(p => p.ExpectationDate).From("ExpectationDate");
+                                                model.Field(p => p.ReviewResult).From("ReviewResult");
                                             })
                                             .Data(d => "schemaData")
                                             .Total(t => "schemaTotal");
@@ -305,21 +306,36 @@
 
                         model: {
                             fields: {
+                                specification: {
+                                    editable: false
+                                },
+                                Mark: {
+                                    editable: false
+                                },
                                 method: {
                                     editable: false
+
                                 },
                                 LOD: {
                                     editable: false
+
                                 },
-                                Price: {
+
+                                unit: {
                                     editable: false
 
                                 },
-                                Urgent: {
+  
+                                ExpectationDate: {
                                     editable: false
 
-                                }
+                                },
+                                ReviewResult: {
+                                    editable: false
+
+                                },
                             }
+
                         }
                     }
                 });
@@ -352,9 +368,9 @@
 
             $.ajax({
                 type: "GET",
-                url: "/CustomerRequest/GetAnalysisByRequestNo",
+                url: "/RecordResult/GetRecordResultList",
                 data: { requestNo: document.getElementById("flag4").innerHTML },
-                dataType: "Json",
+                dataType: "json",
                 success: function (response) {
                     console.log(response);
                     var grid = $("#Grid").data("kendoGrid");
@@ -369,7 +385,6 @@
                         $('#sampleMatrix').val(response[0].sampleMatrix);
                         $('#weight').val(response[0].weight);
                         $('#templateMark').val('');
-                        $('#tat').val('');
 
                         var dataSource = new kendo.data.DataSource({
                             data: response[0].Data,
@@ -378,35 +393,42 @@
 
                                 model: {
                                     fields: {
+                                        specification: {
+                                            editable: false
+                                        },
+                                        Mark: {
+                                            editable: false
+                                        },
                                         method: {
                                             editable: false
+
                                         },
                                         LOD: {
                                             editable: false
+
                                         },
-                                        Price: {
+
+                                        unit: {
                                             editable: false
 
                                         },
-                                        Urgent: {
+
+                                        ExpectationDate: {
                                             editable: false
 
-                                        }
+                                        },
+                                        ReviewResult: {
+                                            editable: false
+
+                                        },
                                     }
+
                                 }
                             }
                         });
                         grid.setDataSource(dataSource);
                     } else {
-                        //$('#simpleCode').val(response[0].sampleCode);
-                        //$('#innerCode').val(response[0].LVNCode);
-                        //$('#simpleName').val(response[0].sampleName);
-                        //$('#descriptionCustomer').val(response[0].sampleDescription);
-                        //$('#remarkToLab').val(response[0].remarkToLab);
-                        //$('#sampleMatrix').val(response[0].sampleMatrix);
-                        //$('#weight').val(response[0].weight);
-                        //$('#templateMark').val('');
-                        //$('#tat').val('');
+
 
                         var dataSource = new kendo.data.DataSource({
                             data: [],
@@ -415,21 +437,36 @@
 
                                 model: {
                                     fields: {
+                                        specification: {
+                                            editable: false
+                                        },
+                                        Mark: {
+                                            editable: false
+                                        },
                                         method: {
                                             editable: false
+
                                         },
                                         LOD: {
                                             editable: false
+
                                         },
-                                        Price: {
+
+                                        unit: {
                                             editable: false
 
                                         },
-                                        Urgent: {
+
+                                        ExpectationDate: {
                                             editable: false
 
-                                        }
+                                        },
+                                        ReviewResult: {
+                                            editable: false
+
+                                        },
                                     }
+
                                 }
                             }
                         });
@@ -445,18 +482,14 @@
                                 innerCode: response[i].LVNCode,
                                 remarkToLab: response[i].remarkToLab,
                                 weight: response[i].weight,
-                                sampleMatrix: 1,
-                                sampleMatrixValue: response[i].sampleMatrix,
                                 addSpecification: 1,
-                                addSpecificationValue: response[i].specification,
                                 templateMark: "",
-                                tat: "",
                                 data: response[i].Data
 
                             };
                             myData.push(a);
                         } else {
-                            const a = { simpleName: '', simpleCode: '', descriptionCustomer: '', innerCode: '', remarkToLab: '', weight: '', sampleMatrix: -1, sampleMatrixValue: '', addSpecification: -1, addSpecificationValue: '', templateMark: '', tat: '' };
+                            const a = { simpleName: '', simpleCode: '', descriptionCustomer: '', innerCode: '', remarkToLab: '', weight: ''};
                             myData.push(a);
                         }
 
@@ -580,23 +613,15 @@
     function render_table_rows(rows, req_per_page, page_no, curent) {
         response = rows;
         var grid = $("#Grid").data("kendoGrid");
-        var comboboxsampleMatrix = $("#sampleMatrix").data("kendoComboBox");
-        var comboAddSpecification = $("#addSpecification").data("kendoComboBox");
         response[curent - 1].simpleName = $('#simpleName').val();
         response[curent - 1].simpleCode = $('#simpleCode').val();
         response[curent - 1].descriptionCustomer = $('#descriptionCustomer').val();
         response[curent - 1].innerCode = $('#innerCode').val();
         response[curent - 1].remarkToLab = $('#remarkToLab').val();
-        response[curent - 1].sampleMatrix = comboboxsampleMatrix._oldIndex;
         response[curent - 1].weight = $('#weight').val();
-        response[curent - 1].addSpecification = comboAddSpecification._oldIndex;
-        response[curent - 1].templateMark = $('#templateMark').val();
-        response[curent - 1].tat = $('#tat').val();
-        response[curent - 1].sampleMatrixValue = comboboxsampleMatrix._prev;
-        response[curent - 1].addSpecificationValue = comboAddSpecification._prev;
         // var hander = handerDataGrid()
         response[curent - 1].data = handerDataGrid();
-        response[curent - 1].deleted = handerDataGridDeleted();
+        //response[curent - 1].deleted = handerDataGridDeleted();
         const resp = response.slice(req_per_page * (page_no - 1), req_per_page * page_no);
         if (response[page_no - 1].simpleCode === '') {
             var requestNo = ["SampleCode", "InLabCode"];
@@ -622,17 +647,7 @@
         $('#remarkToLab').val(response[page_no - 1].remarkToLab);
         $('#sampleMatrix').val(response[page_no - 1].sampleMatrix);
         $('#weight').val(response[page_no - 1].weight);
-        $('#templateMark').val(response[page_no - 1].templateMark);
-        $('#tat').val(response[page_no - 1].tat);
-        comboboxsampleMatrix.select(parseInt(response[page_no - 1].sampleMatrix));
-        //if (response[page_no - 1].addSpecificationValue.length > 0) {
-        //    $("#addSpecification").data("kendoComboBox").value(comboAddSpecification.dataSource._pristineData.filter(x => x.specification === response[page_no - 1].addSpecificationValue)[0].analysisCode);
 
-        //} else {
-        //    comboAddSpecification.select(parseInt(response[page_no - 1].addSpecification));
-        //}
-        comboAddSpecification.select(-1)
-        // comboAddSpecification.select(parseInt(response[page_no - 1].addSpecification));
         var dataSource = new kendo.data.DataSource({
             data: response[page_no - 1].data,
             pageSize: 20,
@@ -640,21 +655,35 @@
 
                 model: {
                     fields: {
+                        specification: {
+                            editable: false
+                        },
+                        Mark: {
+                            editable: false
+                        },
                         method: {
                             editable: false
+
                         },
                         LOD: {
                             editable: false
+
                         },
-                        Price: {
+
+                        unit: {
                             editable: false
 
                         },
-                        Urgent: {
+                        ExpectationDate: {
                             editable: false
 
-                        }
+                        },
+                        ReviewResult: {
+                            editable: false
+
+                        },
                     }
+
                 }
             }
         });
@@ -686,15 +715,16 @@
         var grid = $("#Grid").data("kendoGrid");
         for (var i = 0; i < grid._data.length; i++) {
             var object = {
-                analysisCode: grid._data[i].analysisCode,
-                lOD: grid._data[i].LOD,
-                mark: grid._data[i].Mark,
+                ExpectationDate: grid._data[i].ExpectationDate,
+                LOD: grid._data[i].LOD,
+                Mark: grid._data[i].Mark,
                 method: grid._data[i].method,
-                price: grid._data[i].Price,
+                Result: grid._data[i].Result,
+                ResultText: grid._data[i].ResultText,
+                ReviewResult: grid._data[i].ReviewResult,
+                WOID: grid._data[i].WOID,
                 specification: grid._data[i].specification,
-                tAT: grid._data[i].TAT,
                 unit: grid._data[i].unit,
-                urgent: grid._data[i].Urgent,
             };
             myGrid.push(object);
         }
@@ -707,22 +737,7 @@
             var x = checkClass(document.getElementsByClassName('active'))
             var cr = parseInt(x[0].innerText);
             var grid = $("#Grid").data("kendoGrid");
-            var comboboxsampleMatrix = $("#sampleMatrix").data("kendoComboBox");
-            var comboAddSpecification = $("#addSpecification").data("kendoComboBox");
-            response[cr - 1].simpleName = $('#simpleName').val();
-            response[cr - 1].simpleCode = $('#simpleCode').val();
-            response[cr - 1].descriptionCustomer = $('#descriptionCustomer').val();
-            response[cr - 1].innerCode = $('#innerCode').val();
-            response[cr - 1].remarkToLab = $('#remarkToLab').val();
-            response[cr - 1].sampleMatrix = comboboxsampleMatrix._oldIndex;
-            response[cr - 1].weight = $('#weight').val();
-            response[cr - 1].addSpecification = comboAddSpecification._oldIndex;
-            response[cr - 1].templateMark = $('#templateMark').val();
-            response[cr - 1].tat = $('#tat').val();
-            response[cr - 1].sampleMatrixValue = comboboxsampleMatrix._prev;
-            response[cr - 1].addSpecificationValue = comboAddSpecification._prev;
             response[cr - 1].data = handerDataGrid();
-            response[cr - 1].deleted = handerDataGridDeleted();
             for (var i = 0; i < response.length; i++) {
                 var arr = [];
                 var arrdelete = [];
@@ -733,37 +748,15 @@
                     arrdelete = response[i].deleted;
                 }
                 const object = {
-                    requestNo: document.getElementById("requestNo").innerHTML,
-                    lVNCode: response[i].innerCode,
-                    sampleCode: response[i].simpleCode,
-                    sampleName: response[i].simpleName,
-                    sampleDescription: response[i].descriptionCustomer,
-                    weight: response[i].weight,
-                    remarkToLab: response[i].remarkToLab,
-                    sampleMatrix: response[i].sampleMatrixValue,
-                    specification: response[i].addSpecificationValue,
                     data: arr,
-                    deleted: arrdelete,
                 }
                 saveRequest.push(object);
             }
             SaveAnalysisRequestData(saveRequest);
         }
         if (response.length === 0) {
-            var comboboxsampleMatrix = $("#sampleMatrix").data("kendoComboBox");
-            var comboAddSpecification = $("#addSpecification").data("kendoComboBox");
             const object = {
-                requestNo: document.getElementById("requestNo").innerHTML,
-                lVNCode: $('#innerCode').val(),
-                sampleCode: $('#simpleCode').val(),
-                sampleName: $('#simpleName').val(),
-                sampleDescription: $('#descriptionCustomer').val(),
-                weight: $('#weight').val(),
-                remarkToLab: $('#remarkToLab').val(),
-                sampleMatrix: comboboxsampleMatrix._prev,
-                specification: comboAddSpecification._prev,
                 data: handerDataGrid(),
-                deleted: handerDataGridDeleted(),
             }
             saveRequest.push(object);
             SaveAnalysisRequestData(saveRequest);
@@ -775,11 +768,16 @@
         //if (check === true) {
 
         //}
-
+        var save = [];
+        SaveRq.reduce((r, o) => {
+            o.data.reduce((c, h) => {
+                save.push(h);
+            }, {})
+        }, {})
         $.ajax({
             type: "POST",
-            url: "/CustomerRequest/SaveEntityAnalysisRequestData",
-            data: JSON.stringify(SaveRq),
+            url: "/RecordResult/UpdateEntity",
+            data: JSON.stringify(save),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
@@ -794,7 +792,7 @@
                 if (check === false) {
                     notification.show({
                         title: "Wrong Save",
-                        message: mess
+                        message: "Save error",
                     }, "error");
                 } else {
                     notification.show({
@@ -832,7 +830,9 @@
             return true
         }
     }
-
+    function change(e) {
+       
+    };
 </script>
 
 <style>
@@ -1035,14 +1035,6 @@
     <h5 style="float: right;padding-right: 14px">Total: {{tong}}</h5>
 </script>
 <script>
-
-    function change() {
-        var value = $("#color").val();
-        $("#cap")
-            .toggleClass("black-cap", value == 1)
-            .toggleClass("orange-cap", value == 2)
-            .toggleClass("grey-cap", value == 3);
-    };
 
     function openDialog() {
         var dialog = $('#dialogEdit');

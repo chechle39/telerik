@@ -129,7 +129,11 @@ namespace DRLab.Web.Controllers
         {
             return await _e00T_Customer_ItemService.GetE00T_Customer_ItemByCode(id);
         }
-
+        [HttpGet]
+        public async Task<List<E00T_Customer_ItemViewModel>> GetCustomersItemById(long id)
+        {
+            return await _e00T_Customer_ItemService.GetCustomerItemById(id);
+        }
         [HttpGet]
         public async Task<IActionResult> GetAnalysisByRequestNo(string requestNo)
         {
