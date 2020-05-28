@@ -27,6 +27,7 @@ namespace DRLab.Data.ViewModels
         public DateTime? ExpectationDate { get; set; }
         [Display(Name = "ReviewResult")]
         public int? ReviewResult { get; set; }
+        public string LVNCode { get; set; }
     }
 
     public class SearchRecordResult 

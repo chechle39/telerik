@@ -9,7 +9,7 @@ var chart1 = new Chart(ctx, {
                 aspectRatio: 5,
                 type: 'bar',
                 data: {
-                    labels: ['Thứ 2', 'Thứ 3', 'Hôm nay', 'Thứ 5', 'Thứ 6'],
+                    labels: [moment().subtract(2, 'days').format("dddd"), moment().subtract(1, 'days').format("dddd"), 'Hôm nay', moment().add(1, 'days').format("dddd"), moment().add(2, 'days').format("dddd")],
                     datasets: [{
                         label: 'In progress',
                         data: [12, 19, 3],
@@ -24,7 +24,54 @@ var chart1 = new Chart(ctx, {
                 options: {
                     onClick: function () {
                         if (this.active[0]) {
-                            window.location.pathname = "/ManagementRequest";
+                            let start, end;
+                            switch (this.active[0]._model.label) {
+                                case "This week":
+                                    start = moment().startOf('isoWeek');
+                                    end = moment().endOf('isoWeek');
+                                    break;
+                                case "Last week":
+                                    start = moment().subtract(1, 'weeks').startOf('isoWeek');
+                                    end = moment().subtract(1, 'weeks').endOf('isoWeek');
+                                    break;
+                                case "2 weeks ago":
+                                    start = moment().subtract(2, 'weeks').startOf('isoWeek');
+                                    end = moment().subtract(2, 'weeks').endOf('isoWeek');
+                                    break;
+                                case "3 weeks ago":
+                                    start = moment().subtract(3, 'weeks').startOf('isoWeek');
+                                    end = moment().subtract(3, 'weeks').endOf('isoWeek');
+                                    break;
+                                case "4 weeks ago":
+                                    start = moment().subtract(4, 'weeks').startOf('isoWeek');
+                                    end = moment().subtract(4, 'weeks').endOf('isoWeek');
+                                    break;
+                                default:
+                                    switch (this.active[0].$datalabels[0].$context.dataIndex) {
+                                        case 0:
+                                            start = moment().subtract(2, 'days');
+                                            end = moment().subtract(2, 'days');
+                                            break;
+                                        case 1:
+                                            start = moment().subtract(1, 'days');
+                                            end = moment().subtract(1, 'days');
+                                            break;
+                                        case 2:
+                                            start = moment();
+                                            end = moment();
+                                            break;
+                                        case 3:
+                                            start = moment().add(1, 'days');
+                                            end = moment().add(1, 'days');
+                                            break;
+                                        case 4:
+                                            start = moment().add(2, 'days');
+                                            end = moment().add(2, 'days');
+                                            break;
+                                    }
+                            }
+                            const DATEFORMAT = "DD/MM/YYYY";
+                            window.location = `/ManagementRequest?start=${start.format(DATEFORMAT)}&end=${end.format(DATEFORMAT)}`;
                         }
                     },
                     hover: {
@@ -381,3 +428,58 @@ function chart4GetByQuarter() {
     };
     chart4.update();
 }
+var dialog = $('#dialogSerchRequest');
+
+
+dialog.kendoDialog({
+    width: "422px",
+    title: "Select Request",
+    closable: true,
+    modal: false,
+    content: "",
+    visible: false,
+    actions: [
+        { text: 'Cancel' },
+        {
+            text: 'Done', primary: true,
+            action: okSearch,
+
+        }
+    ],
+    //   close: onClose
+});
+function okSearch() {
+    console.log("okSearch");
+    var rqNo = $("#requestNo").val();
+    
+    if (rqNo === "") {
+        var kendoWindow = $("<div />").kendoWindow({
+            title: "Confirm",
+            resizable: false,
+            modal: true
+        });
+
+        kendoWindow.data("kendoWindow")
+            .content($("#delete-confirmation").html())
+            .center().open();
+
+        kendoWindow
+            .find(".delete-confirm,.delete-cancel")
+            .click(function () {
+                console.log('xxx');
+
+                kendoWindow.data("kendoWindow").close();
+               
+            })
+            .end()
+        return false;
+    } else {
+        window.location = `/RecordResult?requestNo=${rqNo}`;
+    }
+    
+
+}
+$("#onClick").on('click', function () {
+    var dialog = $('#dialogSerchRequest');
+    dialog.data("kendoDialog").open();
+});

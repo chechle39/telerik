@@ -1,4 +1,4 @@
-﻿
+﻿@model DRLab.Data.ViewModels.SerchGridManagement
 @{
     ViewData["Title"] = "Index";
 }
@@ -19,6 +19,8 @@
         rq.initialize();
     </script>
 }
+<h6 hidden id="flagStart">@Model.StartDate</h6>
+<h6 hidden id="flagEnd">@Model.EndDate</h6>
 <section id="isCheck" class="content">
     <div class="container-fluid">
         <section class="content">
@@ -87,12 +89,12 @@
                                         .HtmlAttributes(new { style = "height:auto;" })
                                         .Columns(columns =>
                                         {
-                                           columns.Select().Width(50);
+                                            columns.Select().Width(50);
                                             columns.Bound(p => p.requestNo).Title("Request No#");
-                                            columns.Bound(p => p.receivceDate).Title("Receive Date").Format("{0:MM/dd/yyyy}");
-                                            columns.Bound(p => p.companyName).Title("Customer Name");
+                                            columns.Bound(p => p.receivceDate).Title("Receive Date").ClientTemplate("#= kendo.toString(kendo.parseDate(receivceDate), 'dd/MM/yyyy') #");
+                                            columns.Bound(p => p.companyName).Title("Customer Name").Width("25%");
                                             columns.Bound(p => p.contactName).Title("Contact Name");
-                                            columns.Bound(p => p.dateOfSendingResult).Format("{0:MM/dd/yyyy}").Title("Expected Date");
+                                            columns.Bound(p => p.dateOfSendingResult).Title("Expected Date").ClientTemplate("#= kendo.toString(kendo.parseDate(dateOfSendingResult), 'dd/MM/yyyy') #");
                                             columns.Bound(p => p.status).Title("Request Status");
                                             columns.Command(command =>
                                             {
@@ -109,7 +111,7 @@
                                             }).Width("12%");
                                         })
                                          .Events(ev => ev.Change("onChangex"))
-                                       
+
                                         .Pageable()
                                         .Sortable()
                                         .Scrollable()
@@ -150,7 +152,6 @@
 
 
 @Html.Partial("search.cshtml")
-
 <script type="text/javascript">
     var data = [];
     function refresh() {
@@ -200,6 +201,13 @@
             })
             .end()
 
+
+    }
+    function datePickerCL(element) {
+
+        element.kendoDatePicker({
+            format: "dd/MM/yyyy"
+        });
 
     }
     var deleteAray = [];
@@ -451,11 +459,11 @@
         width: 270px;
         height: 70px;
     }
-    .k-dropdown .k-dropdown-wrap {
+    /*.k-dropdown .k-dropdown-wrap {
         color: black !important;
         background-color: white !important;
         background-image: none !important;
-    }
+    }*/
 </style>
 <script id="date-templateData" type="x-tmpl-mustache">
     <h6 id="dayData">{{day}}</h6>

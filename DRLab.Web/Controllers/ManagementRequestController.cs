@@ -16,9 +16,14 @@ namespace DRLab.Web.Controllers
         {
             _e08T_AnalysisRequest_InfoService = e08T_AnalysisRequest_InfoService;
         }
-        public IActionResult Index()
+        public IActionResult Index(string start, string end)
         {
-            return View();
+            var search = new SerchGridManagement()
+            {
+                StartDate = start,
+                EndDate = end,
+            };
+            return View(search);
         }
         [HttpGet]
         public async Task<IActionResult> GetManagementRequestList(SerchGridManagement rq)

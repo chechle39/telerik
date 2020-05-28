@@ -2,55 +2,29 @@
 var ManagementRequestController = function () {
     var startDate;
     var endDate;
- 
+
     var self = this;
     this.initialize = function () {
         loadData();
-       
+
     }
 
     function loadData() {
         var date = paramDate();
         var dataCus = [];
         if ($("#multiselect").data("kendoMultiSelect") !== undefined) {
-             dataCus = $("#multiselect").data("kendoMultiSelect")._old;
+            dataCus = $("#multiselect").data("kendoMultiSelect")._old;
         }
-        
-        $.ajax({
-            type: "GET",
-            url: "/ManagementRequest/GetManagementRequestList",
-            data: {
-                startDate: date.startDate,
-                endDate: date.endDate,
-                customer: JSON.stringify(dataCus)
-            },
-            dataType: "json",
-            beforeSend: function () {
-            },
-            success: function (response) {
-                var grid = $("#Grid").data("kendoGrid");
-                var dataSource = new kendo.data.DataSource({
-                    data: response,
-                    pageSize: 20,
-                    schema: {
-                        model: {
-                            id: "requestNo"
-                        }
-                    }
-                });
-                grid.setDataSource(dataSource);
-                var dateTemplate = $('#date-templateData').html();
-                var renderDateTem = "";
-                renderDateTem += Mustache.render(dateTemplate, {
-                    day: date.startDate + '-' + date.endDate
-                });
-                $('#dayTem').html(renderDateTem);
-            },
-            error: function (status) {
-            }
-        });
+        var start = document.getElementById("flagStart").innerHTML;
+        var end = document.getElementById("flagEnd").innerHTML;
+        if (start !== "") {
+            GetDataToDate(start, end, dataCus);
+        } else {
+            GetDataToDate(date.startDate, date.endDate, dataCus);
+        }
+
     };
-  
+
     function paramDate() {
         var curr = new Date;
         var first = curr.getDate() - curr.getDay() + 1;
@@ -68,7 +42,7 @@ var ManagementRequestController = function () {
 
     function convertDate(date) {
         var b = date.split('/');
-        var d = b[1] + "/" + b[0] + "/" + b[2]
+        var d = b[0] + "/" + b[1] + "/" + b[2]
         return d;
     }
 
@@ -78,7 +52,7 @@ var ManagementRequestController = function () {
     dialog.kendoDialog({
         width: "360px",
         title: "Search",
-        closable: false,
+        closable: true,
         modal: false,
         content: "",
         visible: false,
@@ -152,4 +126,40 @@ var ManagementRequestController = function () {
             }
         });
     }
+}
+
+function GetDataToDate(start, end, dataCus) {
+    $.ajax({
+        type: "GET",
+        url: "/ManagementRequest/GetManagementRequestList",
+        data: {
+            startDate: start,
+            endDate: end,
+            customer: JSON.stringify(dataCus)
+        },
+        dataType: "json",
+        beforeSend: function () {
+        },
+        success: function (response) {
+            var grid = $("#Grid").data("kendoGrid");
+            var dataSource = new kendo.data.DataSource({
+                data: response,
+                pageSize: 20,
+                schema: {
+                    model: {
+                        id: "requestNo"
+                    }
+                }
+            });
+            grid.setDataSource(dataSource);
+            var dateTemplate = $('#date-templateData').html();
+            var renderDateTem = "";
+            renderDateTem += Mustache.render(dateTemplate, {
+                day: start + '-' + end
+            });
+            $('#dayTem').html(renderDateTem);
+        },
+        error: function (status) {
+        }
+    });
 }

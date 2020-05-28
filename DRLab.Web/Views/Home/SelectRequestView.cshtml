@@ -1,0 +1,136 @@
+﻿@addTagHelper *, Kendo.Mvc
+@section Scripts{
+
+    <script src="~/app/RecordResult/SearchRecord.js"></script>
+    <script>
+        var serchRecord = new SerchRecord();
+        serchRecord.initialize();
+    </script>
+}
+<div id="example">
+    <div id="dialogSerchRequest">
+        <div id="horizontal-form">
+
+            <form>
+                <div class="form-group">
+                    <div class="row">
+                        <label for="staticEmail" class="col-sm-3 col-form-label custom-font-weight">Form date</label>
+                        <div class="col-sm-9 row">
+                            <div class="col-sm-5">
+                                @(Html.Kendo().DatePicker()
+                                .Name("datepicker")
+                                 .Events(e =>
+                                  {
+                                      e.Change("changeDateTimeFrom");
+                                  })
+                                .Value(DateTime.Now.AddDays(-10))
+                                .Format("dd/MM/yyyy")
+                                .HtmlAttributes(new { style = "width: 106%;height: 90%;" })
+                                )
+                            </div>
+                            <div class="col-sm-2" style="text-align: center">
+                                <label for="staticEmail" class=" col-form-label custom-font-weight">To</label>
+
+
+                            </div>
+                            <div class="col-sm-5">
+                                @(Html.Kendo().DatePicker()
+                                .Name("datepickerto")
+                                .Events(e =>
+                                  {
+                                      e.Change("changeDateTimeTo");
+                                  })
+                                .Value(DateTime.Now)
+                                .Format("dd/MM/yyyy")
+                                .HtmlAttributes(new { style = "width: 108%;height: 90%;" })
+                               )
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <div class="form-group">
+                    <div class="row">
+                        <label for="staticEmail" class="col-sm-3 col-form-label custom-font-weight">Request</label>
+                        <div class="col-sm-9 row">
+                            @(Html.Kendo().ComboBox()
+                            .Name("requestNo")
+                            .Placeholder("Select requestNo")
+                            .DataTextField("WOIDPlusDate")
+                            .DataValueField("WOID")
+                            .HtmlAttributes(new {style = "width:100%; height:calc(1.42857143em + 10px);margin-left: 8px" })
+
+                            .AutoBind(false)
+                            .DataSource(source =>
+                            {
+                               source.Read(read =>
+                               {
+                                  read.Action("GetWorkingOrderInfoCbb", "WorkingOrderInfo");
+                               })
+                               .ServerFiltering(false);
+                            })
+                             .Filter("startswith")
+                            )
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function changeDateTimeFrom() {
+        $.ajax({
+            type: "GET",
+            url: "/WorkingOrderInfo/GetWorkingOrderInfoCbb",
+            data: { start: datepicker.value, end: datepickerto.value},
+            dataType: "json",
+
+            success: function (response) {
+                var comboboxRequestNo = $("#requestNo").data("kendoComboBox");
+                var dataSource = new kendo.data.DataSource({
+                    data: response
+                });
+                comboboxRequestNo.setDataSource(dataSource);
+            },
+            error: function () {
+
+            }
+        });
+    }
+
+    function changeDateTimeTo() {
+        $.ajax({
+            type: "GET",
+            url: "/WorkingOrderInfo/GetWorkingOrderInfoCbb",
+            data: { start: datepicker.value, end: datepickerto.value },
+            dataType: "json",
+
+            success: function (response) {
+                var comboboxRequestNo = $("#requestNo").data("kendoComboBox");
+                var dataSource = new kendo.data.DataSource({
+                    data: response
+                });
+                comboboxRequestNo.setDataSource(dataSource);
+            },
+            error: function () {
+
+            }
+        });
+    }
+
+</script>
+
+<style>
+    #example {
+        min-height: 350px;
+    }
+
+    .form-group {
+        margin-bottom: 0 !important
+    }
+</style>

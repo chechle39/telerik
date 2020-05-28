@@ -1,6 +1,6 @@
 ﻿@model DRLab.Data.ViewModels.AnalysisRequest_InfoStringDate
 @{
-    ViewData["Title"] = "DetailCustomer";
+    ViewData["Title"] = "RecordResult";
 }
 @section Scripts{
     <script src="~/app/RecordResult/RecordResult.js"></script>
@@ -68,8 +68,8 @@
                                     </div>
                                     <div class="col-5">
                                         <div style="float:right">
-                                            <button onclick="SaveEntity()" type="submit" class="btn btn-raised">Save</button>
-                                            <button class="btn btn-cancel">Cancel</button>
+                                            <button onclick="SaveEntity()" type="submit" class="k-button k-primary px-3 py-2">Save</button>
+                                            <button class="k-button px-3 py-2">Cancel</button>
                                         </div>
 
                                     </div>
@@ -191,14 +191,15 @@
                                             columns.Bound(p => p.Result).Title("Result").Width("10%").Format("{0:n2}")
 ;
                                             columns.Bound(p => p.ResultText).Title("Text Result").Width("10%");
-                                            columns.Bound(p => p.ExpectationDate).Title("Expectation Date").Width("10%");
-                                            columns.Bound(p => p.ReviewResult).Title("Review Status");
+                                            columns.Bound(p => p.ExpectationDate).Title("Expectation Date").Width("10%").ClientTemplate("#= kendo.toString(kendo.parseDate(ExpectationDate), 'dd/MM/yyyy') #");
+                                            columns.Bound(p => p.ReviewResult).Title("Review Status").ClientTemplate("<span id='badge_#=WOID#' class='badgeTemplate'></span>"); ;
                                         })
                                         .Navigatable()
                                         .Editable(editable => editable.Mode(GridEditMode.InCell))
                                         .Pageable()
                                         .Sortable()
                                         .Scrollable()
+                                        .Events(events => events.DataBound("onDataBound"))
                                         .DataSource(dataSource => dataSource
                                         .Custom()
                                         .PageSize(20)
@@ -209,6 +210,7 @@
                                             {
                                                 model.Id(p => p.WOID);
                                                 model.Field(p => p.WOID).Editable(false).From("WOID");
+                                                model.Field(p => p.LVNCode).Editable(false).From("LVNCode");
                                                 model.Field(p => p.specification).From("specification");
                                                 model.Field(p => p.Mark).From("Mark");
                                                 model.Field(p => p.method).From("method");
@@ -704,6 +706,7 @@
                 tAT: grid.dataSource._destroyed[i].TAT,
                 unit: grid.dataSource._destroyed[i].unit,
                 urgent: grid.dataSource._destroyed[i].Urgent,
+                LVNCode: grid.dataSource._destroyed[i].LVNCode,
             };
 
             myGrid.push(object);
@@ -725,6 +728,7 @@
                 WOID: grid._data[i].WOID,
                 specification: grid._data[i].specification,
                 unit: grid._data[i].unit,
+                LVNCode: grid._data[i].LVNCode,
             };
             myGrid.push(object);
         }
@@ -764,10 +768,6 @@
     }
     var mess;
     function SaveAnalysisRequestData(SaveRq) {
-        var check = verify(SaveRq);
-        //if (check === true) {
-
-        //}
         var save = [];
         SaveRq.reduce((r, o) => {
             o.data.reduce((c, h) => {
@@ -806,33 +806,30 @@
         });
     }
 
-
-    function verify(SaveRq) {
-        var string = '';
-        var string1 = '';
-        for (var i = 0; i < SaveRq.length; i++) {
-            if (SaveRq[i].data.length > 0 && (SaveRq[i].sampleMatrix === '' || SaveRq[i].sampleMatrix === undefined)) {
-                var a = i;
-                a++;
-                string += a + ',';
-                string1 += a;
-            }
-        }
-        if (string1.length > 0) {
-            mess = 'Save error samplematrix of sample lisst' + string.substring(0, string.length - 1);
-            //var notification = $("#notificationEdit").data("kendoNotification");
-            //notification.show({
-            //    title: "Wrong Save",
-            //    message: mess
-            //}, "error");
-            return false
-        } else {
-            return true
-        }
-    }
     function change(e) {
        
     };
+
+    function onDataBound(e) {
+        var grid = $("#Grid").data("kendoGrid");
+        grid.table.find("tr").each(function () {
+            var dataItem = grid.dataItem(this);
+            var type = dataItem.ReviewResult === 1 || dataItem.ReviewResult === 2 ? 'success' : 'error';
+            var text = dataItem.ReviewResult === 1 ? 'Accept' : dataItem.ReviewResult === 2 ? 'Approved' : 'Recheck';
+            console.log("x");
+            $(this).find('script').each(function () {
+                eval($(this).html());
+            });
+
+            $(this).find(".badgeTemplate").kendoBadge({
+                type: type,
+                value: text,
+            });
+
+
+            kendo.bind($(this), dataItem);
+        });
+    }
 </script>
 
 <style>

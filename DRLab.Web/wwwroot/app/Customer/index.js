@@ -153,7 +153,7 @@ function filter_requests() {
     dialog.kendoDialog({
         width: "450px",
         title: "New Request",
-        closable: false,
+        closable: true,
         modal: false,
         content: "",
         actions: [

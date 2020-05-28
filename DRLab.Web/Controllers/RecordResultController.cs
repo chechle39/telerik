@@ -17,7 +17,7 @@ namespace DRLab.Web.Controllers
             _e08T_AnalysisRequest_InfoService = e08T_AnalysisRequest_InfoService;
             _e08T_WorkingOrder_ItemService = e08T_WorkingOrder_ItemService;
         }
-        public async Task<IActionResult> Index(string from, string to, string requestNo)
+        public async Task<IActionResult> Index(string requestNo)
         {
             //var result = await _specificationDataService.GetAll();
             //ViewData["categories"] = result.ToList();

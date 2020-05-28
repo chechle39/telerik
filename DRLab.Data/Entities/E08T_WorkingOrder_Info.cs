@@ -13,7 +13,7 @@ namespace DRLab.Data.Entities
         }
         [Key]
         public string WOID { get; set; }
-        public Nullable<System.DateTime> DateCreate { get; set; }
+        public DateTime DateCreate { get; set; }
         public string EmpID { get; set; }
         public string LabID { get; set; }
         public string Specification { get; set; }

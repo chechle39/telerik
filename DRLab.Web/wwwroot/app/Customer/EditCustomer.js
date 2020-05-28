@@ -230,7 +230,7 @@
     dialog.kendoDialog({
         width: "450px",
         title: "Edit Request",
-        closable: false,
+        closable: true,
         modal: false,
         content: "",
         visible: false,
