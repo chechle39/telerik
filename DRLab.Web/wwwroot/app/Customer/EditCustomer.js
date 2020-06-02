@@ -51,6 +51,27 @@
                     var dataSource = new kendo.data.DataSource({
                         data: response[0].Data,
                         pageSize: 20,
+                        change: function (e) {
+                            specdata = []
+                            let count = 0;
+                            gridData.dataSource._data.reduce((r, o) => {
+                                specdata.push(o);
+                                if (o.analysisCode !== e.items[0].analysisCode) {
+
+                                    count += parseFloat(o.Price);
+                                }
+                            }, {});
+                            count += e.items[0].Price;
+                            // selectedDataItems contains all selected data items
+                            var template = $('#table-total').html();
+                            var render = "";
+                            render += Mustache.render(template, {
+                                tong: parseFloat(count).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }),
+                            });
+                            if (render !== undefined) {
+                                $('#temlate').html(render);
+                            }
+                        }
                     });
                     gridData.setDataSource(dataSource);
                 } else {
@@ -157,7 +178,7 @@
 
     // Pagination logic implementation
     function pagination(data, lenth) {
-        for (var i = 0; i < parseInt(document.getElementById("flag").innerHTML); i++) {
+        for (var i = 0; i < lenth; i++) {
             //if (reponseGetById.length > 0) {
             //    const a = {
             //        simpleName: reponseGetById[i].sampleName,
@@ -256,7 +277,7 @@
 
         var contact = $('#contact').val();
 
-        var requestNo = $('#requestNo').val();
+        var requestNo = $('#requestNoId').val();
 
         var vat = $('#vat').val();
 
@@ -303,9 +324,9 @@
                         requestNo: response.requestNo,
                         receivceDate: response.receivceDate,
                         dateOfSendingResult: response.dateOfSendingResult,
-                        contactName: itemSelected.contactName,
-                        contactEmail: itemSelected.contactEmail,
-                        companyName: itemSelected.companyName
+                        contactName: itemSelected === undefined ? document.getElementById("flag6").innerHTML : itemSelected.contactName,
+                        contactEmail: itemSelected === undefined ? document.getElementById("flag5").innerHTML: itemSelected.contactEmail,
+                        companyName: itemSelected === undefined ? document.getElementById("flag7").innerHTML : itemSelected.companyName
                     });
                     if (render !== undefined) {
                         $('#tbl-content').html(render);
@@ -363,9 +384,9 @@
                         requestNo: response.requestNo,
                         receivceDate: response.receivceDate,
                         dateOfSendingResult: response.dateOfSendingResult,
-                        contactName: itemSelected.contactName,
-                        contactEmail: itemSelected.contactEmail,
-                        companyName: itemSelected.companyName
+                        contactName: itemSelected === undefined ? document.getElementById("flag6").innerHTML : itemSelected.contactName,
+                        contactEmail: itemSelected === undefined ? document.getElementById("flag5").innerHTML : itemSelected.contactEmail,
+                        companyName: itemSelected === undefined ? document.getElementById("flag7").innerHTML : itemSelected.companyName
                     });
                     if (render !== undefined) {
                         $('#tbl-content').html(render);
@@ -386,4 +407,6 @@
         }
 
     }
+
+    
 }

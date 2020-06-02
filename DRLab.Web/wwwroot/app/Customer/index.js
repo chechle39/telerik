@@ -181,7 +181,7 @@ function filter_requests() {
         var requestNo = $('#requestNo').val();
 
         var vat = $('#vat').val();
-        if (numOfSam === "" || customers === "" || requestNo === "") {
+        if (numOfSam === "" || customers === "") {
             var notification = $("#notification").data("kendoNotification");
             notification.show({
                 title: "Wrong Save",

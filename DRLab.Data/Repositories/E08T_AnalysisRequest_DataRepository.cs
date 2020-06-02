@@ -32,6 +32,7 @@ namespace DRLab.Data.Repositories
                         var check = Entities.Where(x => x.analysisCode == iitem.analysisCode && x.requestNo == item.requestNo && x.LVNCode == item.LVNCode).AsNoTracking().ToList();
                         if (check.Count() == 0)
                         {
+                            var checksap = Entities.FirstOrDefault();
                             var e08T_AnalysisRequest_Data = new E08T_AnalysisRequest_Data()
                             {
                                 analysisCode = iitem.analysisCode,
@@ -43,8 +44,8 @@ namespace DRLab.Data.Repositories
                                 precision = null,
                                 price = iitem.Price,
                                 requestNo = item.requestNo,
-                                sampleMatrix = item.sampleMatrix,
-                                specification = item.specification,
+                                sampleMatrix = item.sampleMatrix != null ? item.sampleMatrix : checksap != null ? checksap.sampleMatrix : item.sampleMatrix,
+                                specification = iitem.specification,
                                 specMark = null,
                                 turnAroundDay = null,
                                 unit = iitem.unit,
@@ -64,8 +65,8 @@ namespace DRLab.Data.Repositories
                                 precision = null,
                                 price = iitem.Price,
                                 requestNo = item.requestNo,
-                                sampleMatrix = item.sampleMatrix != null ? item.sampleMatrix : check[0].sampleMatrix, 
-                                specification = item.specification != null ? item.specification : check[0].specification,
+                                sampleMatrix = check[0].sampleMatrix, 
+                                specification = iitem.specification,
                                 specMark = null,
                                 turnAroundDay = null,
                                 unit = iitem.unit,

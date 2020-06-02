@@ -112,7 +112,7 @@
                                         "</div>")
                                 .Template(
                                 "<span class=\"k-state-default\"><h6>#: data.specification #</h6></span>")
-                            ).
+                            )
 
                     </div>
                 </div>
@@ -161,11 +161,9 @@
                     </div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-3">
+                    <div class="col-12">
                         <span style="vertical-align: sub;">Reform Test Result</span>
-                    </div>
-                    <div class="col-9">
-                        @(Html.Kendo().CheckBox().Name("reformTestResult").Checked(true))
+                        @(Html.Kendo().CheckBox().Name("reformTestResult").HtmlAttributes(new { style = "margin-left: 1em" }).Checked(true))
                     </div>
                 </div>
                 <div class="row mb-2">

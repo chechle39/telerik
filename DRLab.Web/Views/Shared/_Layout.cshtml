@@ -30,6 +30,8 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <link href="~/lib/telerik/Drlab-theme.css" rel="stylesheet" type="text/css" />
     <link href="~/lib/telerik/index.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Styles", required: false)
     <script src="https://kendo.cdn.telerik.com/2020.1.406/js/jquery.min.js"></script>
     <script src="https://kendo.cdn.telerik.com/2020.1.406/js/kendo.all.min.js"></script>
@@ -37,6 +39,30 @@
 </head>
 <body class="hold-transition sidebar-mini layout-fixed vw-100">
     <div class="wrapper">
+        <!--Preloading screen-->
+        <div class="preloading-screen">
+
+            <svg class="preloading-screen__loader" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 340">
+                <circle cx="170" cy="170" r="160" stroke="#ff804d" />
+                <circle cx="170" cy="170" r="135" stroke="#404041" />
+                <circle cx="170" cy="170" r="110" stroke="#ff804d" />
+                <circle cx="170" cy="170" r="85" stroke="#404041" />
+            </svg>
+
+        </div>
+        <script>
+            (function () {
+                $(document).ready(() => {
+                    setTimeout(() => {
+                        $(".preloading-screen").css({ opacity: 0 });
+                        setTimeout(() => {
+                            $(".preloading-screen").css({ display: 'none' });
+                        }, 300);
+                    }, 500);
+                });
+            })();
+        </script>
+        <!--End Preloading screen-->
 
         <!-- Navbar -->
         @await Html.PartialAsync("_Header")
@@ -44,10 +70,8 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="index3.html" class="brand-link">
-                <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
-                     style="opacity: .8">
-                <span class="brand-text font-weight-light">AdminLTE 3</span>
+            <a href="/" class="brand-link py-1 text-center">
+                <span class="font-weight-light" style=font-size: 1.6rem;"><strong>Dr</strong>lab</span>
             </a>
 
             <!-- Sidebar -->
@@ -102,8 +126,6 @@
     <script src="/dist/js/adminlte.js"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="/dist/js/pages/dashboard.js"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="/dist/js/demo.js"></script>
 
     <script src="~/lib/mustache/mustache.js"></script>
     <script src="~/Shared/DrLab.js"></script>

@@ -3,12 +3,13 @@
     .Name("CustomerList")
     .Columns(columns =>
     {
-        columns.Bound(p => p.companyName).Title(("Company Name"));
-        columns.Bound(p => p.companyAddress).Title(("Company Address"));
+        columns.Bound(p => p.customerCode).Hidden();
+        columns.Bound(p => p.companyName).Title(("Company Name"));        
         columns.Bound(p => p.contactName).Title(("Contact Name"));
+        columns.Bound(p => p.companyAddress).Filterable(false).Title(("Company Address"));
         columns.Bound(p => p.contactEmail).Title(("Contact Email"));
-        columns.Bound(p => p.city).Title(("City"));
-        columns.Bound(p => p.note).Title(("Note"));
+        columns.Bound(p => p.city).Filterable(false).Title(("City"));
+        columns.Bound(p => p.note).Filterable(false).Title(("Note"));
         columns.Command(command => { command.Destroy().IconClass("k-icon k-i-trash").Text("Delete"); command.Custom("RefreshRecord").IconClass("k-icon k-i-edit").Text("Contact").Click("customCom"); }).Width(200);
        
     })
@@ -27,18 +28,19 @@
     .DataSource(dataSource => dataSource
     .Ajax()
     .Batch(true)
-    .PageSize(20)
+    .PageSize(30)
     .ServerOperation(false)
     .Events(events => {events.RequestEnd("onRequestEnd"); })
     .Model(model =>
     {
         model.Id(p => p.customerCode);
-        model.Id(p => p.companyName);
-        model.Id(p => p.companyAddress);
-        model.Id(p => p.contactName);
-        model.Id(p => p.contactEmail);
-        model.Id(p => p.city);
-        model.Id(p => p.note);
+        model.Field(p => p.customerCode);
+        model.Field(p => p.companyName);
+        model.Field(p => p.companyAddress);
+        model.Field(p => p.contactName);
+        model.Field(p => p.contactEmail);
+        model.Field(p => p.city);
+        model.Field(p => p.note);
 
     })
     .Create(read => read.Action("Create_Customer", "CustomerList"))

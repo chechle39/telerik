@@ -29,6 +29,8 @@
 <h1 hidden id="flag8">@Model.customerCode</h1>
 <h1 hidden id="flag9">@Model.receivceDate</h1>
 <h1 hidden id="flag10">@Model.dateOfSendingResult</h1>
+<h1 hidden id="flag11">@Model.customerCode</h1>
+<h1 hidden id="flag12">@Model.contactID</h1>
 <section id="isCheck" class="content">
     <div class="container-fluid">
         <section class="content">
@@ -53,6 +55,10 @@
                                         .DataValueField("Value")
                                         .Events(e => e.Change("changeDR"))
                                         .BindTo(new List<SelectListItem>() {
+                                            new SelectListItem() {
+                                            Text = "Bulk Actions",
+                                            Value = "0"
+                                        },
                                         new SelectListItem() {
                                             Text = "Print Request",
                                             Value = "1"
@@ -69,7 +75,7 @@
                                     <div class="col-6">
                                         <div style="float:right">
                                             <button onclick="SaveEntity()" type="submit" class="k-button k-primary px-3 py-2">Save</button>
-                                            <button class="k-button px-3 py-2">Cancel</button>
+                                            <button onclick="goBack()" class="k-button px-3 py-2">Cancel</button>
                                         </div>
 
                                     </div>
@@ -199,7 +205,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="row col-5" style="margin-left: 39px;">
+                                        <div class="row col-5 mrl39">
                                             <span>Add Specification</span>
                                             <div class="col-sm-9 row mr-t">
                                                 <div class="col-11">
@@ -223,6 +229,10 @@
                                                     })
                                                     .ServerFiltering(true);
                                                 })
+                                                 .Filter("startswith")
+                                                .Height(300)
+                                                .Template(
+                                                "<span class=\"k-state-default\"><h6>#: data.specification #</h6><p>#: data.method #</p></span>")
                                                 )
                                                 </div>
                                                 <div class="col-1" style="padding-left: 6px;max-width: 1.333333%;margin-top: 0px">
@@ -264,29 +274,29 @@
 
                                     @*<div class="form-group row margin-left-0">
 
-                                        <div class="col-5 row">
-                                            <span>Template Mark</span>
-                                            <div class="col-sm-5 mr-t">
-                                                @(Html.Kendo().TextBox()
-                                            .Name("templateMark")
-                                            .HtmlAttributes(new { placeholder = "Template Mark", style = "width: 100%;height: calc(1.42857143em + 10px);" })
-                                                )
+                                            <div class="col-5 row">
+                                                <span>Template Mark</span>
+                                                <div class="col-sm-5 mr-t">
+                                                    @(Html.Kendo().TextBox()
+                                                .Name("templateMark")
+                                                .HtmlAttributes(new { placeholder = "Template Mark", style = "width: 100%;height: calc(1.42857143em + 10px);" })
+                                                    )
+                                                </div>
+                                                <span>Save</span>
+                                                <span class="pd-left-30">Get</span>
                                             </div>
-                                            <span>Save</span>
-                                            <span class="pd-left-30">Get</span>
-                                        </div>
 
-                                        <div class="col-5 row">
-                                            <span>TAT (+/-)</span>
-                                            <div class="col-sm-2 mr-t">
-                                                @(Html.Kendo().TextBox()
-                                            .Name("tat")
-                                            .HtmlAttributes(new { placeholder = "TAT", style = "width: 80%;height: calc(1.42857143em + 10px);" })
-                                                )
+                                            <div class="col-5 row">
+                                                <span>TAT (+/-)</span>
+                                                <div class="col-sm-2 mr-t">
+                                                    @(Html.Kendo().TextBox()
+                                                .Name("tat")
+                                                .HtmlAttributes(new { placeholder = "TAT", style = "width: 80%;height: calc(1.42857143em + 10px);" })
+                                                    )
+                                                </div>
+                                                <span>Done</span>
                                             </div>
-                                            <span>Done</span>
-                                        </div>
-                                    </div>*@
+                                        </div>*@
 
                                     <div class="form-group row">
 
@@ -420,21 +430,30 @@
                 var dataSource = new kendo.data.DataSource({
                     data: specdata,
                     pageSize: 20,
+                    change: function (e) {
+                        specdata = []
+                        let count = 0;
+                        grid.dataSource._data.reduce((r, o) => {
+                            specdata.push(o);
+                            if (o.analysisCode !== e.items[0].analysisCode) {
+
+                                count += parseFloat(o.Price);
+                            }
+                        }, {});
+                        count += e.items[0].Price;
+                        // selectedDataItems contains all selected data items
+                        var template = $('#table-total').html();
+                        var render = "";
+                        render += Mustache.render(template, {
+                            tong: parseFloat(count).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }),
+                        });
+                        if (render !== undefined) {
+                            $('#temlate').html(render);
+                        }
+                    }
                 });
                 grid.setDataSource(dataSource);
-                var total = 0;
-                for (var i = 0; i < response.length; i++) {
-                    total += response[i].Price;
-                }
-                var template = $('#table-total').html();
-                var render = "";
-                render += Mustache.render(template, {
-                    tong: total,
-                });
-                if (render !== undefined) {
-                    $('#temlate').html(render);
-
-                }
+                
             },
             error: function () {
 
@@ -469,11 +488,32 @@
                         $('#templateMark').val('');
                         $('#tat').val('');
 
-                        var dataSource = new kendo.data.DataSource({
-                            data: response[0].Data,
-                            pageSize: 20,
-                        });
-                        grid.setDataSource(dataSource);
+                        //var dataSource = new kendo.data.DataSource({
+                        //    data: response[0].Data,
+                        //    pageSize: 20,
+                        //    change: function (e) {
+                        //        specdata = []
+                        //        let count = 0;
+                        //        grid.dataSource._data.reduce((r, o) => {
+                        //            specdata.push(o);
+                        //            if (o.analysisCode !== e.items[0].analysisCode) {
+
+                        //                count += parseFloat(o.Price);
+                        //            }
+                        //        }, {});
+                        //        count += e.items[0].Price;
+                        //        // selectedDataItems contains all selected data items
+                        //        var template = $('#table-total').html();
+                        //        var render = "";
+                        //        render += Mustache.render(template, {
+                        //            tong: parseFloat(count).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }),
+                        //        });
+                        //        if (render !== undefined) {
+                        //            $('#temlate').html(render);
+                        //        }
+                        //    }
+                        //});
+                        //grid.setDataSource(dataSource);
                     } else {
                         //$('#simpleCode').val(response[0].sampleCode);
                         //$('#innerCode').val(response[0].LVNCode);
@@ -488,10 +528,31 @@
                         var dataSource = new kendo.data.DataSource({
                             data: [],
                             pageSize: 20,
+                            change: function (e) {
+                                specdata = []
+                                let count = 0;
+                                grid.dataSource._data.reduce((r, o) => {
+                                    specdata.push(o);
+                                    if (o.analysisCode !== e.items[0].analysisCode) {
+
+                                        count += parseFloat(o.Price);
+                                    }
+                                }, {});
+                                count += e.items[0].Price;
+                                // selectedDataItems contains all selected data items
+                                var template = $('#table-total').html();
+                                var render = "";
+                                render += Mustache.render(template, {
+                                    tong: parseFloat(count).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }),
+                                });
+                                if (render !== undefined) {
+                                    $('#temlate').html(render);
+                                }
+                            }
                         });
                         grid.setDataSource(dataSource);
                     }
-                    
+
                     for (var i = 0; i < parseInt(document.getElementById("flag").innerHTML); i++) {
                         if (response[i] !== undefined) {
                             const a = {
@@ -517,7 +578,7 @@
                         }
 
                     }
-                    
+
                     var current_page = checkClass(document.getElementsByClassName('active'));
                     var curent = parseInt(current_page[0].innerText)
                     var next_link = document.getElementById('next_link');
@@ -681,19 +742,34 @@
         $('#templateMark').val(response[page_no - 1].templateMark);
         $('#tat').val(response[page_no - 1].tat);
         comboboxsampleMatrix.select(parseInt(response[page_no - 1].sampleMatrix));
-        //if (response[page_no - 1].addSpecificationValue.length > 0) {
-        //    $("#addSpecification").data("kendoComboBox").value(comboAddSpecification.dataSource._pristineData.filter(x => x.specification === response[page_no - 1].addSpecificationValue)[0].analysisCode);
-
-        //} else {
-        //    comboAddSpecification.select(parseInt(response[page_no - 1].addSpecification));
-        //}
         comboAddSpecification.select(-1)
-        // comboAddSpecification.select(parseInt(response[page_no - 1].addSpecification));
         var dataSource = new kendo.data.DataSource({
             data: response[page_no - 1].data,
             pageSize: 20,
+            change: function (e) {
+                specdata = []
+                let count = 0;
+                grid.dataSource._data.reduce((r, o) => {
+                    specdata.push(o);
+                    if (o.analysisCode !== e.items[0].analysisCode) {
+
+                        count += parseFloat(o.Price);
+                    }
+                }, {});
+                count += e.items[0].Price;
+                // selectedDataItems contains all selected data items
+                var template = $('#table-total').html();
+                var render = "";
+                render += Mustache.render(template, {
+                    tong: parseFloat(count).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }),
+                });
+                if (render !== undefined) {
+                    $('#temlate').html(render);
+                }
+            }
         });
         grid.setDataSource(dataSource);
+
     }
 
     function handerDataGridDeleted(request) {
@@ -725,7 +801,7 @@
                 lOD: grid._data[i].LOD,
                 mark: grid._data[i].Mark,
                 method: grid._data[i].method,
-                price: grid._data[i].Price,
+                Price: grid._data[i].Price,
                 specification: grid._data[i].specification,
                 tAT: grid._data[i].TAT,
                 unit: grid._data[i].unit,
@@ -837,8 +913,8 @@
                         message: "Save error"
                     }, "error");
                 }
-               
-               
+
+
             }
         });
     }
@@ -867,7 +943,37 @@
             return true
         }
     }
-
+    function openDialog() {
+        var dialog = $('#dialogEdit');
+        var numOfSam = $("#numOfSam").data("kendoNumericTextBox");
+        numOfSam.value(@Model.numberSample);
+        var comboCustomers = $("#customers").data("kendoComboBox");
+        comboCustomers.value(document.getElementById("flag11").innerHTML);
+        var comboContact = $("#contact").data("kendoComboBox");
+        comboContact.value(document.getElementById("flag12").innerHTML);
+        var date = document.getElementById("flag9").innerHTML;
+        var dateRt = document.getElementById("flag9").innerHTML;
+        var f = converDate(date);
+        var h = converDate(dateRt);
+        //var NewDate = kendo.toString(this.value(), 'MM/dd/yyyy');
+        //var datetimepicker = $('#datetimepicker').val();
+        var datePik = new Date(f);
+        var datePikRet = new Date(h);
+        $("#datetimepicker").data('kendoDateTimePicker').value(datePik);
+        $('#datetimepickerReturn').data('kendoDateTimePicker').value(datePikRet);
+        $('#requestNoId').val(document.getElementById("flag4").innerHTML);
+        dialog.data("kendoDialog").open();
+    }
+    function converDate (date) {
+        var b = date.split(' ')[0];
+        var c = b.split('/');
+        var d = c[1] + "/" + c[0] + "/" + c[2]
+        var f = d + " " + date.split(' ')[1]
+        return f;
+    }
+    function goBack() {
+        window.history.back();
+    }
 </script>
 
 <style>
@@ -1021,6 +1127,7 @@
 
     .span {
     }
+
     .k-dropdown .k-dropdown-wrap {
         color: black !important;
         background-color: white !important;
@@ -1067,37 +1174,4 @@
 <script id="table-total" type="x-tmpl-mustache">
 
     <h5 style="float: right;padding-right: 14px">Total: {{tong}}</h5>
-</script>
-<script>
-
-  
-
-    function openDialog() {
-        var dialog = $('#dialogEdit');
-        var numOfSam = $("#numOfSam").data("kendoNumericTextBox");
-        numOfSam.value(@Model.numberSample);
-        var comboCustomers = $("#customers").data("kendoComboBox");
-        comboCustomers.value(@Model.customerCode);
-        var comboContact = $("#contact").data("kendoComboBox");
-        comboContact.value(@Model.contactID);
-        var date = document.getElementById("flag9").innerHTML;
-        var dateRt = document.getElementById("flag9").innerHTML;
-        var f = converDate(date);
-        var h = converDate(dateRt);
-        //var NewDate = kendo.toString(this.value(), 'MM/dd/yyyy');
-        //var datetimepicker = $('#datetimepicker').val();
-        var datePik = new Date(f);
-        var datePikRet = new Date(h);
-        $("#datetimepicker").data('kendoDateTimePicker').value(datePik);
-        $('#datetimepickerReturn').data('kendoDateTimePicker').value(datePikRet);
-        $('#requestNoId').val(document.getElementById("flag4").innerHTML);
-        dialog.data("kendoDialog").open();
-    }
-    function converDate (date) {
-        var b = date.split(' ')[0];
-        var c = b.split('/');
-        var d = c[1] + "/" + c[0] + "/" + c[2]
-        var f = d + " " + date.split(' ')[1]
-        return f;
-    }
 </script>

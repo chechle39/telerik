@@ -69,7 +69,7 @@
                 <div class="form-group row">
                     <label for="staticEmail" class="col-sm-4 col-form-label custom-font-weight">Khách hàng</label>
                     <div class="col-sm-12">
-                        @(Html.Kendo().DropDownList()
+                        @(Html.Kendo().MultiSelect()
                         .Name("multiselect")
                         .DataTextField("companyName")
                         .DataValueField("customerCode")
@@ -80,8 +80,7 @@
                                 read.Action("GetCustomers", "CustomerRequest");
                             })
                             .ServerFiltering(true);
-                        })
-                         .Value("0")
+                        })                        
                          .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
                     )
                     </div>

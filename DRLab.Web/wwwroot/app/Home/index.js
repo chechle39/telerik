@@ -1,12 +1,101 @@
-﻿
+﻿/*
+    Chart Callback
+ */
+const DATEFORMAT = "DD/MM/YYYY";
+function chartGenerateURL(activeItem, url) {
+    if (activeItem[0]) {
+        let start, end;
+        switch (activeItem[0]._model.label) {
+            case "This week":
+                start = moment().startOf('isoWeek');
+                end = moment().endOf('isoWeek');
+                break;
+            case "Last week":
+                start = moment().subtract(1, 'weeks').startOf('isoWeek');
+                end = moment().subtract(1, 'weeks').endOf('isoWeek');
+                break;
+            case "2 weeks ago":
+                start = moment().subtract(2, 'weeks').startOf('isoWeek');
+                end = moment().subtract(2, 'weeks').endOf('isoWeek');
+                break;
+            case "3 weeks ago":
+                start = moment().subtract(3, 'weeks').startOf('isoWeek');
+                end = moment().subtract(3, 'weeks').endOf('isoWeek');
+                break;
+            case "4 weeks ago":
+                start = moment().subtract(4, 'weeks').startOf('isoWeek');
+                end = moment().subtract(4, 'weeks').endOf('isoWeek');
+                break;
+            default:
+                switch (activeItem[0].$datalabels[0].$context.dataIndex) {
+                    case 0:
+                        start = moment().subtract(2, 'days');
+                        end = moment().subtract(2, 'days');
+                        break;
+                    case 1:
+                        start = moment().subtract(1, 'days');
+                        end = moment().subtract(1, 'days');
+                        break;
+                    case 2:
+                        start = moment();
+                        end = moment();
+                        break;
+                    case 3:
+                        start = moment().add(1, 'days');
+                        end = moment().add(1, 'days');
+                        break;
+                    case 4:
+                        start = moment().add(2, 'days');
+                        end = moment().add(2, 'days');
+                        break;
+                }
+        }
+        return `/${url}?start=${start.format(DATEFORMAT)}&end=${end.format(DATEFORMAT)}`;
+    }
+}
+
+function chartGenerateURLBaseOnType(activeItem, start, end , url) {
+    if (activeItem[0]) {
+        let type;
+        switch (activeItem[0]._model.label) {
+            case "Total":
+                type = "total"
+                break;
+            case "Recorded":
+                type = "recorded"
+                break;
+            case "Accepted":
+                type = "accepted"
+                break;
+            case "Approved":
+                type = "approved"
+                break;
+            case "Recheck":
+                type = "recheck"
+                break;
+            case "Completed":
+                type = "completed"
+                break;
+            case "In progress":
+                type = "inProgress"
+                break;
+        
+            case "Delay":
+                type = "delay"
+                break;
+        }
+        let urlBuilder = `/${url}?start=${start.format(DATEFORMAT)}&end=${end.format(DATEFORMAT)}`;
+        if (type) {
+            urlBuilder += `&type=${type}`;
+        }
+        return urlBuilder;
+    }
+}
 /**
  *  Chart1 Section
  * */
 var ctx = document.getElementById('home__chart1').getContext('2d');
 var chart1 = new Chart(ctx, {
-                responsive: true,
-                maintainAspectRatio: false,
-                aspectRatio: 5,
                 type: 'bar',
                 data: {
                     labels: [moment().subtract(2, 'days').format("dddd"), moment().subtract(1, 'days').format("dddd"), 'Hôm nay', moment().add(1, 'days').format("dddd"), moment().add(2, 'days').format("dddd")],
@@ -23,56 +112,7 @@ var chart1 = new Chart(ctx, {
                 },
                 options: {
                     onClick: function () {
-                        if (this.active[0]) {
-                            let start, end;
-                            switch (this.active[0]._model.label) {
-                                case "This week":
-                                    start = moment().startOf('isoWeek');
-                                    end = moment().endOf('isoWeek');
-                                    break;
-                                case "Last week":
-                                    start = moment().subtract(1, 'weeks').startOf('isoWeek');
-                                    end = moment().subtract(1, 'weeks').endOf('isoWeek');
-                                    break;
-                                case "2 weeks ago":
-                                    start = moment().subtract(2, 'weeks').startOf('isoWeek');
-                                    end = moment().subtract(2, 'weeks').endOf('isoWeek');
-                                    break;
-                                case "3 weeks ago":
-                                    start = moment().subtract(3, 'weeks').startOf('isoWeek');
-                                    end = moment().subtract(3, 'weeks').endOf('isoWeek');
-                                    break;
-                                case "4 weeks ago":
-                                    start = moment().subtract(4, 'weeks').startOf('isoWeek');
-                                    end = moment().subtract(4, 'weeks').endOf('isoWeek');
-                                    break;
-                                default:
-                                    switch (this.active[0].$datalabels[0].$context.dataIndex) {
-                                        case 0:
-                                            start = moment().subtract(2, 'days');
-                                            end = moment().subtract(2, 'days');
-                                            break;
-                                        case 1:
-                                            start = moment().subtract(1, 'days');
-                                            end = moment().subtract(1, 'days');
-                                            break;
-                                        case 2:
-                                            start = moment();
-                                            end = moment();
-                                            break;
-                                        case 3:
-                                            start = moment().add(1, 'days');
-                                            end = moment().add(1, 'days');
-                                            break;
-                                        case 4:
-                                            start = moment().add(2, 'days');
-                                            end = moment().add(2, 'days');
-                                            break;
-                                    }
-                            }
-                            const DATEFORMAT = "DD/MM/YYYY";
-                            window.location = `/ManagementRequest?start=${start.format(DATEFORMAT)}&end=${end.format(DATEFORMAT)}`;
-                        }
+                        window.location = chartGenerateURL(this.active, "ManagementRequest");
                     },
                     hover: {
                         onHover: function (e, element) {
@@ -96,6 +136,8 @@ var chart1 = new Chart(ctx, {
 
                         }
                     },
+                    maintainAspectRatio: false,
+                    respnsive: true,
                     scales: {
                         xAxes: [{
                             stacked: true,
@@ -114,49 +156,52 @@ var chart1 = new Chart(ctx, {
                         }
                     },
                     tooltips: {
+                        mode: 'nearest',
                         intersect: false,
+
                         callbacks: {
                             label: function (tooltipItems, data) {
                                 return tooltipItems.yLabel;
                             },
                         },
                         custom: function (tooltipModel) {
-                            //// Tooltip Element
-                            //var tooltipEl = document.getElementById('chartjs-tooltip');
+                            // Tooltip Element
+                            var tooltipEl = document.getElementById('chartjs-tooltip');
 
-                            //// Create element on first render
-                            //if (!tooltipEl) {
-                            //    tooltipEl = document.createElement('div');
-                            //    tooltipEl.id = 'chartjs-tooltip';
-                            //    tooltipEl.innerHTML = '<table></table>';
-                            //    document.body.appendChild(tooltipEl);
-                            //}
+                            // Create element on first render
+                            if (!tooltipEl) {
+                                tooltipEl = document.createElement('div');
+                                tooltipEl.id = 'chartjs-tooltip';
+                                tooltipEl.innerHTML = '<table></table>';
+                                document.body.appendChild(tooltipEl);
+                            }
+                            tooltipEl.onclick = () => {
+                                window.location = chartGenerateURL(this._active, "ManagementRequest");
+                            };
 
-                            //// Hide if no tooltip
-                            //if (tooltipModel.opacity === 0) {
-                            //    tooltipModel.style.opacity = 0;
-                            //    return;
-                            //}
+                            // Hide if no tooltip
+                            if (tooltipModel.opacity === 0) {
+                                tooltipModel.style.opacity = 0;
+                                return;
+                            }
 
                             
 
-                            //// `this` will be the overall tooltip
-                            //var position = this._chart.canvas.getBoundingClientRect();
-                            //console.log(position);
-                            //console.log(tooltipModel);
-                            //// Display, position, and set styles for font
-                            //tooltipEl.style.opacity = 1;
-                            //tooltipEl.style.position = 'absolute';
-                            //tooltipEl.style.background = "red";
-                            //tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.x + 'px';
-                            //tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.y + 'px';
-                            //tooltipEl.style.width = tooltipModel.width + 'px';
-                            //tooltipEl.style.height = tooltipModel.height + 'px';
-                            //tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
-                            //tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
-                            //tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
-                            //tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
-                            //tooltipEl.style.cursor = 'pointer';
+                            // `this` will be the overall tooltip
+                            var position = this._chart.canvas.getBoundingClientRect();
+
+                            // Display, position, and set styles for font
+                            tooltipEl.style.opacity = 1;
+                            tooltipEl.style.position = 'absolute';
+                            tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.x + 'px';
+                            tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.y + 'px';
+                            tooltipEl.style.width = tooltipModel.width + 'px';
+                            tooltipEl.style.height = tooltipModel.height + 'px';
+                            tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
+                            tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
+                            tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
+                            tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
+                            tooltipEl.style.cursor = 'pointer';
                         },
                     },
                 }
@@ -204,17 +249,44 @@ var chart2 = new Chart(ctx, {
     data: {
         labels: ['Total', 'Completed', 'In progress', 'Delay'],
         datasets: [{
-            data: [12, 19, 3, 5, 3],
+            data: [12, 19, 3, 5],
             backgroundColor: ['rgb(191, 191, 191)', '#4d75a8', 'rgb(250, 192, 144)', 'rgb(255, 0, 0)'],
         }]
     },
 
     options: {
+        onClick: function () {
+            let startDate, endDate;
+            switch ($("#chart2").val()) {
+                case "1":
+                    startDate = moment().subtract(1, 'months');
+                    endDate = moment();
+                    break;
+                case "2":
+                    startDate = moment().subtract(1, 'weeks');
+                    endDate = moment();
+                    break;
+                default:
+                    return;
+            }
+
+            window.location = chartGenerateURLBaseOnType(this.active, startDate, endDate, "ManagementSample");
+        },
+        hover: {
+            onHover: function (e, element) {
+                const point = this.getElementAtEvent(e);
+                if (point.length) e.target.style.cursor = 'pointer';
+                else e.target.style.cursor = 'default';
+            },
+        },
         plugins: {
             datalabels: {
                 color: '#000'
             }
         },
+        maintainAspectRatio: false,
+        respnsive: true,
+        events: ['mousemove', 'click'],
         scales: {
             xAxes: [{
                 stacked: true,
@@ -240,7 +312,70 @@ var chart2 = new Chart(ctx, {
         },
         legend: {
             display: false,
-        }
+        },
+        tooltips: {
+            mode: 'nearest',
+            intersect: false,
+
+            callbacks: {
+                label: function (tooltipItems, data) {
+                    return tooltipItems.yLabel;
+                },
+            },
+            custom: function (tooltipModel) {
+                // Tooltip Element
+                var tooltipEl = document.getElementById('chartjs-tooltip2');
+
+                // Create element on first render
+                if (!tooltipEl) {
+                    tooltipEl = document.createElement('div');
+                    tooltipEl.id = 'chartjs-tooltip2';
+                    tooltipEl.innerHTML = '<table></table>';
+                    document.body.appendChild(tooltipEl);
+                }
+                tooltipEl.onclick = () => {
+                    let startDate, endDate;
+                    switch ($("#chart2").val()) {
+                        case "1":
+                            startDate = moment().subtract(1, 'months');
+                            endDate = moment();
+                            break;
+                        case "2":
+                            startDate = moment().subtract(1, 'weeks');
+                            endDate = moment();
+                            break;
+                        default:
+                            return;
+                    }
+
+                    window.location = chartGenerateURLBaseOnType(this._active, startDate, endDate, "ManagementSample");
+                };
+
+                // Hide if no tooltip
+                if (tooltipModel.opacity === 0) {
+                    tooltipModel.style.opacity = 0;
+                    return;
+                }
+
+
+
+                // `this` will be the overall tooltip
+                var position = this._chart.canvas.getBoundingClientRect();
+
+                // Display, position, and set styles for font
+                tooltipEl.style.opacity = 1;
+                tooltipEl.style.position = 'absolute';
+                tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.x + 'px';
+                tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.y + 'px';
+                tooltipEl.style.width = tooltipModel.width + 'px';
+                tooltipEl.style.height = tooltipModel.height + 'px';
+                tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
+                tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
+                tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
+                tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
+                tooltipEl.style.cursor = 'pointer';
+            },
+        },
     }
 });
 function chart2GetByMonth() {
@@ -274,17 +409,44 @@ var chart3 = new Chart(ctx, {
     data: {
         labels: ['Total', 'Recorded', 'Accepted', 'Approved', 'Recheck'],
         datasets: [{
-            data: [12, 19, 3, 5, 2, 3],
+            data: [12, 19, 3, 5, 2],
             backgroundColor: ['rgb(191, 191, 191)', '#4d75a8', 'rgb(250, 192, 144)', 'rgb(250, 192, 144)', 'rgb(255, 0, 0)'],
         }]
     },
 
     options: {
+        onClick: function () {
+            let startDate, endDate;
+            switch ($("#chart3").val()) {
+                case "1":
+                    startDate = moment().subtract(1, 'months');
+                    endDate = moment();
+                    break;
+                case "2":
+                    startDate = moment().subtract(1, 'weeks');
+                    endDate = moment();
+                    break;
+                default:
+                    return;
+            }
+
+            window.location = chartGenerateURLBaseOnType(this.active, startDate, endDate, "LabManagment");
+        },
+        hover: {
+            onHover: function (e, element) {
+                const point = this.getElementAtEvent(e);
+                if (point.length) e.target.style.cursor = 'pointer';
+                else e.target.style.cursor = 'default';
+            },
+        },
         plugins: {
             datalabels: {
                 color: '#000'
             }
         },
+        maintainAspectRatio: false,
+        respnsive: true,
+        events: ['mousemove', 'click'],
         scales: {
             xAxes: [{
                 stacked: true,
@@ -310,7 +472,70 @@ var chart3 = new Chart(ctx, {
         },
         legend: {
             display: false,
-        }
+        },
+        tooltips: {
+            mode: 'nearest',
+            intersect: false,
+
+            callbacks: {
+                label: function (tooltipItems, data) {
+                    return tooltipItems.yLabel;
+                },
+            },
+            custom: function (tooltipModel) {
+                // Tooltip Element
+                var tooltipEl = document.getElementById('chartjs-tooltip3');
+
+                // Create element on first render
+                if (!tooltipEl) {
+                    tooltipEl = document.createElement('div');
+                    tooltipEl.id = 'chartjs-tooltip3';
+                    tooltipEl.innerHTML = '<table></table>';
+                    document.body.appendChild(tooltipEl);
+                }
+                tooltipEl.onclick = () => {
+                    let startDate, endDate;
+                    switch ($("#chart3").val()) {
+                        case "1":
+                            startDate = moment().subtract(1, 'months');
+                            endDate = moment();
+                            break;
+                        case "2":
+                            startDate = moment().subtract(1, 'weeks');
+                            endDate = moment();
+                            break;
+                        default:
+                            return;
+                    }
+
+                    window.location = chartGenerateURLBaseOnType(this._active, startDate, endDate, "LabManagment");
+                };
+
+                // Hide if no tooltip
+                if (tooltipModel.opacity === 0) {
+                    tooltipModel.style.opacity = 0;
+                    return;
+                }
+
+
+
+                // `this` will be the overall tooltip
+                var position = this._chart.canvas.getBoundingClientRect();
+
+                // Display, position, and set styles for font
+                tooltipEl.style.opacity = 1;
+                tooltipEl.style.position = 'absolute';
+                tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.x + 'px';
+                tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.y + 'px';
+                tooltipEl.style.width = tooltipModel.width + 'px';
+                tooltipEl.style.height = tooltipModel.height + 'px';
+                tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
+                tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
+                tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
+                tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
+                tooltipEl.style.cursor = 'pointer';
+            },
+        },
     }
 });
 function chart3GetByMonth() {
@@ -361,6 +586,9 @@ var chart4 = new Chart(ctx, {
                 display: false,
             }
         },
+        maintainAspectRatio: false,
+        respnsive: true,
+        events: ['mousemove', 'click'],
         scales: {
             xAxes: [
                 {
@@ -391,6 +619,11 @@ var chart4 = new Chart(ctx, {
         },
         legend: {
             display: false,
+        },
+
+        tooltips: {
+            mode: 'nearest',
+            intersect: false,
         }
     }
 });
@@ -449,26 +682,30 @@ dialog.kendoDialog({
     //   close: onClose
 });
 function okSearch() {
-    console.log("okSearch");
     var rqNo = $("#requestNo").val();
     
     if (rqNo === "") {
-        var kendoWindow = $("<div />").kendoWindow({
+        var kendoWindow = $("<div />").kendoDialog({
             title: "Confirm",
             resizable: false,
-            modal: true
+            modal: true,
+            actions: [
+                { text: 'No', primary: true, },
+                {
+                    text: 'Yes',
+
+                }
+            ],
         });
 
-        kendoWindow.data("kendoWindow")
-            .content($("#delete-confirmation").html())
-            .center().open();
+        kendoWindow.data("kendoDialog")
+            .content($("#delete-confirmation").html()).open();
 
         kendoWindow
             .find(".delete-confirm,.delete-cancel")
             .click(function () {
-                console.log('xxx');
 
-                kendoWindow.data("kendoWindow").close();
+                kendoWindow.data("kendoDialog").close();
                
             })
             .end()
@@ -483,3 +720,4 @@ $("#onClick").on('click', function () {
     var dialog = $('#dialogSerchRequest');
     dialog.data("kendoDialog").open();
 });
+

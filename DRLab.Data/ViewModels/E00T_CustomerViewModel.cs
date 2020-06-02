@@ -7,19 +7,20 @@ namespace DRLab.Data.ViewModels
 {
     public class E00T_CustomerViewModel
     {
-        [Required]
+        
         [Display(Name = "Customer Code")]
+        [ScaffoldColumn(false)]
         public string customerCode { get; set; }
         [Required]
         [Display(Name = "Company Name")]
         public string companyName { get; set; }
-        [Required]
+       
         [Display(Name = "Contact Name")]
         public string contactName { get; set; }
-        [Required]
+        
         [Display(Name = "Contact Email")]
         public string contactEmail { get; set; }
-        [Required]
+       
         [Display(Name = "Company Address")]
         public string companyAddress { get; set; }
         [Display(Name = "City")]

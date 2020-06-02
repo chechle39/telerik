@@ -69,7 +69,7 @@
                                     <div class="col-5">
                                         <div style="float:right">
                                             <button onclick="SaveEntity()" type="submit" class="k-button k-primary px-3 py-2">Save</button>
-                                            <button class="k-button px-3 py-2">Cancel</button>
+                                            <button onclick="goBack()" class="k-button px-3 py-2">Cancel</button>
                                         </div>
 
                                     </div>
@@ -829,6 +829,9 @@
 
             kendo.bind($(this), dataItem);
         });
+    }
+    function goBack() {
+        window.history.back();
     }
 </script>
 

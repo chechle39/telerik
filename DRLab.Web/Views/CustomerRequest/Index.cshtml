@@ -63,7 +63,7 @@
                                     <div class="col-6">
                                         <div style="float:right">
                                             <button onclick="SaveEntity()" type="submit" class="k-button k-primary px-3 py-2">Save</button>
-                                            <button class="k-button px-3 py-2">Cancel</button>
+                                            <button onclick="goBack()" class="k-button px-3 py-2">Cancel</button>
                                         </div>
 
                                     </div>
@@ -194,7 +194,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="row col-5" style="margin-left: 39px;">
+                                        <div class="row col-5 mrl39">
                                             <span>Add Specification</span>
                                             <div class="col-sm-9 row mr-t">
                                                 <div class="col-11">
@@ -218,6 +218,10 @@
                                                     })
                                                     .ServerFiltering(true);
                                                 })
+                                                .Filter("startswith")
+                                                .Height(300)
+                                                .Template(
+                                                "<span class=\"k-state-default\"><h6>#: data.specification #</h6><p>#: data.method #</p></span>")
                                                 )
                                                 </div>
                                                 <div class="col-1" style="padding-left: 6px;max-width: 1.333333%;margin-top: 0px">
@@ -312,7 +316,14 @@
                                             columns.Bound(p => p.Price).Title("Price").Width("10%").Format("{0:n2}");
                                             columns.Bound(p => p.Urgent).Title("% Urgent");
                                             columns.Bound(p => p.TAT).Title("TAT");
-                                            columns.Command(command => { command.Destroy().IconClass("k-icon k-i-trash"); }).Width(100);
+                                            columns.Command(command =>
+                                            {
+                                                command.Custom("Destroy")
+                                                    .IconClass("k-icon k-i-trash")
+                                                    .Click("showDeleteConfirmation")
+                                                    .Text("Delete")
+                                                    .HtmlAttributes(new { style = "width:100%" });
+                                            }).Width(100);
                                         })
                                         .Navigatable()
                                         .Editable(editable => editable.Mode(GridEditMode.InCell))
@@ -371,7 +382,54 @@
 
         return true;
     }
+    function showDeleteConfirmation(e) {
 
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        var kendoWindow = $("<div />").kendoWindow({
+            title: "Confirm",
+            resizable: false,
+            modal: true
+        });
+
+        kendoWindow.data("kendoWindow")
+            .content($("#delete-confirmation").html())
+            .center().open();
+
+        kendoWindow
+            .find(".delete-confirm,.delete-cancel")
+            .click(function () {
+                let count = 0;
+                let arr = [];
+                specdata.reduce((r, o) => {
+                    if (o.analysisCode !== dataItem.analysisCode) {
+                        count += o.Price;
+                        arr.push(o);
+                    } else {
+                    }
+                }, {});
+                specdata = arr;
+                var template = $('#table-total').html();
+                var render = "";
+                render += Mustache.render(template, {
+                    tong: parseFloat(count).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }),
+                });
+                if (render !== undefined) {
+                    $('#temlate').html(render);
+                }
+                var grid = $("#Grid").data("kendoGrid");
+                var dataSource = new kendo.data.DataSource({
+                    data: specdata,
+                    pageSize: 20,
+                });
+                grid.setDataSource(dataSource);
+
+                kendoWindow.data("kendoWindow").close();
+            })
+            .end()
+
+
+    }
     $(function () {
         var validator = $("#ticketsForm").data("kendoValidator");
         var validationSummary = $("#validation-summary");
@@ -406,35 +464,40 @@
             dataType: "json",
 
             success: function (response) {
-                //specdata = response;
-                //if (specdata.length > 0) {
-
-                //}
                 for (var i = 0; i < response.length; i++) {
                     if (specdata.filter(x => x.analysisCode === response[i].analysisCode).length === 0) {
                         specdata.push(response[i])
                     }
                 }
-                //data = response;
                 schemaTotal(specdata);
                 var dataSource = new kendo.data.DataSource({
                     data: specdata,
                     pageSize: 20,
+                    change: function (e) {
+                        specdata = []
+                        let count = 0;
+                        grid.dataSource._data.reduce((r, o) => {
+                            specdata.push(o);
+                            if (o.analysisCode !== e.items[0].analysisCode) {
+                                
+                                count += parseFloat(o.Price);
+                            }
+                        }, {});
+                        count += e.items[0].Price;
+                        // selectedDataItems contains all selected data items
+                        var template = $('#table-total').html();
+                        var render = "";
+                        render += Mustache.render(template, {
+                            tong: parseFloat(count).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }),
+                        });
+                        if (render !== undefined) {
+                            $('#temlate').html(render);
+                        }
+                    }
                 });
                 grid.setDataSource(dataSource);
-                var total = 0;
-                for (var i = 0; i < response.length; i++) {
-                    total += response[i].Price;
-                }
-                var template = $('#table-total').html();
-                var render = "";
-                render += Mustache.render(template, {
-                    tong: total,
-                });
-                if (render !== undefined) {
-                    $('#temlate').html(render);
 
-                }
+                
             },
             error: function () {
 
@@ -566,8 +629,22 @@
         var dataSource = new kendo.data.DataSource({
             data: response[page_no - 1].data,
             pageSize: 20,
+
         });
         grid.setDataSource(dataSource);
+        let count = 0;
+        grid.dataSource._data.reduce((r, o) => {
+            count += parseFloat(o.Price);
+        }, {});
+        // selectedDataItems contains all selected data items
+        var template = $('#table-total').html();
+        var render = "";
+        render += Mustache.render(template, {
+            tong: parseFloat(count).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }),
+        });
+        if (render !== undefined) {
+            $('#temlate').html(render);
+        }
     }
 
     function handerDataGrid(request) {
@@ -579,7 +656,7 @@
                 lOD: grid._data[i].LOD,
                 mark: grid._data[i].Mark,
                 method: grid._data[i].method,
-                price: grid._data[i].Price,
+                Price: grid._data[i].Price,
                 specification: grid._data[i].specification,
                 tAT: grid._data[i].TAT,
                 unit: grid._data[i].unit,
@@ -740,7 +817,9 @@
             return true
         }
     }
-
+    function goBack() {
+        window.location.href = "../"
+    }
 </script>
 
 <style>
@@ -892,6 +971,9 @@
         background-color: white !important;
         background-image: none !important;
     }
+    div.k-window {
+        min-width: 15% !important;
+    }
 </style>
 <script id="errorTemplate" type="text/x-kendo-template">
     <div class="wrong-pass">
@@ -929,6 +1011,12 @@
         </div>
     </div>
 
+</script>
+<script id="delete-confirmation" type="text/x-kendo-template">
+    <p class="delete-message">Are you sure?</p>
+
+    <button class="delete-confirm k-button" style="float: right">Yes</button>
+    <a href="#" class="delete-cancel" style="float: right">No</a>
 </script>
 <script id="table-total" type="x-tmpl-mustache">
 

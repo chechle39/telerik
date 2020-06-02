@@ -7,3 +7,54 @@
     background: none !important;
     border: none !important;
 }
+
+/**
+    Preloading screen
+*/
+.preloading-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #ededed;
+    width: 100vw;
+    position: fixed;
+    z-index: 11111;
+    transition: 0.3s ease-out;
+}
+
+    .preloading-screen .preloading-screen__loader {
+        max-width: 15rem;
+        width: 100%;
+        height: auto;
+        stroke-linecap: round;
+    }
+
+    .preloading-screen circle {
+        fill: none;
+        stroke-width: 3.5;
+        animation-name: preloader;
+        animation-duration: 5s;
+        animation-iteration-count: infinite;
+        transform-origin: 170px 170px;
+        will-change: transform;
+    }
+    .preloading-screen circle:nth-of-type(1) {
+        stroke-dasharray: 550px;
+    }
+    .preloading-screen circle:nth-of-type(2) {
+        stroke-dasharray: 500px;
+    }
+
+    .preloading-screen circle:nth-of-type(3) {
+        stroke-dasharray: 450px;
+    }
+    .preloading-screen circle:nth-of-type(4) {
+        stroke-dasharray: 300px;
+    }
+
+@keyframes preloader {
+    50% {
+        transform: rotate(360deg);
+    }
+}

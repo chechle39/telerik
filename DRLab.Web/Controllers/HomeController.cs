@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using DRLab.Web.Models;
 using Microsoft.Extensions.Localization;
 using Microsoft.AspNetCore.Authorization;
+using Askmethat.Aspnet.JsonLocalizer.Localizer;
 
 namespace DRLab.Web.Controllers
 {
@@ -12,15 +13,15 @@ namespace DRLab.Web.Controllers
     public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IStringLocalizer<HomeController> _localizer;
+        private readonly IJsonStringLocalizer<HomeController> _localizer;
 
-        public HomeController(ILogger<HomeController> logger, IStringLocalizer<HomeController> localizer)
+        public HomeController(ILogger<HomeController> logger, IJsonStringLocalizer<HomeController> localizer)
         {
             _logger = logger;
             _localizer = localizer;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return View();
         }

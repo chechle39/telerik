@@ -19,6 +19,8 @@
         rq.initialize();
     </script>
 }
+<h1 hidden id="flagStart">@Model.StartDate</h1>
+<h1 hidden id="flagEnd">@Model.EndDate</h1>
 <section id="isCheck" class="content">
     <div class="container-fluid">
         <section class="content">
@@ -34,62 +36,31 @@
                                     <div class="col-4">
                                         <h3 class="card-title" style="font-size: 25px">Sample Management </h3><h6 onclick=onClicSearch() id="btnsearch" style="margin-left: 12px;margin-top: 10px;cursor: pointer;" class="fas fa-search"></h6>
                                         <div id="dayTem"></div>
+
                                     </div>
                                     <div class="col-2">
-                                        @(Html.Kendo().DropDownList()
-                                        .Name("color")
-                                        .DataTextField("Text")
-                                        .DataValueField("Value")
-                                        .Events(e => e.Change("change").Select("onSelectAction"))
-                                        .BindTo(new List<SelectListItem>() {
-                                        new SelectListItem() {
-                                            Text = "Bulk Actions",
-                                            Value = "0"
-                                        },
-                                        new SelectListItem() {
-                                            Text = "Set Confirm",
-                                            Value = "1"
-                                        },
-                                        new SelectListItem() {
-                                                Text = "Export to Lab",
-                                                Value = "2"
-                                        },
-                                        new SelectListItem() {
-                                                Text = "Send Email",
-                                                Value = "3"
-                                        },
-                                        new SelectListItem() {
-                                                Text = "Remove Confirm",
-                                                Value = "4"
-                                        },
-                                        new SelectListItem() {
-                                                Text = "Delete Request",
-                                                Value = "5"
-                                        },
-                                        })
-                                    .Value("0")
-                                    .HtmlAttributes(new { style = "width: 35%", @class = "k-dropdown--clear" })
-                                    )
-                                    </div>                                   
+                                     
+                                    </div>
                                     <div class="col-6">
                                         <div style="float:right">
-                                            <button onclick="exportexcel()" class="k-button k-primary px-3 py-2" >Export</button>
+                                            <button onclick="exportexcel()" class="k-button k-primary px-3 py-2">Export</button>
                                             <button onclick="refresh()" class="k-button px-3 py-2">Refresh</button>
                                         </div>
 
                                     </div>
                                 </div>
-                                <div  class="row" style=" margin-left: 12px;margin-bottom:12px">
+                                <div class="row" style=" margin-left: 12px;margin-bottom:12px">
                                     <div class="col-3">
+                                        <div class="card-title" style="font:inherit;font-size:13px;margin-left:8px;margin-top:5px">Request Actions</div>
                                         @(Html.Kendo().DropDownList()
-                                        .Name("color1")
+                                        .Name("color")
                                         .DataTextField("Text")
                                         .DataValueField("Value")
-                                        .Events(e => e.Change("change").Select("onSelectAction"))
+                                        .Events(e => e.Change("change").Select("onSelectRequestAction"))
                                         .BindTo(new List<SelectListItem>() {
                                         new SelectListItem() {
-                                            Text = "Request Actions",
-                                            Value = "0",                                            
+                                            Text = " ",
+                                            Value = "0",
                                         },
                                         new SelectListItem() {
                                             Text = "Open Request",
@@ -117,12 +88,11 @@
                                         .HtmlAttributes(new { style = "height:auto;" })
                                         .Columns(columns =>
                                         {
-                                            columns.Select().Title(" ").Width(50);
+                                            columns.Select().Title(" ").Width(40);
                                             columns.Bound(p => p.requestNo).Title("Request No#").Width(120);
-                                            columns.Bound(p => p.receivceDate).Title("Receive Date").Format("{0:MM/dd/yyyy}").Width(120);
+                                            columns.Bound(p => p.receivceDate).Title("Receive Date").ClientTemplate("#= kendo.toString(kendo.parseDate(receivceDate), 'dd/MM/yyyy') #");
                                             columns.Bound(p => p.companyName).Title("Customer Name").Width(200);
-                                            columns.Bound(p => p.dateOfSendingResult).Format("{0:MM/dd/yyyy}").Title("Expected Date").Width(120);
-                                            columns.Bound(p => p.dateOfSendingResult).Format("{0:MM/dd/yyyy}").Title("Completed On").Width(120);
+                                            columns.Bound(p => p.dateOfSendingResult).ClientTemplate("#= kendo.toString(kendo.parseDate(dateOfSendingResult), 'dd/MM/yyyy') #");
                                             columns.Bound(p => p.status).Title("Lab Code");
                                             columns.Bound(p => p.status).Title("Sample Code").Width(120);
                                             columns.Bound(p => p.status).Title("Sample Name").Width(120);
@@ -130,7 +100,7 @@
                                             columns.Bound(p => p.status).Title("Accept");
                                             columns.Bound(p => p.status).Title("Reject");
                                             columns.Bound(p => p.status).Title("Approve");
-                                            columns.Bound(p => p.status).Title("Status");
+                                            columns.Bound(p => p.status).Title("Status").Width(100);
                                             columns.Command(command =>
                                             {
                                                 command.Custom("Destroy")
@@ -162,7 +132,7 @@
                                             })
                                             .Data(d => "schemaData")
                                             .Total(t => "schemaTotal");
-                                        })))                                 
+                                        })))
                                 </div>
                                 <!-- /.card-body -->
 
@@ -188,7 +158,7 @@
         reLoadData();
     }
     function exportexcel() {
-      
+
     }
     $("#dialog").data("kendoDialog").close();
     function showDeleteConfirmation(e) {
@@ -218,11 +188,12 @@
                         dataType: "json",
                         contentType: "application/json",
                         success: function () {
+                            reLoadData();
                             var notification = $("#notification").data("kendoNotification");
                             notification.show({
                                 message: "Delete Successful"
                             }, "success");
-                            reLoadData();
+
                         },
                         error: function () {
 
@@ -236,10 +207,11 @@
 
 
     }
-    var deleteAray = [];
-    function onChangex(arg) {
-        deleteAray = this.selectedKeyNames();
-        //console.log("The selected product ids are: [" + this.selectedKeyNames().join(", ") + "]");
+     function onChangex(arg) {
+      console.log("The selected product ids are: [" + this.selectedKeyNames().join(", ") + "]");
+      var grid = $("#Grid").data("kendoGrid");
+         var selectedItem = grid.dataItem(grid.select());
+           console.log(selectedItem);
     }
 
     function showEdit() {
@@ -265,8 +237,7 @@
             alert(message);
         }
     }
-
-    function onDataBound(e) {
+       function onDataBound(e) {
         var grid = this;
         grid.table.find("tr").each(function () {
             var dataItem = grid.dataItem(this);
@@ -293,54 +264,29 @@
 
     function change(e) {
     };
-    function onSelectAction(e) {
+    function onSelectRequestAction(e) {
         var dataItem = this.dataItem(e.item);
-        if (dataItem.Value === "5") {
-            var deleteRequest = [];
+        if (dataItem.Value === "2") {
+            var deleteRequest = [];       
+            var grid = $("#Grid").data("kendoGrid");
+           var selectedItem = grid.dataItem(grid.select());
+            window.location = `/ReportDesign`;
+          $.ajax({
+                 type: "POST",
+                        url: "/ReportDesign",                       
+                        dataType: "json",
+                        contentType: "application/json",
+                        success: function () {                          
 
-            e.preventDefault();
-            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-            deleteRequest = deleteAray;
-            var kendoWindow = $("<div />").kendoWindow({
-                title: "Confirm",
-                resizable: false,
-                modal: true
-            });
+                        },
+                        error: function () {
 
-            kendoWindow.data("kendoWindow")
-                .content($("#delete-confirmation").html())
-                .center().open();
-
-            kendoWindow
-                .find(".delete-confirm,.delete-cancel")
-                .click(function () {
-                    if ($(this).hasClass("delete-confirm")) {
-                        $.ajax({
-                            type: "POST",
-                            url: "/ManagementRequest/DeletedAnalysisRequestInfo",
-                            data: JSON.stringify(deleteRequest),
-                            dataType: "json",
-                            contentType: "application/json",
-                            success: function () {
-                                var notification = $("#notification").data("kendoNotification");
-                                notification.show({
-                                    message: "Delete Successful"
-                                }, "success");
-                                reLoadData();
-                            },
-                            error: function () {
-
-                            }
-                        });
-                    }
-
-                    kendoWindow.data("kendoWindow").close();
-                })
-                .end()
+                        }
+                    });
         }
     }
     function onClicSearch() {
-        var dialog = $('#dialog');
+        var dialog = $('#dialog');       
         dialog.data("kendoDialog").open();
     }
     function reLoadData() {
@@ -351,7 +297,7 @@
         }
         $.ajax({
             type: "GET",
-            url: "/ManagementSample/GetManagementSampletList",
+            url: "/ManagementSample/GetManagementSampleList",
             data: {
                 startDate: date.split('-')[0],
                 endDate: date.split('-')[1],
@@ -418,6 +364,7 @@
     div.k-window {
         min-width: 15% !important;
     }
+
     .k-notification h3 {
         padding: 30px 10px 5px;
         font-size: 1em;
@@ -474,10 +421,12 @@
     .k-material-v2 .k-notification img {
         margin: 10px 20px 0 0;
     }
+
     .k-widget k-dropdown {
-        margin-left: 12px!important;
-        margin-top: 25px!important;
+        margin-left: 12px !important;
+        margin-top: 25px !important;
     }
+
     .k-material-v2 .new-mail,
     .k-material-v2 .wrong-pass,
     .k-material-v2 .upload-success {

@@ -38,16 +38,18 @@ namespace DRLab.Web.Controllers
         {
             var result = new List<E00T_CustomerViewModel>();
 
-          
+            if (data_info != null && ModelState.IsValid)
+            {
                 foreach (var data in data_info)
                 {
-                    if (data !=null) {
+                    if (data != null)
+                    {
                         await _customerService.Create(data);
                         result.Add(data);
                     }
 
                 }
-           
+            }
             return Json(result.ToDataSourceResult(request, ModelState));
         }
         public ActionResult Update_Customer([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<E00T_CustomerViewModel> data_info)
@@ -56,7 +58,7 @@ namespace DRLab.Web.Controllers
             {
                 foreach (var data in data_info)
                 {
-                    if (data != null)
+                    if (data != null && data.companyName != null)
                     {
                         _customerService.Update(data);
                     }
@@ -65,7 +67,7 @@ namespace DRLab.Web.Controllers
 
             return Json(data_info.ToDataSourceResult(request, ModelState));
         }
-        public ActionResult Destroy_Customer([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<E00T_CustomerViewModel> data_info)
+        public async Task<ActionResult> Destroy_CustomerAsync([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<E00T_CustomerViewModel> data_info)
         {
             if (data_info.Any())
             {
@@ -78,7 +80,7 @@ namespace DRLab.Web.Controllers
                 }
             }
 
-            return Json(data_info.ToDataSourceResult(request, ModelState));
+            return Json((await _customerService.GetListCustomer()).ToDataSourceResult(request));
         }
         [HttpPost]
         public async Task<ActionResult> Create_CustomerRequest([DataSourceRequest] DataSourceRequest request, E00T_CustomerViewModel customer_request)

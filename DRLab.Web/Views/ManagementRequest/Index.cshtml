@@ -19,8 +19,9 @@
         rq.initialize();
     </script>
 }
-<h6 hidden id="flagStart">@Model.StartDate</h6>
-<h6 hidden id="flagEnd">@Model.EndDate</h6>
+<h1 hidden id="flagStart">@Model.StartDate</h1>
+<h1 hidden id="flagEnd">@Model.EndDate</h1>
+
 <section id="isCheck" class="content">
     <div class="container-fluid">
         <section class="content">
@@ -89,12 +90,12 @@
                                         .HtmlAttributes(new { style = "height:auto;" })
                                         .Columns(columns =>
                                         {
-                                            columns.Select().Width(50);
+                                           columns.Select().Width(50);
                                             columns.Bound(p => p.requestNo).Title("Request No#");
                                             columns.Bound(p => p.receivceDate).Title("Receive Date").ClientTemplate("#= kendo.toString(kendo.parseDate(receivceDate), 'dd/MM/yyyy') #");
-                                            columns.Bound(p => p.companyName).Title("Customer Name").Width("25%");
+                                            columns.Bound(p => p.companyName).Title("Customer Name");
                                             columns.Bound(p => p.contactName).Title("Contact Name");
-                                            columns.Bound(p => p.dateOfSendingResult).Title("Expected Date").ClientTemplate("#= kendo.toString(kendo.parseDate(dateOfSendingResult), 'dd/MM/yyyy') #");
+                                            columns.Bound(p => p.dateOfSendingResult).ClientTemplate("#= kendo.toString(kendo.parseDate(dateOfSendingResult), 'dd/MM/yyyy') #");
                                             columns.Bound(p => p.status).Title("Request Status");
                                             columns.Command(command =>
                                             {
@@ -152,6 +153,7 @@
 
 
 @Html.Partial("search.cshtml")
+
 <script type="text/javascript">
     var data = [];
     function refresh() {
@@ -203,13 +205,6 @@
 
 
     }
-    function datePickerCL(element) {
-
-        element.kendoDatePicker({
-            format: "dd/MM/yyyy"
-        });
-
-    }
     var deleteAray = [];
     function onChangex(arg) {
         deleteAray = this.selectedKeyNames();
@@ -219,7 +214,7 @@
     function showEdit(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        window.location.href = '/CustomerRequest/DetailCustomer/?' +"requestNo=" + dataItem.requestNo;
+        window.location.href = '/CustomerRequest/DetailCustomer/?' + "requestNo=" + dataItem.requestNo;
     }
     function schemaData() {
 
@@ -394,6 +389,7 @@
     div.k-window {
         min-width: 15% !important;
     }
+
     .k-notification h3 {
         padding: 30px 10px 5px;
         font-size: 1em;
@@ -450,20 +446,19 @@
     .k-material-v2 .k-notification img {
         margin: 10px 20px 0 0;
     }
+
     .form-group {
         margin-bottom: 8px !important;
     }
+
     .k-material-v2 .new-mail,
     .k-material-v2 .wrong-pass,
     .k-material-v2 .upload-success {
         width: 270px;
         height: 70px;
     }
-    /*.k-dropdown .k-dropdown-wrap {
-        color: black !important;
-        background-color: white !important;
-        background-image: none !important;
-    }*/
+
+
 </style>
 <script id="date-templateData" type="x-tmpl-mustache">
     <h6 id="dayData">{{day}}</h6>
@@ -472,7 +467,7 @@
     <p class="delete-message">Are you sure?</p>
 
     <button class="delete-confirm k-button" style="float: right">Yes</button>
-    <a href="#" class="delete-cancel"  style="float: right">No</a>
+    <a href="#" class="delete-cancel" style="float: right">No</a>
 </script>
 <script id="successTemplate" type="text/x-kendo-template">
     <div class="upload-success">

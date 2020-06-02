@@ -33,17 +33,21 @@ var ManagementRequestController = function () {
         var lastday = new Date(curr.setDate(last)).toUTCString();
 
         const data = {
-            startDate: convertDate(new Date(firstday).toLocaleDateString()),
-            endDate: convertDate(new Date(lastday).toLocaleDateString()),
+            startDate: convertDate(firstday),
+            endDate: convertDate(lastday),
         }
 
         return data;
     }
 
     function convertDate(date) {
-        var b = date.split('/');
-        var d = b[0] + "/" + b[1] + "/" + b[2]
-        return d;
+        var x = new Date(date);
+        var d = x.getDate();
+        var m = x.getMonth() + 1;
+        var y = x.getFullYear();
+        console.log(d + "/" + m + "/" + y);
+        return d + "/" + m + "/" + y;
+       
     }
 
     var dialog = $('#dialog');
@@ -154,6 +158,7 @@ function GetDataToDate(start, end, dataCus) {
             grid.setDataSource(dataSource);
             var dateTemplate = $('#date-templateData').html();
             var renderDateTem = "";
+   
             renderDateTem += Mustache.render(dateTemplate, {
                 day: start + '-' + end
             });

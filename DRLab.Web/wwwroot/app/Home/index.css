@@ -21,17 +21,13 @@
     }*/
 
 .home__chart__inner {
-    position: absolute;
-    height: 80%;
-    top: 20%;
+    position: relative;
+    height: 80% !important;
     width: 100%;
 }
+.home__chart__inner canvas{
+}
 
-    .home__chart__inner canvas {
-        position: relative;
-        width: 100% !important;
-        height: 100% !important;
-    }
 
 .home__chart {
     position: relative;
@@ -64,6 +60,11 @@
     font-size: 1.1rem;
 }
 
+.home__chart .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
     .home__chart .card-body>* {
         padding: 10px 20px;
     }

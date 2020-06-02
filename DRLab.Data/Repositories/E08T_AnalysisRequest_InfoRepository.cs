@@ -50,13 +50,23 @@ namespace DRLab.Data.Repositories
             }
             if (!string.IsNullOrEmpty(request.StartDate))
             {
-                DateTime start = DateTime.Parse(request.StartDate, new CultureInfo("vi-VN"));
-
+                DateTime start;
+                start = DateTime.Parse(request.StartDate, new CultureInfo("vi-VN"));
+                //if (Convert.ToInt32(request.StartDate.Split("/")[0]) > 12)
+                //{
+                //    start = DateTime.Parse(request.StartDate, new CultureInfo("vi-VN"));
+                //} else
+                //{
+                //    start = DateTime.Parse(request.StartDate);
+                //}
+                //DateTime dt = DateTime.ParseExact(request.StartDate, "dd/MM/yyyy",
+                //                  CultureInfo.InvariantCulture);
                 listGridManagementViewModel = listGridManagementViewModel.Where(x => x.receivceDate >= start).ToList();
             }
             if (!string.IsNullOrEmpty(request.EndDate))
             {
-                DateTime end = DateTime.Parse(request.EndDate, new CultureInfo("vi-VN")) + new TimeSpan(23, 59, 59);
+                DateTime end ;
+                end = DateTime.Parse(request.EndDate, new CultureInfo("vi-VN")) + new TimeSpan(23, 59, 59);
 
                 listGridManagementViewModel = listGridManagementViewModel.Where(x => x.receivceDate <= end).ToList();
             }
@@ -90,14 +100,13 @@ namespace DRLab.Data.Repositories
             }
             if (!string.IsNullOrEmpty(request.StartDate))
             {
-                DateTime start = DateTime.Parse(request.StartDate, new CultureInfo("en-CA"));
-
+              
+                DateTime start = DateTime.Parse(request.StartDate, new CultureInfo("vi-VN"));          
                 listGridManagementViewModel = listGridManagementViewModel.Where(x => x.receivceDate >= start).ToList();
             }
             if (!string.IsNullOrEmpty(request.EndDate))
             {
-                DateTime end = DateTime.Parse(request.EndDate, new CultureInfo("en-CA"));
-
+                DateTime end = DateTime.Parse(request.EndDate, new CultureInfo("vi-VN"));              
                 listGridManagementViewModel = listGridManagementViewModel.Where(x => x.receivceDate <= end).ToList();
             }
             var rq = JsonConvert.DeserializeObject<string[]>(request.Customer[0]);

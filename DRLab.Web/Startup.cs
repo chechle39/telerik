@@ -68,6 +68,7 @@ namespace DRLab.Web
             services.AddTransient<IE08T_WorkingOrder_ItemService, E08T_WorkingOrder_ItemService>();
             services.AddTransient<IE08T_WorkingOrder_InfoService, E08T_WorkingOrder_InfoService>();
             services.AddTransient<IE08T_WorkingOrder_InfoRepository, E08T_WorkingOrder_InfoRepository>();
+            services.AddTransient<ILabManagmentDapperService, LabManagmentDapperService>();
             services.AddScoped<DbContext, DataBaseContext>();
             services.AddControllers().AddJsonOptions(jsonOptions =>
             {
@@ -105,6 +106,11 @@ namespace DRLab.Web
             //Authen
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie();
+
+            services
+                .AddMvc()
+                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_3_0);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -113,6 +119,8 @@ namespace DRLab.Web
 
             var locOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(locOptions.Value);
+
+            System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls12;
 
             if (env.IsDevelopment())
             {

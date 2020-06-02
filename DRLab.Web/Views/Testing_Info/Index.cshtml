@@ -4,13 +4,14 @@
     {
         //columns.ForeignKey(p => p.specification, (System.Collections.IEnumerable)ViewData["categories"], "specID", "specification").EditorTemplateName("PopulateCategories1")
         //.Title("Specification").Width(300);
+        columns.Bound(p => p.analysisCode).Hidden();
         columns.Bound(p => p.specification).Width(330);
-        columns.Bound(p => p.unit).Width(100);
+        columns.Bound(p => p.unit).Filterable(false).Width(100);
         columns.Bound(p => p.method).Width(330);
-        columns.Bound(p => p.turnAroundTime).Title("Turn AroundTime");
-        columns.Bound(p => p.reformTestResult);
-        columns.Bound(p => p.note).Width(300); ;
-        columns.Command(command => { command.Destroy().IconClass("k-icon k-i-trash").Text("Delete"); command.Edit().Text("Edit"); }).Width(165);
+        columns.Bound(p => p.turnAroundTime).Filterable(false).Width(100).Title("TAT").HtmlAttributes(new { @style = "text-align:center; vertical-align:middle" });
+        columns.Bound(p => p.reformTestResult).Width(100).Title("Reform").ClientTemplate("<input type='checkbox' #= reformTestResult ? checked='checked' :'' # />").Filterable(false).HtmlAttributes(new { @style = "text-align:center; vertical-align:middle" });
+        columns.Bound(p => p.note).Filterable(false).Width(300);
+        columns.Command(command => { command.Destroy().IconClass("k-icon k-i-trash").Text("Delete"); }).Width(100);
     })
     .ToolBar(toolbar =>
     {
@@ -24,11 +25,10 @@
     .Sortable()
     .Filterable()
     .Scrollable()
-    .HtmlAttributes(new { style = "height:430px;" })
     .DataSource(dataSource => dataSource
         .Ajax()
         .Batch(true)
-        .PageSize(20)
+        .PageSize(25)
         .ServerOperation(false)
         .Events(events => { events.Error("error_handler"); events.RequestEnd("onRequestEnd");})
         .Model(model =>
@@ -120,27 +120,13 @@
     </div>
 </script>
 <style>
-    .product-photo {
-        display: inline-block;
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background-size: 32px 35px;
-        background-position: center center;
-        vertical-align: middle;
-        line-height: 32px;
-        box-shadow: inset 0 0 1px #999, inset 0 0 10px rgba(0,0,0,.2);
-        margin-left: 5px;
+    .k-window-title k-dialog-title::before {
+        content: 'Confirmation' !important;
     }
 
-    .product-name {
-        display: inline-block;
+    .k-grid tr .checkbox-align {
+        text-align: center;
         vertical-align: middle;
-        line-height: 32px;
-        padding-left: 3px;
-    }
-    .k-pager-info {
-        display: inherit !important;
     }
 
     .k-grid-content {
@@ -148,12 +134,8 @@
     }
 
     .k-grid tbody tr {
-        line-height: 14px;
+        line-height: 14px !important;
     }
-
-    /*.k-button {
-        height: 30px;
-    }*/
 
     .btn-raised {
         background-color: #92d050 !important;
@@ -161,42 +143,15 @@
         border-color: #92d050;
     }
 
-    .btn-cancel {
-        color: #fff;
-        background-color: #868e96;
-        border-color: #868e96;
+    .k-grid tbody .k-button {
+        min-width: 0px !important;
+        height: 20px;
     }
 
-    .k-grid-update {
-        height: 30px !important;
-        width: 76px;
+    div.k-window {
+        min-width: 15% !important;
     }
 
-    .k-grid-cancel {
-        height: 30px !important;
-    }
-
-
-    .margin-left-0 {
-        margin-left: 0px;
-    }
-
-    .form-group {
-        margin-bottom: 8px !important;
-    }
-
-
-    .demo-section p {
-        margin: 3px 0 20px;
-        line-height: 50px;
-    }
-
-    .demo-section .k-button {
-        width: 250px;
-    }
-
-
-    /* Notifications */
     .k-notification h3 {
         padding: 30px 10px 5px;
         font-size: 1em;
@@ -254,29 +209,15 @@
         margin: 10px 20px 0 0;
     }
 
+    .form-group {
+        margin-bottom: 8px !important;
+    }
+
     .k-material-v2 .new-mail,
     .k-material-v2 .wrong-pass,
     .k-material-v2 .upload-success {
         width: 270px;
         height: 70px;
-    }
-
-
-    .pad-25 {
-        padding-bottom: 25px;
-    }
-    /*.k-editable {
-        background-color: white !important;
-    }
-    .k-grid-add {
-        height: 30px;
-        margin-top: -10px;
-    }*/
-    .mr-t {
-        margin-top: -4px;
-    }
-
-    .span {
     }
 
     .k-dropdown .k-dropdown-wrap {

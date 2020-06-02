@@ -67,7 +67,14 @@
 .info-custummer {
     background: #447a99;
 }
-
+.mrl39 {
+    margin-left: 39px; 
+}
+@media (min-width: 1672px) {
+    .mrl39 {
+        margin-left: 50px;
+    }
+}
 .pagination {
     float: right;
 }

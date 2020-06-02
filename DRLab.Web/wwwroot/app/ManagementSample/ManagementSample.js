@@ -12,42 +12,15 @@ var ManagementSampleController = function () {
         var date = paramDate();
         var dataCus = [];
         if ($("#multiselect").data("kendoMultiSelect") !== undefined) {
-             dataCus = $("#multiselect").data("kendoMultiSelect")._old;
+            dataCus = $("#multiselect").data("kendoMultiSelect")._old;
         }
-        
-        $.ajax({
-            type: "GET",
-            url: "/ManagementSample/GetManagementSampleList",
-            data: {
-                startDate: date.startDate,
-                endDate: date.endDate,
-                customer: JSON.stringify(dataCus)
-            },
-            dataType: "json",
-            beforeSend: function () {
-            },
-            success: function (response) {
-                var grid = $("#Grid").data("kendoGrid");
-                var dataSource = new kendo.data.DataSource({
-                    data: response,
-                    pageSize: 20,
-                    schema: {
-                        model: {
-                            id: "requestNo"
-                        }
-                    }
-                });
-                grid.setDataSource(dataSource);
-                var dateTemplate = $('#date-templateData').html();
-                var renderDateTem = "";
-                renderDateTem += Mustache.render(dateTemplate, {
-                    day: date.startDate + '-' + date.endDate
-                });
-                $('#dayTem').html(renderDateTem);
-            },
-            error: function (status) {
-            }
-        });
+        var start = document.getElementById("flagStart").innerHTML;
+        var end = document.getElementById("flagEnd").innerHTML;
+        if (start !== "") {
+            GetDataToDate(start, end, dataCus);
+        } else {
+            GetDataToDate(date.startDate, date.endDate, dataCus);
+        }      
     };
   
     function paramDate() {
@@ -58,12 +31,22 @@ var ManagementSampleController = function () {
         var lastday = new Date(curr.setDate(last)).toUTCString();
 
         const data = {
-            startDate: new Date(firstday).toLocaleDateString(),
-            endDate: new Date(lastday).toLocaleDateString(),
+            startDate: convertDate(new Date(firstday)),
+            endDate: convertDate(new Date(lastday)),
         }
 
         return data;
     }
+    function convertDate(date) {
+        var x = new Date(date);
+        var d = x.getDate();
+        var m = x.getMonth() + 1;
+        var y = x.getFullYear();
+        console.log(d + "/" + m + "/" + y);
+        return d + "/" + m + "/" + y;
+
+    }
+
 
     var dialog = $('#dialog');
 
@@ -95,12 +78,12 @@ var ManagementSampleController = function () {
                 loadData();
                 break;
             case 1:
-                searchData(startDate1.toLocaleDateString(), endDate1.toLocaleDateString());
+                searchData(convertDate(startDate1.toLocaleDateString()), convertDate(endDate1.toLocaleDateString()));
                 break;
             case 2:
                 var initialSart = datepicker.value.split("/");
                 var initialTo = datepickerto.value.split("/");
-                searchData([initialSart[1], initialSart[0], initialSart[2]].join('/'), [initialTo[1], initialTo[0], initialTo[2]].join('/'));
+                searchData(datepicker.value, datepickerto.value);
                 break;
             default:
                 loadData();
@@ -123,6 +106,41 @@ var ManagementSampleController = function () {
             },
             success: function (response) {
                 console.log(response);
+                var grid = $("#Grid").data("kendoGrid");
+                var dataSource = new kendo.data.DataSource({
+                    data: response,
+                    pageSize: 20,
+                    schema: {
+                        model: {
+                            id: "requestNo"
+                        }
+                    }
+                });
+                grid.setDataSource(dataSource);
+                var dateTemplate = $('#date-templateData').html();
+                var renderDateTem = "";
+                renderDateTem += Mustache.render(dateTemplate, {
+                    day: start + '-' + end
+                });
+                $('#dayTem').html(renderDateTem);
+            },
+            error: function (status) {
+            }
+        });
+    }
+    function GetDataToDate(start, end, dataCus) {
+        $.ajax({
+            type: "GET",
+            url: "/ManagementSample/GetManagementSampleList",
+            data: {
+                startDate: start,
+                endDate: end,
+                customer: JSON.stringify(dataCus)
+            },
+            dataType: "json",
+            beforeSend: function () {
+            },
+            success: function (response) {
                 var grid = $("#Grid").data("kendoGrid");
                 var dataSource = new kendo.data.DataSource({
                     data: response,
