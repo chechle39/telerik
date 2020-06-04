@@ -313,7 +313,14 @@
                                             columns.Bound(p => p.Price).Title("Price").Width("10%").Format("{0:n2}");
                                             columns.Bound(p => p.Urgent).Title("% Urgent");
                                             columns.Bound(p => p.TAT).Title("TAT");
-                                            columns.Command(command => { command.Destroy().IconClass("k-icon k-i-trash"); }).Width(100);
+                                            columns.Command(command =>
+                                            {
+                                                command.Custom("Destroy")
+                                                    .IconClass("k-icon k-i-trash")
+                                                    .Click("showDeleteConfirmation")
+                                                    .Text("Delete")
+                                                    .HtmlAttributes(new { style = "width:100%" });
+                                            }).Width(100);
                                         })
                                         .Navigatable()
                                         .Editable(editable => editable.Mode(GridEditMode.InCell))
@@ -403,10 +410,69 @@
     function schemaTotal(response) {
         return data.length;
     }
+    var dataItemDeleGrid;
+    function showDeleteConfirmation(e) {
+        dataItemDeleGrid = null;
+        e.preventDefault();
+        dataItemDeleGrid = this.dataItem($(e.currentTarget).closest("tr"));
+        var kendoWindow = $("<div />").kendoDialog({
+            title: "Confirm",
+            resizable: false,
+            modal: true,
+            actions: [
+                { text: 'No', primary: true, },
+                {
+                    text: 'Yes', action: deleteGrid
+                }
+            ],
+        });
 
+        kendoWindow.data("kendoDialog")
+            .content($("#delete-confirmation").html()).open();
+
+        kendoWindow
+            .find(".delete-confirm,.delete-cancel")
+            .click(function () {
+
+
+                kendoWindow.data("kendoWindow").close();
+            })
+            .end()
+
+
+    }
+    var deletedArr=[];
+    function deleteGrid() {
+        let count = 0;
+        let arr = [];
+      //  deletedArr = []
+        specdata.reduce((r, o) => {
+            if (o.analysisCode !== dataItemDeleGrid.analysisCode) {
+                count += o.Price;
+                arr.push(o);
+            } else {
+                deletedArr.push(o);
+            }
+        }, {});
+        specdata = arr;
+        var template = $('#table-total').html();
+        var render = "";
+        render += Mustache.render(template, {
+            tong: parseFloat(count).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }),
+        });
+        if (render !== undefined) {
+            $('#temlate').html(render);
+        }
+        var grid = $("#GridCustomerEdit").data("kendoGrid");
+        var dataSource = new kendo.data.DataSource({
+            data: specdata,
+            pageSize: 20,
+        });
+        grid.setDataSource(dataSource);
+    }
     function onSelectaddSpecification(e) {
         var grid = $("#GridCustomerEdit").data("kendoGrid");
-        specdata = grid.dataSource._pristineData;
+        specdata = grid.dataSource._data;
         //grid.bind("save", grid_save);
         var dataItem = this.dataItem(e.item.index());
         $.ajax({
@@ -440,7 +506,7 @@
                                 count += parseFloat(o.Price);
                             }
                         }, {});
-                        count += e.items[0].Price;
+                        count += e.items[0] !== undefined ? e.items[0].Price : 0;
                         // selectedDataItems contains all selected data items
                         var template = $('#table-total').html();
                         var render = "";
@@ -453,7 +519,7 @@
                     }
                 });
                 grid.setDataSource(dataSource);
-                
+
             },
             error: function () {
 
@@ -465,6 +531,7 @@
     myData = [];
     var curent;
     function active_page(element, rows, req_per_page) {
+       
         if (myData.length === 0) {
 
             $.ajax({
@@ -488,32 +555,32 @@
                         $('#templateMark').val('');
                         $('#tat').val('');
 
-                        //var dataSource = new kendo.data.DataSource({
-                        //    data: response[0].Data,
-                        //    pageSize: 20,
-                        //    change: function (e) {
-                        //        specdata = []
-                        //        let count = 0;
-                        //        grid.dataSource._data.reduce((r, o) => {
-                        //            specdata.push(o);
-                        //            if (o.analysisCode !== e.items[0].analysisCode) {
+                        var dataSource = new kendo.data.DataSource({
+                            data: grid._data,
+                            pageSize: 20,
+                            change: function (e) {
+                                specdata = []
+                                let count = 0;
+                                grid.dataSource._data.reduce((r, o) => {
+                                    specdata.push(o);
+                                    if (o.analysisCode !== e.items[0].analysisCode) {
 
-                        //                count += parseFloat(o.Price);
-                        //            }
-                        //        }, {});
-                        //        count += e.items[0].Price;
-                        //        // selectedDataItems contains all selected data items
-                        //        var template = $('#table-total').html();
-                        //        var render = "";
-                        //        render += Mustache.render(template, {
-                        //            tong: parseFloat(count).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }),
-                        //        });
-                        //        if (render !== undefined) {
-                        //            $('#temlate').html(render);
-                        //        }
-                        //    }
-                        //});
-                        //grid.setDataSource(dataSource);
+                                        count += parseFloat(o.Price);
+                                    }
+                                }, {});
+                                count += e.items[0] !== undefined ? e.items[0].Price : 0;
+                                // selectedDataItems contains all selected data items
+                                var template = $('#table-total').html();
+                                var render = "";
+                                render += Mustache.render(template, {
+                                    tong: parseFloat(count).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }),
+                                });
+                                if (render !== undefined) {
+                                    $('#temlate').html(render);
+                                }
+                            }
+                        });
+                        grid.setDataSource(dataSource);
                     } else {
                         //$('#simpleCode').val(response[0].sampleCode);
                         //$('#innerCode').val(response[0].LVNCode);
@@ -538,7 +605,7 @@
                                         count += parseFloat(o.Price);
                                     }
                                 }, {});
-                                count += e.items[0].Price;
+                                count += e.items[0] !== undefined ? e.items[0].Price : 0;
                                 // selectedDataItems contains all selected data items
                                 var template = $('#table-total').html();
                                 var render = "";
@@ -552,8 +619,13 @@
                         });
                         grid.setDataSource(dataSource);
                     }
-
-                    for (var i = 0; i < parseInt(document.getElementById("flag").innerHTML); i++) {
+                    var lenghnumOfSam;
+                    if ($('#numOfSam').val() === "") {
+                        lenghnumOfSam = parseInt(document.getElementById("flag").innerHTML);
+                    } else {
+                        lenghnumOfSam = parseInt($('#numOfSam').val());
+                    }
+                    for (var i = 0; i < lenghnumOfSam; i++) {
                         if (response[i] !== undefined) {
                             const a = {
                                 simpleName: response[i].sampleName,
@@ -713,7 +785,8 @@
         response[curent - 1].addSpecificationValue = comboAddSpecification._prev;
         // var hander = handerDataGrid()
         response[curent - 1].data = handerDataGrid();
-        response[curent - 1].deleted = handerDataGridDeleted();
+        response[curent - 1].deleted = deletedArr;
+        deletedArr = [];
         const resp = response.slice(req_per_page * (page_no - 1), req_per_page * page_no);
         if (response[page_no - 1].simpleCode === '') {
             var requestNo = ["SampleCode", "InLabCode"];
@@ -753,10 +826,15 @@
                     specdata.push(o);
                     if (o.analysisCode !== e.items[0].analysisCode) {
 
-                        count += parseFloat(o.Price);
+                        count += parseFloat(o.Price !== undefined ? o.Price : o.price);
                     }
                 }, {});
-                count += e.items[0].Price;
+                //if (e.items[0] !== undefined) {
+                //  //  count += e.items[0].price;
+                //} else {
+                //    count = 0;
+                //}
+                count += e.items[0] !== undefined ? e.items[0].Price : 0;
                 // selectedDataItems contains all selected data items
                 var template = $('#table-total').html();
                 var render = "";
@@ -833,7 +911,7 @@
             response[cr - 1].sampleMatrixValue = comboboxsampleMatrix._prev;
             response[cr - 1].addSpecificationValue = comboAddSpecification._prev;
             response[cr - 1].data = handerDataGrid();
-            response[cr - 1].deleted = handerDataGridDeleted();
+            response[cr - 1].deleted = deletedArr;
             for (var i = 0; i < response.length; i++) {
                 var arr = [];
                 var arrdelete = [];
@@ -874,7 +952,7 @@
                 sampleMatrix: comboboxsampleMatrix._prev,
                 specification: comboAddSpecification._prev,
                 data: handerDataGrid(),
-                deleted: handerDataGridDeleted(),
+                deleted: deletedArr,
             }
             saveRequest.push(object);
             SaveAnalysisRequestData(saveRequest);
@@ -894,10 +972,45 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
-                var notification = $("#notificationEdit").data("kendoNotification");
-                notification.show({
-                    message: "Save Successful"
-                }, "success");
+                if (SaveRq.find(x => x.deleted !== undefined)) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/CustomerRequest/DeletedEntityAnalysisRequestData",
+                        data: JSON.stringify(SaveRq),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (response) {
+
+                            var notification = $("#notificationEdit").data("kendoNotification");
+                            notification.show({
+                                message: "Save Successful"
+                            }, "success");
+
+                        },
+                        error: function () {
+                            var notification = $("#notificationEdit").data("kendoNotification");
+                            if (check === false) {
+                                notification.show({
+                                    title: "Wrong Save",
+                                    message: mess
+                                }, "error");
+                            } else {
+                                notification.show({
+                                    title: "Wrong Save",
+                                    message: "Save error"
+                                }, "error");
+                            }
+
+
+                        }
+                    });
+                } else {
+                    var notification = $("#notificationEdit").data("kendoNotification");
+                    notification.show({
+                        message: "Save Successful"
+                    }, "success");
+                }
+                
 
             },
             error: function () {
@@ -1133,6 +1246,9 @@
         background-color: white !important;
         background-image: none !important;
     }
+    div.k-window {
+        min-width: 15% !important;
+    }
 </style>
 <script id="errorTemplate" type="text/x-kendo-template">
     <div class="wrong-pass">
@@ -1170,6 +1286,9 @@
         </div>
     </div>
 
+</script>
+<script id="delete-confirmation" type="text/x-kendo-template">
+    <p class="delete-message">Are you sure?</p>
 </script>
 <script id="table-total" type="x-tmpl-mustache">
 

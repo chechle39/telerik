@@ -35,26 +35,37 @@
         stroke-width: 3.5;
         animation-name: preloader;
         animation-duration: 5s;
+        animation-timing-function: ease-out;
         animation-iteration-count: infinite;
         transform-origin: 170px 170px;
         will-change: transform;
     }
-    .preloading-screen circle:nth-of-type(1) {
-        stroke-dasharray: 550px;
-    }
-    .preloading-screen circle:nth-of-type(2) {
-        stroke-dasharray: 500px;
-    }
+        .preloading-screen circle:nth-of-type(1) {
+            stroke-dasharray: 550px;
+            animation-delay: .2s;
+        }
+        .preloading-screen circle:nth-of-type(2) {
+            stroke-dasharray: 500px;
+            animation-delay: .15s;
+        }
 
-    .preloading-screen circle:nth-of-type(3) {
-        stroke-dasharray: 450px;
-    }
-    .preloading-screen circle:nth-of-type(4) {
-        stroke-dasharray: 300px;
-    }
+        .preloading-screen circle:nth-of-type(3) {
+            stroke-dasharray: 450px;
+            animation-delay: .1s;
+        }
+        .preloading-screen circle:nth-of-type(4) {
+            stroke-dasharray: 300px;
+        }
 
 @keyframes preloader {
     50% {
         transform: rotate(360deg);
     }
+}
+
+/**
+    Body tag
+*/
+body{
+    overflow-x: hidden;
 }

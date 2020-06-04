@@ -103,5 +103,12 @@ namespace DRLab.Services.IntegrationServices
         {
             return await _e08T_AnalysisRequest_DataRepository.GetAnalysisByRequestNo(requestNo);
         }
+
+        public async Task<bool> DeleteAnalysisRequestDataGrid(List<CreateCustomeRequest> request)
+        {
+            var save = await _e08T_AnalysisRequest_DataRepository.DeleteAnalysisRequestDataGrid(request);
+            _uow.SaveChanges();
+            return save;
+        }
     }
 }

@@ -61,7 +61,7 @@
                                     count += parseFloat(o.Price);
                                 }
                             }, {});
-                            count += e.items[0].Price;
+                            count += e.items[0] !== undefined ? e.items[0].Price : 0;
                             // selectedDataItems contains all selected data items
                             var template = $('#table-total').html();
                             var render = "";
@@ -106,10 +106,16 @@
                 }
 
 
+                if ($('#numOfSam').val() === "") {
+                    const data = { "req_per_page": 1, "page_no": 1 };
+                    console.log(parseInt($('#numOfSam').val()));
+                    pagination(data, parseInt(document.getElementById("flag").innerHTML));
+                } else {
+                    const data = { "req_per_page": 1, "page_no": 1 };
+                    pagination(data, parseInt($('#numOfSam').val()));
+                }
 
-
-                const data = { "req_per_page": 1, "page_no": 1 };
-                pagination(data, parseInt(document.getElementById("flag").innerHTML));
+                
             },
             error: function () {
             }
@@ -332,6 +338,7 @@
                         $('#tbl-content').html(render);
 
                     }
+                    initForm();
                     isCheck = false;
                     return true;
                 },
@@ -392,6 +399,7 @@
                         $('#tbl-content').html(render);
 
                     }
+                    initForm();
                     isCheck = true;
                 },
                 error: function () {

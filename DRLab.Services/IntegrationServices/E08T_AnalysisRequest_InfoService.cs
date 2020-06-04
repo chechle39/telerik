@@ -34,7 +34,7 @@ namespace DRLab.Services.IntegrationServices
             return await _e08T_AnalysisRequest_InfoRepository.GetRequestInfoGrid(request);
         }
 
-        public async Task<List<GridManagementViewModel>> GetRequestInfoSample(SerchSampleManagement request)
+        public async Task<List<SampleManagementViewModel>> GetRequestInfoSample(SerchSampleManagement request)
         {
             return await _e08T_AnalysisRequest_InfoRepository.GetRequestInfoSample(request);
         }

@@ -196,15 +196,20 @@
         if (dataItem.Value === "1") {
             console.log(selectedRequestNo);
             if (selectedRequestNo === undefined) {
-                var kendoWindow = $("<div />").kendoWindow({
+                var kendoWindow = $("<div />").kendoDialog({
                     title: "Confirm",
                     resizable: false,
-                    modal: true
+                    modal: true,
+                    actions: [
+                        { text: 'No', primary: true, },
+                        {
+                            text: 'Yes',
+                        }
+                    ],
                 });
 
-                kendoWindow.data("kendoWindow")
-                    .content($("#delete-confirmation").html())
-                    .center().open();
+                kendoWindow.data("kendoDialog")
+                    .content($("#delete-confirmation").html()).open();
 
                 kendoWindow
                     .find(".delete-confirm,.delete-cancel")
@@ -213,7 +218,7 @@
 
                         }
 
-                        kendoWindow.data("kendoWindow").close();
+                        kendoWindow.data("kendoDialog").close();
                     })
                     .end()
             } else if (selectedRequestNo.length > 0) {
@@ -381,8 +386,6 @@
 <script id="delete-confirmation" type="text/x-kendo-template">
     <p class="delete-message">please! select one item</p>
 
-    <button class="delete-confirm k-button" style="float: right">Yes</button>
-    <a href="#" class="delete-cancel" style="float: right">No</a>
 </script>
 <script id="successTemplate" type="text/x-kendo-template">
     <div class="upload-success">

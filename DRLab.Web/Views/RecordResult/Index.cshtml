@@ -211,6 +211,7 @@
                                                 model.Id(p => p.WOID);
                                                 model.Field(p => p.WOID).Editable(false).From("WOID");
                                                 model.Field(p => p.LVNCode).Editable(false).From("LVNCode");
+                                                model.Field(p => p.LVNCode).Editable(false).From("AnalysisCode");
                                                 model.Field(p => p.specification).From("specification");
                                                 model.Field(p => p.Mark).From("Mark");
                                                 model.Field(p => p.method).From("method");
@@ -707,6 +708,7 @@
                 unit: grid.dataSource._destroyed[i].unit,
                 urgent: grid.dataSource._destroyed[i].Urgent,
                 LVNCode: grid.dataSource._destroyed[i].LVNCode,
+                AnalysisCode: grid.dataSource._destroyed[i].AnalysisCode
             };
 
             myGrid.push(object);
@@ -729,6 +731,7 @@
                 specification: grid._data[i].specification,
                 unit: grid._data[i].unit,
                 LVNCode: grid._data[i].LVNCode,
+                AnalysisCode: grid._data[i].AnalysisCode
             };
             myGrid.push(object);
         }
@@ -814,7 +817,7 @@
         var grid = $("#Grid").data("kendoGrid");
         grid.table.find("tr").each(function () {
             var dataItem = grid.dataItem(this);
-            var type = dataItem.ReviewResult === 1 || dataItem.ReviewResult === 2 ? 'success' : 'error';
+            var type = dataItem.ReviewResult === 1 ? 'warning' : dataItem.ReviewResult === 2 ? 'success' : 'error';
             var text = dataItem.ReviewResult === 1 ? 'Accept' : dataItem.ReviewResult === 2 ? 'Approved' : 'Recheck';
             console.log("x");
             $(this).find('script').each(function () {

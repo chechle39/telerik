@@ -17,5 +17,6 @@ namespace DRLab.Services.Interfaces
         public Task<bool> CreateAnalysisRequestData(List<CreateCustomeRequest> request);
         Task<List<E00T_CustomerViewModel>> GetCustomerById(string id);
         public Task<List<CreateCustomeRequest>> GetAnalysisByRequestNo(string requestNo);
+        public Task<bool> DeleteAnalysisRequestDataGrid(List<CreateCustomeRequest> request);
     }
 }

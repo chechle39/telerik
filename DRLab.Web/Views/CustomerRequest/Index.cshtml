@@ -23,7 +23,7 @@
         t.Add().Type("error").ClientTemplateID("errorTemplate");
     })
 )
-<section id="isCheck" style="display:none"  class="content">
+<section id="isCheck" style="display:none" class="content">
     <div class="container-fluid">
         <section class="content">
             <div class="container-fluid">
@@ -243,8 +243,8 @@
                                                                     data: JSON.stringify(requestNo),
                                                                     dataType: "json",
                                                                     contentType: "application/json",
-                                                                    success: function (response) {                                                                     
-                                                                        $('#analysisCode').val(response.analysisCode);                                                                     
+                                                                    success: function (response) {
+                                                                        $('#analysisCode').val(response.analysisCode);
                                                                     },
                                                                     error: function () {
 
@@ -277,29 +277,29 @@
 
                                     @*<div class="form-group row margin-left-0">
 
-                                        <div class="col-5 row">
-                                            <span>Template Mark</span>
-                                            <div class="col-sm-5 mr-t">
-                                                @(Html.Kendo().TextBox()
-                                            .Name("templateMark")
-                                            .HtmlAttributes(new { placeholder = "Template Mark", style = "width: 100%;height: calc(1.42857143em + 10px);" })
-                                            )
+                                            <div class="col-5 row">
+                                                <span>Template Mark</span>
+                                                <div class="col-sm-5 mr-t">
+                                                    @(Html.Kendo().TextBox()
+                                                .Name("templateMark")
+                                                .HtmlAttributes(new { placeholder = "Template Mark", style = "width: 100%;height: calc(1.42857143em + 10px);" })
+                                                )
+                                                </div>
+                                                <span>Save</span>
+                                                <span class="pd-left-30">Get</span>
                                             </div>
-                                            <span>Save</span>
-                                            <span class="pd-left-30">Get</span>
-                                        </div>
 
-                                        <div class="col-5 row">
-                                            <span>TAT (+/-)</span>
-                                            <div class="col-sm-2 mr-t">
-                                                @(Html.Kendo().TextBox()
-                                            .Name("tat")
-                                            .HtmlAttributes(new { placeholder = "TAT", style = "width: 80%;height: calc(1.42857143em + 10px);" })
-                                            )
+                                            <div class="col-5 row">
+                                                <span>TAT (+/-)</span>
+                                                <div class="col-sm-2 mr-t">
+                                                    @(Html.Kendo().TextBox()
+                                                .Name("tat")
+                                                .HtmlAttributes(new { placeholder = "TAT", style = "width: 80%;height: calc(1.42857143em + 10px);" })
+                                                )
+                                                </div>
+                                                <span>Done</span>
                                             </div>
-                                            <span>Done</span>
-                                        </div>
-                                    </div>*@
+                                        </div>*@
 
                                     <div class="form-group row">
 
@@ -356,9 +356,9 @@
                                 </div>
                                 <!-- /.card-body -->
                                 <div id="temlate">
-                                    
+
                                 </div>
-                                
+
 
                             </form>
                         </div>
@@ -382,53 +382,66 @@
 
         return true;
     }
+    var dataItemDeleGrid;
     function showDeleteConfirmation(e) {
-
+        dataItemDeleGrid = null;
         e.preventDefault();
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        var kendoWindow = $("<div />").kendoWindow({
+        dataItemDeleGrid = this.dataItem($(e.currentTarget).closest("tr"));
+        var kendoWindow = $("<div />").kendoDialog({
             title: "Confirm",
             resizable: false,
-            modal: true
+            modal: true,
+            actions: [
+                { text: 'No', primary: true, },
+                {
+                    text: 'Yes', action: deleteGrid
+                }
+            ],
         });
 
-        kendoWindow.data("kendoWindow")
-            .content($("#delete-confirmation").html())
-            .center().open();
+        kendoWindow.data("kendoDialog")
+            .content($("#delete-confirmation").html()).open();
 
         kendoWindow
             .find(".delete-confirm,.delete-cancel")
             .click(function () {
-                let count = 0;
-                let arr = [];
-                specdata.reduce((r, o) => {
-                    if (o.analysisCode !== dataItem.analysisCode) {
-                        count += o.Price;
-                        arr.push(o);
-                    } else {
-                    }
-                }, {});
-                specdata = arr;
-                var template = $('#table-total').html();
-                var render = "";
-                render += Mustache.render(template, {
-                    tong: parseFloat(count).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }),
-                });
-                if (render !== undefined) {
-                    $('#temlate').html(render);
-                }
-                var grid = $("#Grid").data("kendoGrid");
-                var dataSource = new kendo.data.DataSource({
-                    data: specdata,
-                    pageSize: 20,
-                });
-                grid.setDataSource(dataSource);
+                
 
                 kendoWindow.data("kendoWindow").close();
             })
             .end()
 
 
+    }
+    var deletedArr = [];
+    function deleteGrid() {
+        let count = 0;
+        let arr = [];
+        // deletedArr = [];
+        specdata = $("#Grid").data("kendoGrid")._data;
+        specdata.reduce((r, o) => {
+            if (o.analysisCode !== dataItemDeleGrid.analysisCode) {
+                count += o.Price;
+                arr.push(o);
+            } else {
+                deletedArr.push(o);
+            }
+        }, {});
+        specdata = arr;
+        var template = $('#table-total').html();
+        var render = "";
+        render += Mustache.render(template, {
+            tong: parseFloat(count).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }),
+        });
+        if (render !== undefined) {
+            $('#temlate').html(render);
+        }
+        var grid = $("#Grid").data("kendoGrid");
+        var dataSource = new kendo.data.DataSource({
+            data: specdata,
+            pageSize: 20,
+        });
+        grid.setDataSource(dataSource);
     }
     $(function () {
         var validator = $("#ticketsForm").data("kendoValidator");
@@ -479,7 +492,7 @@
                         grid.dataSource._data.reduce((r, o) => {
                             specdata.push(o);
                             if (o.analysisCode !== e.items[0].analysisCode) {
-                                
+
                                 count += parseFloat(o.Price);
                             }
                         }, {});
@@ -497,7 +510,7 @@
                 });
                 grid.setDataSource(dataSource);
 
-                
+
             },
             error: function () {
 
@@ -595,7 +608,9 @@
         response[curent - 1].addSpecificationValue = comboAddSpecification._prev;
         // var hander = handerDataGrid()
         response[curent - 1].data = handerDataGrid();
-         response[curent - 1].deleted = handerDataGridDeleted();
+        response[curent - 1].deleted = deletedArr;
+        deletedArr = [];
+
         const resp = response.slice(req_per_page * (page_no - 1), req_per_page * page_no);
         if (response[page_no - 1].simpleCode === '') {
             var requestNo = ["SampleCode", "InLabCode"];
@@ -687,7 +702,7 @@
         return myGrid;
     }
     function SaveEntity() {
-       
+
         var saveRequest = [];
         if (response.length > 0) {
             var x = checkClass(document.getElementsByClassName('active'))
@@ -708,14 +723,14 @@
             response[cr - 1].sampleMatrixValue = comboboxsampleMatrix._prev;
             response[cr - 1].addSpecificationValue = comboAddSpecification._prev;
             response[cr - 1].data = handerDataGrid();
-            response[cr - 1].deleted = handerDataGridDeleted();
+            response[cr - 1].deleted = deletedArr;
             for (var i = 0; i < response.length; i++) {
                 var arr = [];
                 var arrdelete = [];
                 if (response[i].data !== undefined) {
                     arr = response[i].data;
                 }
-                 if (response[i].deleted !== undefined) {
+                if (response[i].deleted !== undefined) {
                     arrdelete = response[i].deleted;
                 }
                 const object = {
@@ -749,7 +764,7 @@
                 sampleMatrix: comboboxsampleMatrix._prev,
                 specification: comboAddSpecification._prev,
                 data: handerDataGrid(),
-                deleted: handerDataGridDeleted(),
+                deleted: deletedArr,
             }
             saveRequest.push(object);
             SaveAnalysisRequestData(saveRequest);
@@ -770,10 +785,44 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (response) {
-                    var notification = $("#notification").data("kendoNotification");
-                    notification.show({
-                        message: "Save Successful"
-                    }, "success");
+                    if (SaveRq.find(x => x.deleted !== undefined)) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/CustomerRequest/DeletedEntityAnalysisRequestData",
+                            data: JSON.stringify(SaveRq),
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (response) {
+
+                                var notification = $("#notification").data("kendoNotification");
+                                notification.show({
+                                    message: "Save Successful"
+                                }, "success");
+
+                            },
+                            error: function () {
+                                var notification = $("#notification").data("kendoNotification");
+                                if (check === false) {
+                                    notification.show({
+                                        title: "Wrong Save",
+                                        message: mess
+                                    }, "error");
+                                } else {
+                                    notification.show({
+                                        title: "Wrong Save",
+                                        message: "Save error"
+                                    }, "error");
+                                }
+
+
+                            }
+                        });
+                    } else {
+                        var notification = $("#notification").data("kendoNotification");
+                        notification.show({
+                            message: "Save Successful"
+                        }, "success");
+                    }
 
                 },
                 error: function () {
@@ -785,10 +834,10 @@
                 }
             });
         }
-        
+
 
     }
-  
+
 
     function verify(SaveRq) {
         var string = '';
@@ -806,7 +855,7 @@
             }
         }
         if (string1.length > 0) {
-            var mess = 'Save error samplematrix of sample lisst'+ " " + string.substring(0, string.length - 1);
+            var mess = 'Save error samplematrix of sample lisst' + " " + string.substring(0, string.length - 1);
             var notification = $("#notification").data("kendoNotification");
             notification.show({
                 title: "Wrong Save",
@@ -948,8 +997,8 @@
         width: 270px;
         height: 70px;
     }
- 
-  
+
+
     .pad-25 {
         padding-bottom: 25px;
     }
@@ -963,14 +1012,16 @@
     .mr-t {
         margin-top: -4px;
     }
+
     .span {
- 
     }
+
     .k-dropdown .k-dropdown-wrap {
         color: black !important;
         background-color: white !important;
         background-image: none !important;
     }
+
     div.k-window {
         min-width: 15% !important;
     }
@@ -1014,9 +1065,6 @@
 </script>
 <script id="delete-confirmation" type="text/x-kendo-template">
     <p class="delete-message">Are you sure?</p>
-
-    <button class="delete-confirm k-button" style="float: right">Yes</button>
-    <a href="#" class="delete-cancel" style="float: right">No</a>
 </script>
 <script id="table-total" type="x-tmpl-mustache">
 
@@ -1033,8 +1081,8 @@
     };
 
     function xx() {
-          var dialog = $('#dialog');
-            dialog.data("kendoDialog").open();
+        var dialog = $('#dialog');
+        dialog.data("kendoDialog").open();
     }
 
 </script>

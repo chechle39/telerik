@@ -31,23 +31,25 @@
 
 .home__chart {
     position: relative;
-    width: 32vw;
-    height: 37vh;
+    width: 38%;
+    height: 43%;
     padding: 0;
 }
     .home__chart:nth-child(odd) {
-        margin-left: 6vw;
-        margin-right: 3vw;
+        margin-left: 8%;
+        margin-right: 4%;
     }
     .home__chart:nth-child(even) {
-        margin-left: 3vw;
-        margin-right: 6vw;
+        margin-left: 4%;
+        margin-right: 8%;
     }
 
 .home__chart__button {
     background: #c6d9f1;
     font-size: 0.95rem;
     padding: 0.25rem 0.5rem;
+    white-space: nowrap;
+    position: absolute;
 }
 .home__chart:hover .home__chart__button {
     background: #0071c1;
@@ -99,4 +101,9 @@
 }
 .home__color--secondary {
     color: #e46c0d;
+}
+.home__chart__information {
+    height: 20%;
+    align-items: center;
+    display: flex;
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -8,7 +9,7 @@ namespace DRLab.Data.Base
     {
         private readonly DbContext _dbContext;
         private readonly IServiceProvider _serviceProvider;
-
+        private IDbContextTransaction _transaction;
         public UnitOfWork(DbContext dbContext, IServiceProvider serviceProvider)
         {
             _dbContext = dbContext;
@@ -30,6 +31,18 @@ namespace DRLab.Data.Base
         {
             _dbContext.Dispose();
             GC.SuppressFinalize(this);
+        }
+        public void BeginTransaction()
+        {
+            _transaction = _dbContext.Database.BeginTransaction();
+        }
+        public void CommitTransaction()
+        {
+            if (_transaction != null)
+            {
+                _transaction.Commit();
+                _transaction.Dispose();
+            }
         }
     }
 }

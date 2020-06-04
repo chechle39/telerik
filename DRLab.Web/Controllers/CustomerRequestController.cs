@@ -64,6 +64,17 @@ namespace DRLab.Web.Controllers
             return new OkObjectResult(request);
         }
         [HttpPost]
+        public async Task<IActionResult> DeletedEntityAnalysisRequestData([FromBody] List<CreateCustomeRequest> request)
+        {
+            if (!ModelState.IsValid)
+            {
+                IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
+                return new BadRequestObjectResult(allErrors);
+            }
+            await _e00T_CustomerService.DeleteAnalysisRequestDataGrid(request);
+            return new OkObjectResult(request);
+        }
+        [HttpPost]
         public async Task<IActionResult> SaveEntity([FromBody]E08T_AnalysisRequest_InfoViewModel req)
         {
             if (!ModelState.IsValid)

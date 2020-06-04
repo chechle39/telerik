@@ -101,18 +101,20 @@ var chart1 = new Chart(ctx, {
                     labels: [moment().subtract(2, 'days').format("dddd"), moment().subtract(1, 'days').format("dddd"), 'Hôm nay', moment().add(1, 'days').format("dddd"), moment().add(2, 'days').format("dddd")],
                     datasets: [{
                         label: 'In progress',
-                        data: [12, 19, 3],
+                        data: [12, 19, 3, 7, 14],
                         backgroundColor: ['#bbb', '#bbb', '#0071c1', '#0071c1', '#0071c1']
                     },
                     {
                         label: 'Completed',
-                        data: [19, 20, 7, 0, 14],
+                        data: [19, 20, 7, 0, 0],
                         backgroundColor: '#e46c0d'
                     }]
                 },
                 options: {
                     onClick: function () {
-                        window.location = chartGenerateURL(this.active, "ManagementRequest");
+                        if (this.active[0]) {
+                            window.location = chartGenerateURL(this.active, "ManagementRequest");
+                        }
                     },
                     hover: {
                         onHover: function (e, element) {
@@ -176,7 +178,9 @@ var chart1 = new Chart(ctx, {
                                 document.body.appendChild(tooltipEl);
                             }
                             tooltipEl.onclick = () => {
-                                window.location = chartGenerateURL(this._active, "ManagementRequest");
+                                if (this._active[0]) {
+                                    window.location = chartGenerateURL(this._active, "ManagementRequest");
+                                }
                             };
 
                             // Hide if no tooltip
@@ -216,7 +220,7 @@ function chart1GetByWeek() {
         },
         {
             label: 'Completed',
-            data: [19, 20, 7, 0, 14],
+            data: [19, 20, 7, 0, 0],
             backgroundColor: '#e46c0d'
         }]
     };
@@ -249,28 +253,30 @@ var chart2 = new Chart(ctx, {
     data: {
         labels: ['Total', 'Completed', 'In progress', 'Delay'],
         datasets: [{
-            data: [12, 19, 3, 5],
+            data: [2000, 1200, 800, 70],
             backgroundColor: ['rgb(191, 191, 191)', '#4d75a8', 'rgb(250, 192, 144)', 'rgb(255, 0, 0)'],
         }]
     },
 
     options: {
         onClick: function () {
-            let startDate, endDate;
-            switch ($("#chart2").val()) {
-                case "1":
-                    startDate = moment().subtract(1, 'months');
-                    endDate = moment();
-                    break;
-                case "2":
-                    startDate = moment().subtract(1, 'weeks');
-                    endDate = moment();
-                    break;
-                default:
-                    return;
-            }
+            if (this.active[0]) {
+                let startDate, endDate;
+                switch ($("#chart2").val()) {
+                    case "1":
+                        startDate = moment().subtract(1, 'months');
+                        endDate = moment();
+                        break;
+                    case "2":
+                        startDate = moment().subtract(1, 'weeks');
+                        endDate = moment();
+                        break;
+                    default:
+                        return;
+                }
 
-            window.location = chartGenerateURLBaseOnType(this.active, startDate, endDate, "ManagementSample");
+                window.location = chartGenerateURLBaseOnType(this.active, startDate, endDate, "ManagementSample");
+            }
         },
         hover: {
             onHover: function (e, element) {
@@ -306,7 +312,8 @@ var chart2 = new Chart(ctx, {
                 },
                 ticks: {
                     fontColor: 'rgb(0, 112, 192)',
-                    fontSize: 15,
+                    fontSize: 12,
+                    fontStyle: 'italic',
                 }
             }]
         },
@@ -334,21 +341,23 @@ var chart2 = new Chart(ctx, {
                     document.body.appendChild(tooltipEl);
                 }
                 tooltipEl.onclick = () => {
-                    let startDate, endDate;
-                    switch ($("#chart2").val()) {
-                        case "1":
-                            startDate = moment().subtract(1, 'months');
-                            endDate = moment();
-                            break;
-                        case "2":
-                            startDate = moment().subtract(1, 'weeks');
-                            endDate = moment();
-                            break;
-                        default:
-                            return;
-                    }
+                    if (this._active[0]) {
+                        let startDate, endDate;
+                        switch ($("#chart2").val()) {
+                            case "1":
+                                startDate = moment().subtract(1, 'months');
+                                endDate = moment();
+                                break;
+                            case "2":
+                                startDate = moment().subtract(1, 'weeks');
+                                endDate = moment();
+                                break;
+                            default:
+                                return;
+                        }
 
-                    window.location = chartGenerateURLBaseOnType(this._active, startDate, endDate, "ManagementSample");
+                        window.location = chartGenerateURLBaseOnType(this._active, startDate, endDate, "ManagementSample");
+                    }
                 };
 
                 // Hide if no tooltip
@@ -382,7 +391,7 @@ function chart2GetByMonth() {
     chart2.data = {
         labels: ['Total', 'Completed', 'In progress', 'Delay'],
         datasets: [{
-            data: [12, 19, 3, 5, 3],
+            data: [2000, 1200, 800, 70],
             backgroundColor: ['rgb(191, 191, 191)', '#4d75a8', 'rgb(250, 192, 144)', 'rgb(255, 0, 0)'],
         }]
     };
@@ -392,7 +401,7 @@ function chart2GetByWeek() {
     chart2.data = {
         labels: ['Total', 'Completed', 'In progress', 'Delay'],
         datasets: [{
-            data: [22, 1, 13, 15, 3],
+            data: [2500, 1200, 1300, 90],
             backgroundColor: ['rgb(191, 191, 191)', '#4d75a8', 'rgb(250, 192, 144)', 'rgb(255, 0, 0)'],
         }]
     };
@@ -409,28 +418,30 @@ var chart3 = new Chart(ctx, {
     data: {
         labels: ['Total', 'Recorded', 'Accepted', 'Approved', 'Recheck'],
         datasets: [{
-            data: [12, 19, 3, 5, 2],
+            data: [2500, 2300, 1700, 1500, 90],
             backgroundColor: ['rgb(191, 191, 191)', '#4d75a8', 'rgb(250, 192, 144)', 'rgb(250, 192, 144)', 'rgb(255, 0, 0)'],
         }]
     },
 
     options: {
         onClick: function () {
-            let startDate, endDate;
-            switch ($("#chart3").val()) {
-                case "1":
-                    startDate = moment().subtract(1, 'months');
-                    endDate = moment();
-                    break;
-                case "2":
-                    startDate = moment().subtract(1, 'weeks');
-                    endDate = moment();
-                    break;
-                default:
-                    return;
-            }
+            if (this.active[0]) {
+                let startDate, endDate;
+                switch ($("#chart3").val()) {
+                    case "1":
+                        startDate = moment().subtract(1, 'months');
+                        endDate = moment();
+                        break;
+                    case "2":
+                        startDate = moment().subtract(1, 'weeks');
+                        endDate = moment();
+                        break;
+                    default:
+                        return;
+                }
 
-            window.location = chartGenerateURLBaseOnType(this.active, startDate, endDate, "LabManagment");
+                window.location = chartGenerateURLBaseOnType(this.active, startDate, endDate, "LabManagment");
+            }
         },
         hover: {
             onHover: function (e, element) {
@@ -466,7 +477,8 @@ var chart3 = new Chart(ctx, {
                 },
                 ticks: {
                     fontColor: 'rgb(0, 112, 192)',
-                    fontSize: 15,
+                    fontSize: 12,
+                    fontStyle: 'italic',
                 }
             }]
         },
@@ -494,21 +506,23 @@ var chart3 = new Chart(ctx, {
                     document.body.appendChild(tooltipEl);
                 }
                 tooltipEl.onclick = () => {
-                    let startDate, endDate;
-                    switch ($("#chart3").val()) {
-                        case "1":
-                            startDate = moment().subtract(1, 'months');
-                            endDate = moment();
-                            break;
-                        case "2":
-                            startDate = moment().subtract(1, 'weeks');
-                            endDate = moment();
-                            break;
-                        default:
-                            return;
-                    }
+                    if (this._active[0]) {
+                        let startDate, endDate;
+                        switch ($("#chart3").val()) {
+                            case "1":
+                                startDate = moment().subtract(1, 'months');
+                                endDate = moment();
+                                break;
+                            case "2":
+                                startDate = moment().subtract(1, 'weeks');
+                                endDate = moment();
+                                break;
+                            default:
+                                return;
+                        }
 
-                    window.location = chartGenerateURLBaseOnType(this._active, startDate, endDate, "LabManagment");
+                        window.location = chartGenerateURLBaseOnType(this._active, startDate, endDate, "LabManagment");
+                    }
                 };
 
                 // Hide if no tooltip
@@ -542,7 +556,7 @@ function chart3GetByMonth() {
     chart3.data = {
         labels: ['Total', 'Recorded', 'Accepted', 'Approved', 'Recheck'],
         datasets: [{
-            data: [12, 19, 3, 5, 2],
+            data: [2500, 2300, 1700, 1500, 90],
             backgroundColor: ['rgb(191, 191, 191)', '#4d75a8', 'rgb(250, 192, 144)', 'rgb(250, 192, 144)', 'rgb(255, 0, 0)'],
         }]
     };
@@ -552,7 +566,7 @@ function chart3GetByWeek() {
     chart3.data = {
         labels: ['Total', 'Recorded', 'Accepted', 'Approved', 'Recheck'],
         datasets: [{
-            data: [22, 22, 13, 5, 2],
+            data: [1200, 900, 700, 600, 100],
             backgroundColor: ['rgb(191, 191, 191)', '#4d75a8', 'rgb(250, 192, 144)', 'rgb(250, 192, 144)', 'rgb(255, 0, 0)'],
         }]
     };

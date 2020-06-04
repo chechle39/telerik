@@ -8,18 +8,22 @@ using DRLab.Services.IntegrationServices;
 using DRLab.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -37,10 +41,12 @@ namespace DRLab.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddDbContext<DataBaseContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
+
             services.AddAutoMapper();
             services.AddSingleton(Mapper.Configuration);
             services.AddScoped<IMapper>(sp => new Mapper(sp.GetRequiredService<AutoMapper.IConfigurationProvider>(), sp.GetService));
@@ -64,11 +70,12 @@ namespace DRLab.Web
             services.AddTransient<IE00T_SampleMatrixService, E00T_SampleMatrixService>();
             services.AddTransient<IE08T_Testing_InfoRepository, E08T_Testing_InfoRepository>();
             services.AddTransient<IGetRequestNoDapperService, GetRequestNoDapperService>();
+            services.AddTransient<ISampleManagementDapperService, SampleManagementDapperService>();
+            services.AddTransient<ILabManagmentDapperService, LabManagmentDapperService>();
             services.AddTransient<IE08T_WorkingOrder_ItemRepository, E08T_WorkingOrder_ItemRepository>();
             services.AddTransient<IE08T_WorkingOrder_ItemService, E08T_WorkingOrder_ItemService>();
             services.AddTransient<IE08T_WorkingOrder_InfoService, E08T_WorkingOrder_InfoService>();
             services.AddTransient<IE08T_WorkingOrder_InfoRepository, E08T_WorkingOrder_InfoRepository>();
-            services.AddTransient<ILabManagmentDapperService, LabManagmentDapperService>();
             services.AddScoped<DbContext, DataBaseContext>();
             services.AddControllers().AddJsonOptions(jsonOptions =>
             {
@@ -87,6 +94,12 @@ namespace DRLab.Web
                 options.FileEncoding = Encoding.GetEncoding("utf-8");
                 options.SupportedCultureInfos =  languages.Select(language => new CultureInfo(language)).ToHashSet<CultureInfo>();
             });
+
+         
+
+
+
+
             services.Configure<RequestLocalizationOptions>(options =>
             {
                 var supportedCultures = languages.Select(language => new CultureInfo(language)).ToList();
@@ -105,20 +118,20 @@ namespace DRLab.Web
 
             //Authen
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddCookie();
-
-            services
-                .AddMvc()
-                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_3_0);
-
+            .AddCookie(options => {
+                options.Cookie.HttpOnly = false;
+                options.Cookie.IsEssential = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+            });
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
             var locOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(locOptions.Value);
+            var reportDirectory = Path.Combine(env.ContentRootPath, "Reports");
 
             System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls12;
 
@@ -133,13 +146,14 @@ namespace DRLab.Web
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            app.UseStaticFiles();        
 
             app.UseRouting();
-
+            app.UseCookiePolicy(new CookiePolicyOptions { HttpOnly = HttpOnlyPolicy.None, Secure = CookieSecurePolicy.None, MinimumSameSitePolicy = SameSiteMode.None });
+        
             app.UseAuthentication();
             app.UseAuthorization();
-
+      
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

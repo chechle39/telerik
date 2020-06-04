@@ -78,22 +78,22 @@ namespace DRLab.Data.Repositories
             }
             return listGridManagementViewModel;
         }
-        public async Task<List<GridManagementViewModel>> GetRequestInfoSample(SerchSampleManagement request)
+        public async Task<List<SampleManagementViewModel>> GetRequestInfoSample(SerchSampleManagement request)
         {
             var data = await Entities.AsNoTracking().ToListAsync();
-            var listGridManagementViewModel = new List<GridManagementViewModel>();
+            var listGridManagementViewModel = new List<SampleManagementViewModel>();
             foreach (var item in data)
             {
                 // var customerItem = await _e00T_Customer_ItemRepository.GetCustomerItemById(item.contactID);
                 var cus = await _e00T_CustomerRepository.GetCustomerById(item.customerID);
-                var objGridManagementViewModel = new GridManagementViewModel()
+                var objGridManagementViewModel = new SampleManagementViewModel()
                 {
                     companyName = cus.Count > 0 ? cus[0].companyName : null,
                     contactName = cus.Count > 0 ? cus[0].contactName : null,
-                    dateOfSendingResult = item.dateOfSendingResult,
+                    completedOn = item.dateOfSendingResult,
                     receivceDate = item.receivceDate,
                     requestNo = item.requestNo,
-                    status = item.status,
+                    Status = item.status,
                     customerCode = cus.Count > 0 ? cus[0].customerCode : null
                 };
                 listGridManagementViewModel.Add(objGridManagementViewModel);

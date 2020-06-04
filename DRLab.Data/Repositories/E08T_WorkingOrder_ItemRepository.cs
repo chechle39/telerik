@@ -46,6 +46,7 @@ namespace DRLab.Data.Repositories
                             unit = iii.Unit,
                             WOID = iii.WOID,
                             LVNCode = iii.LVNCode,
+                            AnalysisCode = iii.AnalysisCode
                         };
                         recordResultGridViewModel.Add(RecordResult);
                     }
@@ -72,7 +73,7 @@ namespace DRLab.Data.Repositories
             
             foreach (var item in request)
             {
-                var checkExits = await Entities.Where(x => x.LVNCode == item.LVNCode).AsNoTracking().ToListAsync();
+                var checkExits = await Entities.Where(x => x.AnalysisCode == item.AnalysisCode).AsNoTracking().ToListAsync();
                 if (checkExits.Count() > 0)
                 {
                     var obj = checkExits[0];

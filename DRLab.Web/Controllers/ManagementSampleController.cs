@@ -11,9 +11,11 @@ namespace DRLab.Web.Controllers
 {
     public class ManagementSampleController : Controller
     {
+        private readonly ISampleManagementDapperService _sampleManagementDapperService;
         private readonly IE08T_AnalysisRequest_InfoService _e08T_AnalysisRequest_InfoService;
-        public ManagementSampleController(IE08T_AnalysisRequest_InfoService e08T_AnalysisRequest_InfoService)
+        public ManagementSampleController(IE08T_AnalysisRequest_InfoService e08T_AnalysisRequest_InfoService, ISampleManagementDapperService sampleManagementDapperService)
         {
+            _sampleManagementDapperService = sampleManagementDapperService;
             _e08T_AnalysisRequest_InfoService = e08T_AnalysisRequest_InfoService;
         }
         public IActionResult Index(string start, string end)
@@ -28,7 +30,7 @@ namespace DRLab.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetManagementSampleList(SerchSampleManagement rq)
         {
-            return Ok(await _e08T_AnalysisRequest_InfoService.GetRequestInfoSample(rq));
+            return Ok(await _sampleManagementDapperService.GetSampleManagement(rq));
         }
 
         [HttpPost]

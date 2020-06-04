@@ -50,8 +50,7 @@
                                     </div>
                                 </div>
                                 <div class="row" style=" margin-left: 12px;margin-bottom:12px">
-                                    <div class="col-3">
-                                        <div class="card-title" style="font:inherit;font-size:13px;margin-left:8px;margin-top:5px">Request Actions</div>
+                                    <div class="col-3">                                      
                                         @(Html.Kendo().DropDownList()
                                         .Name("color")
                                         .DataTextField("Text")
@@ -59,8 +58,8 @@
                                         .Events(e => e.Change("change").Select("onSelectRequestAction"))
                                         .BindTo(new List<SelectListItem>() {
                                         new SelectListItem() {
-                                            Text = " ",
-                                            Value = "0",
+                                            Text = "Request Actions",
+                                            Value = "0",                                            
                                         },
                                         new SelectListItem() {
                                             Text = "Open Request",
@@ -76,41 +75,43 @@
                                         },
                                         })
                                     .Value("0")
-                                    .HtmlAttributes(new { style = "width: 35%", @class = "k-dropdown--clear" })
+                                    .HtmlAttributes(new { style = "width: 50%", @class = "k-dropdown--clear" })
                                     )
                                     </div>
                                 </div>
                                 <!-- /.card-header -->
                                 <!-- form start -->
                                 <div class="card-body">
-                                    @(Html.Kendo().Grid<DRLab.Data.ViewModels.GridManagementViewModel>()
+                                    @(Html.Kendo().Grid<DRLab.Data.ViewModels.SampleManagementViewModel>()
                                         .Name("Grid")
                                         .HtmlAttributes(new { style = "height:auto;" })
                                         .Columns(columns =>
-                                        {
-                                            columns.Select().Title(" ").Width(40);
-                                            columns.Bound(p => p.requestNo).Title("Request No#").Width(120);
-                                            columns.Bound(p => p.receivceDate).Title("Receive Date").ClientTemplate("#= kendo.toString(kendo.parseDate(receivceDate), 'dd/MM/yyyy') #");
-                                            columns.Bound(p => p.companyName).Title("Customer Name").Width(200);
-                                            columns.Bound(p => p.dateOfSendingResult).ClientTemplate("#= kendo.toString(kendo.parseDate(dateOfSendingResult), 'dd/MM/yyyy') #");
-                                            columns.Bound(p => p.status).Title("Lab Code");
-                                            columns.Bound(p => p.status).Title("Sample Code").Width(120);
-                                            columns.Bound(p => p.status).Title("Sample Name").Width(120);
-                                            columns.Bound(p => p.status).Title("Total");
-                                            columns.Bound(p => p.status).Title("Accept");
-                                            columns.Bound(p => p.status).Title("Reject");
-                                            columns.Bound(p => p.status).Title("Approve");
-                                            columns.Bound(p => p.status).Title("Status").Width(100);
+                                        {                                          
+                                            columns.Bound(p => p.requestNo).Title("Request No#").Width(85);
+                                            columns.Bound(p => p.receivceDate).Title("Receive Date").ClientTemplate("#= kendo.toString(kendo.parseDate(receivceDate), 'dd/MM/yyyy') #").Width(80);
+                                            columns.Bound(p => p.companyName).Title("Customer Name").Width(180);
+                                            columns.Bound(p => p.sampleName).Title("Sample Name").Width(160);
+                                            columns.Bound(p => p.completedOn).Title("Expected Date").ClientTemplate("#= kendo.toString(kendo.parseDate(completedOn), 'dd/MM/yyyy') #").Width(85);
+                                            columns.Bound(p => p.completedOn).ClientTemplate("#= kendo.toString(kendo.parseDate(completedOn), 'dd/MM/yyyy') #").Width(80);
+                                            columns.Bound(p => p.labCode).Title("Lab Code").Width(70);
+                                            columns.Bound(p => p.sampleCode).Title("Sample Code").Width(75);
+                                            columns.Bound(p => p.Total).Title("Total").Width(55); ;
+                                            columns.Bound(p => p.Accept).Title("Accept").Width(55); ;
+                                            columns.Bound(p => p.Reject).Title("Reject").Width(55); ;
+                                            columns.Bound(p => p.Approve).Title("Approve").Width(55); ;
+                                            columns.Bound(p => p.Status).Title("Status").Width(55);
                                             columns.Command(command =>
                                             {
                                                 command.Custom("Destroy")
                                                     .IconClass("k-icon k-i-trash")
                                                     .Click("showDeleteConfirmation")
-                                                    .Text("Delete");
-                                            }).Width(100);
+                                                    .Text(" ");
+                                            }).Width(55);
                                         })
 
                                         .Events(ev => ev.Change("onChangex"))
+                                        .Selectable(selectable => selectable
+                                        .Mode(GridSelectionMode.Multiple))
                                         .Pageable()
                                         .Sortable()
                                         .Scrollable()
@@ -127,8 +128,6 @@
                                                 model.Field(p => p.receivceDate).From("receivceDate");
                                                 model.Field(p => p.companyName).From("companyName");
                                                 model.Field(p => p.contactName).From("contactName");
-                                                model.Field(p => p.dateOfSendingResult).From("dateOfSendingResult");
-                                                model.Field(p => p.status).From("status");
                                             })
                                             .Data(d => "schemaData")
                                             .Total(t => "schemaTotal");
@@ -209,9 +208,8 @@
     }
      function onChangex(arg) {
       console.log("The selected product ids are: [" + this.selectedKeyNames().join(", ") + "]");
-      var grid = $("#Grid").data("kendoGrid");
-         var selectedItem = grid.dataItem(grid.select());
-           console.log(selectedItem);
+      
+            
     }
 
     function showEdit() {
@@ -355,7 +353,13 @@
         color: #fff !important;
         border-color: #92d050;
     }
-
+    .k-grid-header .k-header > .k-link {
+        margin: -8px -16px;
+        margin-top: -8px;
+        margin-right: -16px;
+        margin-bottom: -8px;
+        margin-left: -16px;      
+    }
     .k-grid tbody .k-button {
         min-width: 0px !important;
         height: 20px;
@@ -426,7 +430,22 @@
         margin-left: 12px !important;
         margin-top: 25px !important;
     }
-
+    .k-grid {
+        font-size: 1em;
+    }
+    .card-body {
+        padding-top: 0;
+        font-size: 10px;
+    }
+    .k-grid th, .k-grid td {
+        padding: 8px 6px;       
+    }
+    .k-grid-content {
+        font-size: 1.3em;
+    }
+    .k-link {
+        font-size: 1.1em;
+    }
     .k-material-v2 .new-mail,
     .k-material-v2 .wrong-pass,
     .k-material-v2 .upload-success {
