@@ -61,7 +61,7 @@
                                     count += parseFloat(o.Price);
                                 }
                             }, {});
-                            count += e.items[0] !== undefined ? e.items[0].Price : 0;
+                            count += e.items[0].Price;
                             // selectedDataItems contains all selected data items
                             var template = $('#table-total').html();
                             var render = "";

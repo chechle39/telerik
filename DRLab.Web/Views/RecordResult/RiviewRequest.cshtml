@@ -1,0 +1,1091 @@
+﻿
+@model DRLab.Data.ViewModels.AnalysisRequest_InfoStringDate
+@{
+    ViewData["Title"] = "RiviewRequest";
+}
+@section Scripts{
+    <script src="~/app/RecordResult/RecordResult.js"></script>
+    <script>
+        var detailObj = new recordResultController();
+        detailObj.initialize();
+    </script>
+}
+@(Html.Kendo().Notification()
+    .Name("notificationEdit")
+    .Position(p => p.Pinned(true).Top(30).Right(30))
+    .Stacking(NotificationStackingSettings.Down)
+    .Templates(t =>
+    {
+        t.Add().Type("success").ClientTemplateID("successTemplate");
+        t.Add().Type("error").ClientTemplateID("errorTemplate");
+    })
+)
+<h1 hidden id="flag">@Model.numberSample</h1>
+<h1 hidden id="flag2">@Model.dateOfSendingResult</h1>
+<h1 hidden id="flag3">@Model.receivceDate</h1>
+<h1 hidden id="flag4">@Model.requestNo</h1>
+<h1 hidden id="flag5">@Model.email</h1>
+<h1 hidden id="flag6">@Model.contactName</h1>
+<h1 hidden id="flag7">@Model.contactName</h1>
+<h1 hidden id="flag8">@Model.customerCode</h1>
+<h1 hidden id="flag9">@Model.receivceDate</h1>
+<h1 hidden id="flag10">@Model.dateOfSendingResult</h1>
+<section id="isCheck" class="content">
+    <div class="container-fluid">
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <!-- left column -->
+                    <div class="col-md-12">
+                        <!-- general form elements -->
+                        <div class="card">
+                            <form id="ticketsForm" class="k-form k-form-vertical" kendo-validator="true">
+                                <div class="card-header row" style="margin-left: 0px;">
+
+                                    <div class="col-4">
+                                        <h3 class="card-title" style="font-size: 25px">Review Result</h3>
+
+
+                                    </div>
+                                    <div class="col-3">
+                                        @(Html.Kendo().DropDownList()
+                                        .Name("color")
+                                        .DataTextField("Text")
+                                        .DataValueField("Value")
+                                        .Events(e => e.Change("change"))
+                                        .BindTo(new List<SelectListItem>() {
+                                        new SelectListItem() {
+                                            Text = "More Function",
+                                            Value = "1"
+                                        },
+                                        new SelectListItem() {
+                                                Text = "Export Excel",
+                                                Value = "2"
+                                        },
+                                        })
+                                    .Value("1")
+                                    .HtmlAttributes(new { style = "width: 100%" })
+                                        )
+                                    </div>
+                                    <div class="col-5">
+                                        <div style="float:right">
+                                            <button onclick="SaveEntity()" type="submit" class="k-button k-primary px-3 py-2">Save</button>
+                                            <button onclick="goBack()" class="k-button px-3 py-2">Cancel</button>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <!-- /.card-header -->
+                                <!-- form start -->
+                                <div class="card-body">
+                                    <div id="tbl-content">
+
+                                    </div>
+
+                                    <div class="form-group row pad-25">
+
+                                    </div>
+                                    <div class="form-group row" style="    padding-bottom: 15px;
+">
+                                        <div class="col-2">
+                                            <span style="color: #922999;text-decoration: underline double;">Sample List</span>
+                                        </div>
+
+                                        <div class="box pagination">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row margin-left-0">
+                                        <div hidden class="col-5 row">
+                                            <span>Sample Name</span>
+
+                                            <div class="col-sm-9 mr-t ">
+                                                <textarea disabled id="simpleName" required="required" placeholder="Sample Name" class="k-textbox" style="margin-left: 7px;width: 100%;height: calc(1.42857143em + 10px)"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div hidden class="row col-5">
+                                            <span>Sample Code</span>
+                                            <div class="col-sm-9 mr-t">
+                                                @(Html.Kendo().TextBox().Enable(false)
+                                                .Name("simpleCode")
+                                                .HtmlAttributes(new { placeholder = "Sample Code", style = "width: 50%;height: calc(1.42857143em + 10px);margin-left: 8px" })
+                                                )
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group row margin-left-0">
+
+                                        <div hidden class="col-5 row">
+                                            <span>Description</span>
+                                            <div class="col-sm-9 mr-t">
+                                                <textarea disabled id="descriptionCustomer" placeholder="Description" class="k-textbox" style="width: 100%;margin-left: 21px;height: calc(1.42857143em + 10px)"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="row col-12">
+                                            <span>Inner Code</span>
+                                            <div class="col-sm-2 mr-t">
+                                                @(Html.Kendo().TextBox().Enable(false)
+                                                .Name("innerCode")
+                                                .HtmlAttributes(new { placeholder = "Inner Code", style = "width: 50%;height: calc(1.42857143em + 10px);margin-left: 22px" })
+                                                )
+                                            </div>
+                                            <span>Sample Matrix</span>
+                                            <div class="col-sm-3 mr-t">
+                                                @(Html.Kendo().TextBox().Enable(false)
+                                                .Name("sampleMatrix")
+                                                .HtmlAttributes(new { placeholder = "Sample Matrix", style = "width: 80%;height: calc(1.42857143em + 10px);margin-left: 22px" })
+                                                )
+                                            </div>
+                                            <span>Remark to Lab</span>
+                                            <div class="col-sm-3 mr-t">
+                                                <textarea disabled id="remarkToLab" placeholder="Remark To Lab" class="k-textbox" style="margin-left: 2px;width: 100%;height: calc(1.42857143em + 10px)"></textarea>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group row margin-left-0">
+                                        <div class="row col-5"></div>
+                                        <div class=" col-5"></div>
+                                        <div class="row col-2">
+                                            <div style="margin-left: 33%">
+                                                <span class="span-underline-pd-35">Recheck</span>
+                                                <span class="span-underline-accept">Accept</span>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+
+                                       
+                                        <div class="form-group row">
+
+                                            @(Html.Kendo().Grid<DRLab.Data.ViewModels.RecordResultGridViewModel>()
+                                        .Name("Grid")
+                                        .HtmlAttributes(new { style = "height:auto;" })
+                                        .Columns(columns =>
+                                        {
+                                        columns.Select().Width(50);
+                                        columns.Bound(p => p.specification).Title("Specification").Width("20%");
+                                        columns.Bound(p => p.Mark).Title("Mark");
+                                        columns.Bound(p => p.method).Title("Method").Width("20%");
+                                        columns.Bound(p => p.unit).Title("Unit");
+                                        columns.Bound(p => p.LOD).Title("LOD");
+                                        columns.Bound(p => p.Result).Title("Result").Width("10%").Format("{0:n2}")
+;
+                                        columns.Bound(p => p.ResultText).Title("Text Result").Width("10%");
+                                        columns.Bound(p => p.ExpectationDate).Title("Expectation Date").Width("10%").ClientTemplate("#= kendo.toString(kendo.parseDate(ExpectationDate), 'dd/MM/yyyy') #");
+                                        columns.Bound(p => p.ReviewResult).Title("Review Status").ClientTemplate("<span style = 'cursor: pointer;' onclick = 'onChangeStatus()' id='badge_#=AnalysisCode#' class='badgeTemplate'></span>"); ;
+    })
+                                        .Navigatable()
+                                        .Editable(editable => editable.Mode(GridEditMode.InCell))
+                                        .Pageable()
+                                        .Sortable()
+                                        .Scrollable()
+                                        .Events(events => events.DataBound("onDataBound"))
+                                        .DataSource(dataSource => dataSource
+                                        .Custom()
+                                        .PageSize(20)
+                                        .Batch(true)
+                                        .Schema(schema =>
+                                        {
+        schema.Model(model =>
+        {
+            model.Id(p => p.WOID);
+            model.Field(p => p.WOID).Editable(false).From("WOID");
+            model.Field(p => p.LVNCode).Editable(false).From("LVNCode");
+            model.Field(p => p.LVNCode).Editable(false).From("AnalysisCode");
+            model.Field(p => p.specification).From("specification");
+            model.Field(p => p.Mark).From("Mark");
+            model.Field(p => p.method).From("method");
+            model.Field(p => p.unit).From("unit");
+            model.Field(p => p.LOD).From("LOD");
+            model.Field(p => p.Result).From("Result");
+            model.Field(p => p.ResultText).From("ResultText");
+            model.Field(p => p.ExpectationDate).From("ExpectationDate");
+            model.Field(p => p.ReviewResult).From("ReviewResult");
+        })
+        .Data(d => "schemaData")
+        .Total(t => "schemaTotal");
+    })))
+                                        </div>
+                                    </div>
+                                <!-- /.card-body -->
+                                <div id="temlate">
+
+                                </div>
+
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </section>
+    </div><!-- /.container-fluid -->
+</section>
+<script>
+    var data = [];
+    myData = [];
+    var specdata = [];
+    var curent;
+    function customFunction(input) {
+
+        if (input.attr('name') === "time" && input.val() == "14:00") {
+            return false;
+        }
+
+        return true;
+    }
+
+    $(function () {
+        var validator = $("#ticketsForm").data("kendoValidator");
+        var validationSummary = $("#validation-summary");
+
+        $("form").submit(function (event) {
+            event.preventDefault();
+
+            if (validator.validate()) {
+                validationSummary.html("<div class='k-messagebox k-messagebox-success'>Hooray! Your tickets has been booked!</div>");
+            } else {
+                validationSummary.html("<div class='k-messagebox k-messagebox-error'>Oops! There is invalid data in the form.</div>");
+            }
+        });
+    });
+    function schemaData() {
+
+        return data;
+
+    }
+    function schemaTotal(response) {
+        return data.length;
+    }
+
+    function onSelectaddSpecification(e) {
+        var grid = $("#Grid").data("kendoGrid");
+        specdata = grid.dataSource._pristineData;
+        //grid.bind("save", grid_save);
+        var dataItem = this.dataItem(e.item.index());
+        $.ajax({
+            type: "GET",
+            url: "/Testing_Info/GetTestingInfoBySpecId",
+            data: { id: dataItem.analysisCode },
+            dataType: "json",
+
+            success: function (response) {
+                //specdata = response;
+                //if (specdata.length > 0) {
+
+                //}
+                for (var i = 0; i < response.length; i++) {
+                    if (specdata.filter(x => x.analysisCode === response[i].analysisCode).length === 0) {
+                        specdata.push(response[i])
+                    }
+                }
+                //data = response;
+                schemaTotal(specdata);
+                var dataSource = new kendo.data.DataSource({
+                    data: specdata,
+                    pageSize: 20,
+                    schema: {
+
+                        model: {
+                            fields: {
+                                specification: {
+                                    editable: false
+                                },
+                                Mark: {
+                                    editable: false
+                                },
+                                method: {
+                                    editable: false
+
+                                },
+                                LOD: {
+                                    editable: false
+
+                                },
+
+                                unit: {
+                                    editable: false
+
+                                },
+
+                                ExpectationDate: {
+                                    editable: false
+
+                                },
+                                ReviewResult: {
+                                    editable: false
+
+                                },
+                                Result: {
+                                    editable: false
+                                },
+                                ResultText: {
+                                    editable: false
+                                },
+                            }
+
+                        }
+                    }
+                });
+                grid.setDataSource(dataSource);
+                var total = 0;
+                for (var i = 0; i < response.length; i++) {
+                    total += response[i].Price;
+                }
+                var template = $('#table-total').html();
+                var render = "";
+                render += Mustache.render(template, {
+                    tong: total,
+                });
+                if (render !== undefined) {
+                    $('#temlate').html(render);
+
+                }
+            },
+            error: function () {
+
+            }
+        });
+    }
+
+    // load data and style for active page
+    myData = [];
+    var curent;
+    function active_page(element, rows, req_per_page) {
+        if (myData.length === 0) {
+
+            $.ajax({
+                type: "GET",
+                url: "/RecordResult/GetRecordResultList",
+                data: { requestNo: document.getElementById("flag4").innerHTML },
+                dataType: "json",
+                success: function (response) {
+                    var grid = $("#Grid").data("kendoGrid");
+                    myarr = [];
+                    reponseGetById = response;
+                    if (response.length > 0) {
+                        $('#simpleCode').val(response[0].sampleCode);
+                        $('#innerCode').val(response[0].LVNCode);
+                        $('#simpleName').val(response[0].sampleName);
+                        $('#descriptionCustomer').val(response[0].sampleDescription);
+                        $('#remarkToLab').val(response[0].remarkToLab);
+                        $('#sampleMatrix').val(response[0].SampleMatrix);
+                        $('#weight').val(response[0].weight);
+                        $('#templateMark').val('');
+
+                        var dataSource = new kendo.data.DataSource({
+                            data: response[0].Data,
+                            pageSize: 20,
+                            schema: {
+
+                                model: {
+                                    fields: {
+                                        specification: {
+                                            editable: false
+                                        },
+                                        Mark: {
+                                            editable: false
+                                        },
+                                        method: {
+                                            editable: false
+
+                                        },
+                                        LOD: {
+                                            editable: false
+
+                                        },
+
+                                        unit: {
+                                            editable: false
+
+                                        },
+
+                                        ExpectationDate: {
+                                            editable: false
+
+                                        },
+                                        ReviewResult: {
+                                            editable: false
+
+                                        },
+                                        Result: {
+                                            editable: false
+                                        },
+                                        ResultText: {
+                                            editable: false
+                                        },
+                                    }
+
+                                }
+                            }
+                        });
+                        grid.setDataSource(dataSource);
+                    } else {
+
+
+                        var dataSource = new kendo.data.DataSource({
+                            data: [],
+                            pageSize: 20,
+                            schema: {
+
+                                model: {
+                                    fields: {
+                                        specification: {
+                                            editable: false
+                                        },
+                                        Mark: {
+                                            editable: false
+                                        },
+                                        method: {
+                                            editable: false
+
+                                        },
+                                        LOD: {
+                                            editable: false
+
+                                        },
+
+                                        unit: {
+                                            editable: false
+
+                                        },
+
+                                        ExpectationDate: {
+                                            editable: false
+
+                                        },
+                                        ReviewResult: {
+                                            editable: false
+
+                                        },
+                                        Result: {
+                                            editable: false
+                                        },
+                                        ResultText: {
+                                            editable: false
+                                        },
+                                    }
+
+                                }
+                            }
+                        });
+                        grid.setDataSource(dataSource);
+                    }
+
+                    for (var i = 0; i < parseInt(document.getElementById("flag").innerHTML); i++) {
+                        if (response[i] !== undefined) {
+                            const a = {
+                                simpleName: response[i].sampleName,
+                                simpleCode: response[i].sampleCode,
+                                descriptionCustomer: response[i].sampleDescription,
+                                innerCode: response[i].LVNCode,
+                                remarkToLab: response[i].remarkToLab,
+                                weight: response[i].weight,
+                                addSpecification: 1,
+                                templateMark: "",
+                                sampleMatrix: response[i].SampleMatrix,
+                                data: response[i].Data
+
+                            };
+                            myData.push(a);
+                        } else {
+                            const a = { simpleName: '', simpleCode: '', descriptionCustomer: '', innerCode: '', remarkToLab: '', weight: '' };
+                            myData.push(a);
+                        }
+
+                    }
+
+                    var current_page = checkClass(document.getElementsByClassName('active'));
+                    var curent = parseInt(current_page[0].innerText)
+                    var next_link = document.getElementById('next_link');
+                    var prev_link = document.getElementById('prev_link');
+                    var next_tab = current_page[0].nextSibling;
+                    var prev_tab = current_page[0].previousSibling;
+                    current_page[0].className = current_page[0].className.replace("active", "");
+                    if (element === "next") {
+                        if (parseInt(next_tab.text).toString() === 'NaN') {
+                            next_tab.previousSibling.className += " active";
+                            next_tab.setAttribute("onclick", "return false");
+                        } else {
+                            next_tab.className += " active"
+                            render_table_rows(myData, parseInt(req_per_page), parseInt(next_tab.text), curent);
+                            if (prev_link.getAttribute("onclick") === "return false") {
+                                prev_link.setAttribute("onclick", `active_page('prev',\"${myData}\",${req_per_page})`);
+                            }
+                            if (next_tab.style.display === "none") {
+                                next_tab.style.display = "block";
+                                hide_from_beginning(prev_link.nextSibling)
+                            }
+                        }
+                    } else if (element === "prev") {
+                        if (parseInt(prev_tab.text).toString() === 'NaN') {
+                            prev_tab.nextSibling.className += " active";
+                            prev_tab.setAttribute("onclick", "return false");
+                        } else {
+                            prev_tab.className += " active";
+                            render_table_rows(myData, parseInt(req_per_page), parseInt(prev_tab.text), curent);
+                            if (next_link.getAttribute("onclick") === "return false") {
+                                next_link.setAttribute("onclick", `active_page('next',\"${myData}\",${req_per_page})`);
+                            }
+                            if (prev_tab.style.display === "none") {
+                                prev_tab.style.display = "block";
+                                hide_from_end(next_link.previousSibling)
+                            }
+                        }
+                    } else {
+                        element.className += "active";
+                        render_table_rows(myData, parseInt(req_per_page), parseInt(element.text), curent);
+                        if (prev_link.getAttribute("onclick") === "return false") {
+                            prev_link.setAttribute("onclick", `active_page('prev',\"${myData}\",${req_per_page})`);
+                        }
+                        if (next_link.getAttribute("onclick") === "return false") {
+                            next_link.setAttribute("onclick", `active_page('next',\"${myData}\",${req_per_page})`);
+                        }
+                    }
+                },
+                error: function () {
+                }
+            });
+        } else {
+            var current_page = checkClass(document.getElementsByClassName('active'));
+            var curent = parseInt(current_page[0].innerText)
+            var next_link = document.getElementById('next_link');
+            var prev_link = document.getElementById('prev_link');
+            var next_tab = current_page[0].nextSibling;
+            var prev_tab = current_page[0].previousSibling;
+            current_page[0].className = current_page[0].className.replace("active", "");
+            if (element === "next") {
+                if (parseInt(next_tab.text).toString() === 'NaN') {
+                    next_tab.previousSibling.className += " active";
+                    next_tab.setAttribute("onclick", "return false");
+                } else {
+                    next_tab.className += " active"
+                    render_table_rows(myData, parseInt(req_per_page), parseInt(next_tab.text), curent);
+                    if (prev_link.getAttribute("onclick") === "return false") {
+                        prev_link.setAttribute("onclick", `active_page('prev',\"${myData}\",${req_per_page})`);
+                    }
+                    if (next_tab.style.display === "none") {
+                        next_tab.style.display = "block";
+                        hide_from_beginning(prev_link.nextSibling)
+                    }
+                }
+            } else if (element === "prev") {
+                if (parseInt(prev_tab.text).toString() === 'NaN') {
+                    prev_tab.nextSibling.className += " active";
+                    prev_tab.setAttribute("onclick", "return false");
+                } else {
+                    prev_tab.className += " active";
+                    render_table_rows(myData, parseInt(req_per_page), parseInt(prev_tab.text), curent);
+                    if (next_link.getAttribute("onclick") === "return false") {
+                        next_link.setAttribute("onclick", `active_page('next',\"${myData}\",${req_per_page})`);
+                    }
+                    if (prev_tab.style.display === "none") {
+                        prev_tab.style.display = "block";
+                        hide_from_end(next_link.previousSibling)
+                    }
+                }
+            } else {
+                element.className += "active";
+                render_table_rows(myData, parseInt(req_per_page), parseInt(element.text), curent);
+                if (prev_link.getAttribute("onclick") === "return false") {
+                    prev_link.setAttribute("onclick", `active_page('prev',\"${myData}\",${req_per_page})`);
+                }
+                if (next_link.getAttribute("onclick") === "return false") {
+                    next_link.setAttribute("onclick", `active_page('next',\"${myData}\",${req_per_page})`);
+                }
+            }
+        }
+
+
+    }
+
+    function checkClass(classList) {
+        var a = [];
+        for (var i = 0; i < classList.length; i++) {
+            if (classList[i].className.split(' ').join('') === 'active') {
+                a.push(classList[i]);
+            }
+        }
+
+        return a;
+    }
+    var response = [];
+    function render_table_rows(rows, req_per_page, page_no, curent) {
+        response = rows;
+        var grid = $("#Grid").data("kendoGrid");
+        response[curent - 1].simpleName = $('#simpleName').val();
+        response[curent - 1].simpleCode = $('#simpleCode').val();
+        response[curent - 1].descriptionCustomer = $('#descriptionCustomer').val();
+        response[curent - 1].innerCode = $('#innerCode').val();
+        response[curent - 1].remarkToLab = $('#remarkToLab').val();
+        response[curent - 1].weight = $('#weight').val();
+        response[curent - 1].sampleMatrix = $('#sampleMatrix').val();
+        // var hander = handerDataGrid()
+        response[curent - 1].data = handerDataGrid();
+        //response[curent - 1].deleted = handerDataGridDeleted();
+        const resp = response.slice(req_per_page * (page_no - 1), req_per_page * page_no);
+        if (response[page_no - 1].simpleCode === '') {
+            var requestNo = ["SampleCode", "InLabCode"];
+            $.ajax({
+                type: "POST",
+                url: "/GetCounter/GetCounterString",
+                data: JSON.stringify(requestNo),
+                dataType: "json",
+                contentType: "application/json",
+                success: function (response) {
+                    $('#simpleCode').val(response.sampleCode);
+                    $('#innerCode').val(response.inLabCode);
+                },
+                error: function () {
+                }
+            });
+        } else {
+            $('#simpleCode').val(response[page_no - 1].simpleCode);
+            $('#innerCode').val(response[page_no - 1].innerCode);
+        }
+        $('#simpleName').val(response[page_no - 1].simpleName);
+        $('#descriptionCustomer').val(response[page_no - 1].descriptionCustomer);
+        $('#remarkToLab').val(response[page_no - 1].remarkToLab);
+        $('#sampleMatrix').val(response[page_no - 1].sampleMatrix);
+        $('#weight').val(response[page_no - 1].weight);
+
+        var dataSource = new kendo.data.DataSource({
+            data: response[page_no - 1].data,
+            pageSize: 20,
+            schema: {
+
+                model: {
+                    fields: {
+                        specification: {
+                            editable: false
+                        },
+                        Mark: {
+                            editable: false
+                        },
+                        method: {
+                            editable: false
+
+                        },
+                        LOD: {
+                            editable: false
+
+                        },
+
+                        unit: {
+                            editable: false
+
+                        },
+                        ExpectationDate: {
+                            editable: false
+
+                        },
+                        ReviewResult: {
+                            editable: false
+
+                        },
+                        Result: {
+                            editable: false
+                        },
+                        ResultText: {
+                            editable: false
+                        },
+                    }
+
+                }
+            }
+        });
+        grid.setDataSource(dataSource);
+    }
+
+    function handerDataGridDeleted(request) {
+        var myGrid = [];
+        var grid = $("#Grid").data("kendoGrid");
+        for (var i = 0; i < grid.dataSource._destroyed.length; i++) {
+            var object = {
+                analysisCode: grid.dataSource._destroyed[i].analysisCode,
+                lOD: grid.dataSource._destroyed[i].LOD,
+                mark: grid.dataSource._destroyed[i].Mark,
+                method: grid.dataSource._destroyed[i].method,
+                price: grid.dataSource._destroyed[i].Price,
+                specification: grid.dataSource._destroyed[i].specification,
+                tAT: grid.dataSource._destroyed[i].TAT,
+                unit: grid.dataSource._destroyed[i].unit,
+                urgent: grid.dataSource._destroyed[i].Urgent,
+                LVNCode: grid.dataSource._destroyed[i].LVNCode,
+                AnalysisCode: grid.dataSource._destroyed[i].AnalysisCode
+            };
+
+            myGrid.push(object);
+        }
+        return myGrid;
+    }
+    function handerDataGrid(request) {
+        var myGrid = [];
+        var grid = $("#Grid").data("kendoGrid");
+        for (var i = 0; i < grid._data.length; i++) {
+            var object = {
+                ExpectationDate: grid._data[i].ExpectationDate,
+                LOD: grid._data[i].LOD,
+                Mark: grid._data[i].Mark,
+                method: grid._data[i].method,
+                Result: grid._data[i].Result,
+                ResultText: grid._data[i].ResultText,
+                ReviewResult: grid._data[i].ReviewResult,
+                WOID: grid._data[i].WOID,
+                specification: grid._data[i].specification,
+                unit: grid._data[i].unit,
+                LVNCode: grid._data[i].LVNCode,
+                AnalysisCode: grid._data[i].AnalysisCode
+            };
+            myGrid.push(object);
+        }
+        return myGrid;
+    }
+    function SaveEntity() {
+
+        var saveRequest = [];
+        if (response.length > 0) {
+            var x = checkClass(document.getElementsByClassName('active'))
+            var cr = parseInt(x[0].innerText);
+            var grid = $("#Grid").data("kendoGrid");
+            response[cr - 1].data = handerDataGrid();
+            for (var i = 0; i < response.length; i++) {
+                var arr = [];
+                var arrdelete = [];
+                if (response[i].data !== undefined) {
+                    arr = response[i].data;
+                }
+                if (response[i].deleted !== undefined) {
+                    arrdelete = response[i].deleted;
+                }
+                const object = {
+                    data: arr,
+                }
+                saveRequest.push(object);
+            }
+            SaveAnalysisRequestData(saveRequest);
+        }
+        if (response.length === 0) {
+            const object = {
+                data: handerDataGrid(),
+            }
+            saveRequest.push(object);
+            SaveAnalysisRequestData(saveRequest);
+        }
+    }
+    var mess;
+    function SaveAnalysisRequestData(SaveRq) {
+        var save = [];
+        SaveRq.reduce((r, o) => {
+            o.data.reduce((c, h) => {
+                save.push(h);
+            }, {})
+        }, {})
+        $.ajax({
+            type: "POST",
+            url: "/RecordResult/UpdateEntity",
+            data: JSON.stringify(save),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                var notification = $("#notificationEdit").data("kendoNotification");
+                notification.show({
+                    message: "Save Successful"
+                }, "success");
+
+            },
+            error: function () {
+                var notification = $("#notificationEdit").data("kendoNotification");
+                if (check === false) {
+                    notification.show({
+                        title: "Wrong Save",
+                        message: "Save error",
+                    }, "error");
+                } else {
+                    notification.show({
+                        title: "Wrong Save",
+                        message: "Save error"
+                    }, "error");
+                }
+
+
+            }
+        });
+    }
+
+    function change(e) {
+
+    };
+
+    function onDataBound(e) {
+        var grid = $("#Grid").data("kendoGrid");
+        grid.table.find("tr").each(function () {
+            var dataItem = grid.dataItem(this);
+            var type = dataItem.ReviewResult === 1 ? 'warning' : dataItem.ReviewResult === 2 ? 'success' : 'error';
+            var text = dataItem.ReviewResult === 1 ? 'Accept' : dataItem.ReviewResult === 2 ? 'Approved' : 'Recheck';
+            $(this).find('script').each(function () {
+                eval($(this).html());
+            });
+
+            $(this).find(".badgeTemplate").kendoBadge({
+                type: type,
+                value: text,
+            });
+
+
+            kendo.bind($(this), dataItem);
+        });
+    }
+    function goBack() {
+        window.history.back();
+    }
+
+    function onChangeStatus(x) {
+        console.log('jjj');
+        var selected = $.map(this.select(), function (item) {
+            return $(item).text();
+        });
+    }
+</script>
+
+<style>
+    /*.k-invalid-msg {
+        // display: inline !important;
+    }*/
+
+    .k-pager-info {
+        display: inherit !important;
+    }
+
+    .k-grid-content {
+        height: auto !important;
+    }
+
+    .k-grid tbody tr {
+        line-height: 14px;
+    }
+
+    /*.k-button {
+        height: 30px;
+    }*/
+
+    .btn-raised {
+        background-color: #92d050 !important;
+        color: #fff !important;
+        border-color: #92d050;
+    }
+
+    .btn-cancel {
+        color: #fff;
+        background-color: #868e96;
+        border-color: #868e96;
+    }
+
+    .k-grid-update {
+        height: 30px !important;
+        width: 76px;
+    }
+
+    .k-grid-cancel {
+        height: 30px !important;
+    }
+
+
+    .margin-left-0 {
+        margin-left: 0px;
+    }
+
+    .form-group {
+        margin-bottom: 8px !important;
+    }
+
+
+    .demo-section p {
+        margin: 3px 0 20px;
+        line-height: 50px;
+    }
+
+    .demo-section .k-button {
+        width: 250px;
+    }
+
+
+    /* Notifications */
+    .k-notification h3 {
+        padding: 30px 10px 5px;
+        font-size: 1em;
+        line-height: normal;
+    }
+
+    .k-notification img {
+        margin: 20px;
+        float: left;
+    }
+
+
+    /* Info template */
+    .new-mail {
+        width: 300px;
+        height: 100px;
+    }
+
+    /* Error template */
+    .wrong-pass {
+        width: 300px;
+        height: 100px;
+    }
+
+    /* Success template */
+    .upload-success {
+        width: 300px;
+        height: 50px;
+    }
+
+
+    /* For Bootstrap v4 theme */
+    .k-bootstrap-v4 .k-notification h3 {
+        padding: 10px 10px 5px;
+    }
+
+    .k-bootstrap-v4 .k-notification img {
+        margin: 10px 20px 0 0;
+    }
+
+    .k-bootstrap-v4 .new-mail,
+    .k-bootstrap-v4 .wrong-pass,
+    .k-bootstrap-v4 .upload-success {
+        width: calc( 300px - 2.5rem );
+        height: calc( 100px - 1.5rem );
+    }
+
+
+    /* For Material v2 theme */
+    .k-material-v2 .k-notification h3 {
+        padding: 10px 10px 5px;
+    }
+
+    .k-material-v2 .k-notification img {
+        margin: 10px 20px 0 0;
+    }
+
+    .k-material-v2 .new-mail,
+    .k-material-v2 .wrong-pass,
+    .k-material-v2 .upload-success {
+        width: 270px;
+        height: 70px;
+    }
+
+    .card-body {
+        padding-top: 0;
+    }
+
+    .card-header {
+        border-bottom: 0px;
+    }
+
+    .pad-25 {
+        padding-bottom: 25px;
+    }
+    /*.k-editable {
+        background-color: white !important;
+    }
+    .k-grid-add {
+        height: 30px;
+        margin-top: -10px;
+    }*/
+    .mr-t {
+        margin-top: -4px;
+    }
+
+    .span {
+    }
+
+    .k-dropdown .k-dropdown-wrap {
+        color: black !important;
+        background-color: white !important;
+        background-image: none !important;
+    }
+</style>
+<script id="errorTemplate" type="text/x-kendo-template">
+    <div class="wrong-pass">
+        <img src="@Url.Content("~/Shared/error-icon.png")" />
+        <h3>#= title #</h3>
+        <p>#= message #</p>
+    </div>
+</script>
+<script id="successTemplate" type="text/x-kendo-template">
+    <div class="upload-success">
+        <img src="@Url.Content("~/Shared/success-icon.png")" />
+        <h3>#= message #</h3>
+    </div>
+</script>
+<script id="table-template" type="x-tmpl-mustache">
+    <div class="info-custummer">
+        <div class="form-group row">
+            <div class="col-3">
+                <span onclick=openDialog() class="span-underline">Request No: <span id="requestNo">{{requestNo}}</span></span>
+
+            </div>
+            <div class="col-9">
+                <span style="color: orange;" class="mr-left">Receive Day: {{receivceDate}}</span>
+                <span style="color: orange;" class="mr-left">Return Day: {{dateOfSendingResult}}</span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-3">
+                <span style="color: blue;">{{companyName}}</span>
+            </div>
+            <div class="col-9">
+                <span style="color: orange;" class="mr-left">{{contactName}}, {{contactEmail}}</span>
+            </div>
+        </div>
+    </div>
+
+</script>
+<script id="table-total" type="x-tmpl-mustache">
+
+    <h5 style="float: right;padding-right: 14px">Total: {{tong}}</h5>
+</script>
+<script>
+
+    function openDialog() {
+        var dialog = $('#dialogEdit');
+        var numOfSam = $("#numOfSam").data("kendoNumericTextBox");
+        numOfSam.value(@Model.numberSample);
+        var comboCustomers = $("#customers").data("kendoComboBox");
+        comboCustomers.value(@Model.customerCode);
+        var comboContact = $("#contact").data("kendoComboBox");
+        comboContact.value(@Model.contactID);
+        var date = document.getElementById("flag9").innerHTML;
+        var dateRt = document.getElementById("flag9").innerHTML;
+        var f = converDate(date);
+        var h = converDate(dateRt);
+        //var NewDate = kendo.toString(this.value(), 'MM/dd/yyyy');
+        //var datetimepicker = $('#datetimepicker').val();
+        var datePik = new Date(f);
+        var datePikRet = new Date(h);
+        $("#datetimepicker").data('kendoDateTimePicker').value(datePik);
+        $('#datetimepickerReturn').data('kendoDateTimePicker').value(datePikRet);
+        $('#requestNoId').val(document.getElementById("flag4").innerHTML);
+        dialog.data("kendoDialog").open();
+    }
+    function converDate (date) {
+        var b = date.split(' ')[0];
+        var c = b.split('/');
+        var d = c[1] + "/" + c[0] + "/" + c[2]
+        var f = d + " " + date.split(' ')[1]
+        return f;
+    }
+</script>
+

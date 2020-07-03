@@ -28,6 +28,19 @@
     color: blue;
     cursor: pointer;
 }
+.span-underline-pd-35 {
+    text-decoration: underline;
+    color: blue;
+    cursor: pointer;
+    padding-right: 35px;
+    font-weight: bold;
+}
+.span-underline-accept {
+    text-decoration: underline;
+    color: blue;
+    cursor: pointer;
+    font-weight: bold;
+}
 .pd-left-52 {
     padding-left: 52px;
 }

@@ -9,6 +9,7 @@
     <PackageReference Include="AutoMapper" Version="6.1.1" />
     <PackageReference Include="Askmethat.Aspnet.JsonLocalizer" Version="2.2.0" />
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.447" />
+    <PackageReference Include="DevExpress.AspNetCore.Reporting" Version="19.2.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -18,7 +19,7 @@
 	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="3.1.0" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
 	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.3" />
-	  <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.2" />
+	  <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -26,18 +27,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Reports\**" />
     <Compile Remove="Templates\**" />
-    <Content Remove="Reports\**" />
     <Content Remove="Templates\**" />
-    <EmbeddedResource Remove="Reports\**" />
     <EmbeddedResource Remove="Templates\**" />
-    <None Remove="Reports\**" />
     <None Remove="Templates\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\ReportDesign.cs" />
+    <None Remove="Reports\ManagementSample.repx" />
+    <None Remove="Reports\XtraReport1.repx" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,7 +43,26 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Reports\ManagementSample.repx" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DRLab.Data\DRLab.Data.csproj" />
     <ProjectReference Include="..\DRLab.Services\DRLab.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Reports\ManagementSample.cs">
+      <DependentUpon>ManagementSample.repx</DependentUpon>
+    </Compile>
+    <Compile Update="Reports\ManagementSample.Designer.cs">
+      <DependentUpon>ManagementSample.repx</DependentUpon>
+    </Compile>
+    <Compile Update="Reports\XtraReport1.cs">
+      <DependentUpon>XtraReport1.repx</DependentUpon>
+    </Compile>
+    <Compile Update="Reports\XtraReport1.Designer.cs">
+      <DependentUpon>XtraReport1.repx</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

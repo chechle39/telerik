@@ -96,7 +96,7 @@
                                     </div>
 
                                     <div class="form-group row margin-left-0">
-                                        <div class="col-5 row">
+                                        <div hidden class="col-5 row">
                                             <span>Sample Name</span>
 
                                             <div class="col-sm-9 mr-t ">
@@ -104,7 +104,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="row col-5">
+                                        <div hidden class="row col-5">
                                             <span>Sample Code</span>
                                             <div class="col-sm-9 mr-t">
                                                 @(Html.Kendo().TextBox().Enable(false)
@@ -119,37 +119,48 @@
                                     </div>
                                     <div class="form-group row margin-left-0">
 
-                                        <div class="col-5 row">
+                                        <div hidden class="col-5 row">
                                             <span>Description</span>
                                             <div class="col-sm-9 mr-t">
                                                 <textarea disabled id="descriptionCustomer" placeholder="Description" class="k-textbox" style="width: 100%;margin-left: 21px;height: calc(1.42857143em + 10px)"></textarea>
                                             </div>
                                         </div>
 
-                                        <div class="row col-5">
+                                        <div class="row col-12">
                                             <span>Inner Code</span>
-                                            <div class="col-sm-9 mr-t">
+                                            <div class="col-sm-2 mr-t">
                                                 @(Html.Kendo().TextBox().Enable(false)
                                                 .Name("innerCode")
                                                 .HtmlAttributes(new { placeholder = "Inner Code", style = "width: 50%;height: calc(1.42857143em + 10px);margin-left: 22px" })
                                                 )
                                             </div>
+                                            <span>Sample Matrix</span>
+                                            <div class="col-sm-3 mr-t">
+                                                @(Html.Kendo().TextBox().Enable(false)
+                                                .Name("sampleMatrix")
+                                                .HtmlAttributes(new { placeholder = "Sample Matrix", style = "width: 80%;height: calc(1.42857143em + 10px);margin-left: 22px" })
+                                                )
+                                            </div>
+                                            <span>Remark to Lab</span>
+                                            <div class="col-sm-3 mr-t">
+                                                <textarea disabled id="remarkToLab" placeholder="Remark To Lab" class="k-textbox" style="margin-left: 2px;width: 100%;height: calc(1.42857143em + 10px)"></textarea>
 
+                                            </div>
                                         </div>
                                     </div>
 
 
 
 
-                                    <div class="form-group row margin-left-0">
+                                    <div hidden class="form-group row margin-left-0">
 
-                                        <div class="col-5 row">
+                                        @*<div class="col-5 row">
                                             <span>Remark To Lab</span>
                                             <div class="col-sm-9 mr-t">
                                                 <textarea disabled id="remarkToLab"  placeholder="Remark To Lab" class="k-textbox" style="margin-left: 2px;width: 100%;height: calc(1.42857143em + 10px)"></textarea>
 
                                             </div>
-                                        </div>
+                                        </div>*@
 
                                         <div class="row col-3">
                                             <span>Weight</span>
@@ -375,7 +386,6 @@
                 data: { requestNo: document.getElementById("flag4").innerHTML },
                 dataType: "json",
                 success: function (response) {
-                    console.log(response);
                     var grid = $("#Grid").data("kendoGrid");
                     myarr = [];
                     reponseGetById = response;
@@ -385,7 +395,7 @@
                         $('#simpleName').val(response[0].sampleName);
                         $('#descriptionCustomer').val(response[0].sampleDescription);
                         $('#remarkToLab').val(response[0].remarkToLab);
-                        $('#sampleMatrix').val(response[0].sampleMatrix);
+                        $('#sampleMatrix').val(response[0].SampleMatrix);
                         $('#weight').val(response[0].weight);
                         $('#templateMark').val('');
 
@@ -487,6 +497,7 @@
                                 weight: response[i].weight,
                                 addSpecification: 1,
                                 templateMark: "",
+                                sampleMatrix: response[i].SampleMatrix,
                                 data: response[i].Data
 
                             };
@@ -622,6 +633,7 @@
         response[curent - 1].innerCode = $('#innerCode').val();
         response[curent - 1].remarkToLab = $('#remarkToLab').val();
         response[curent - 1].weight = $('#weight').val();
+        response[curent - 1].sampleMatrix = $('#sampleMatrix').val();
         // var hander = handerDataGrid()
         response[curent - 1].data = handerDataGrid();
         //response[curent - 1].deleted = handerDataGridDeleted();
@@ -819,7 +831,6 @@
             var dataItem = grid.dataItem(this);
             var type = dataItem.ReviewResult === 1 ? 'warning' : dataItem.ReviewResult === 2 ? 'success' : 'error';
             var text = dataItem.ReviewResult === 1 ? 'Accept' : dataItem.ReviewResult === 2 ? 'Approved' : 'Recheck';
-            console.log("x");
             $(this).find('script').each(function () {
                 eval($(this).html());
             });

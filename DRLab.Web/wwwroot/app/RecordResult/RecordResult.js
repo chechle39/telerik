@@ -17,7 +17,7 @@
         var requestNo = ["RequestNo", "SampleCode", "InLabCode"];
         var template = $('#table-template').html();
         var render = "";
-
+        const checkUrl = window.location.pathname;
         render += Mustache.render(template, {
             requestNo: document.getElementById("flag4").innerHTML,
             receivceDate: document.getElementById("flag3").innerHTML,
@@ -42,7 +42,7 @@
                     $('#simpleName').val(response[0].sampleName);
                     $('#descriptionCustomer').val(response[0].sampleDescription);
                     $('#remarkToLab').val(response[0].remarkToLab);
-                    $('#sampleMatrix').val(response[0].sampleMatrix);
+                    $('#sampleMatrix').val(response[0].SampleMatrix);
                     $('#weight').val(response[0].weight);
                     $('#templateMark').val('');
                     $('#tat').val('');
@@ -81,7 +81,12 @@
                                         },
                                         ReviewResult: {
                                             editable: false
-
+                                        },
+                                        Result: {
+                                            editable: checkUrl === '/RecordResult/RiviewRequest/' ? false : true
+                                        },
+                                        ResultText: {
+                                            editable: checkUrl === '/RecordResult/RiviewRequest/' ? false : true
                                         },
                                     }
 

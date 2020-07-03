@@ -69,6 +69,10 @@
                                                 Text = "Delete Request",
                                                 Value = "5"
                                         },
+                                        new SelectListItem() {
+                                                Text = "Print Request",
+                                                Value = "6"
+                                        },
                                         })
                                     .Value("0")
                                     .HtmlAttributes(new { style = "width: 100%", @class = "k-dropdown--clear" })
@@ -156,6 +160,7 @@
 
 <script type="text/javascript">
     var data = [];
+    var codeRequest;
     function refresh() {
         reLoadData();
     }
@@ -216,6 +221,9 @@
     function onChangex(arg) {
         deleteAray = this.selectedKeyNames();
         //console.log("The selected product ids are: [" + this.selectedKeyNames().join(", ") + "]");
+        var grid = $("#Grid").data("kendoGrid");
+        var selectedItem = grid.dataItem(grid.select());
+        codeRequest = selectedItem.requestNo;
     }
 
     function showEdit(e) {
@@ -306,6 +314,23 @@
                 })
                 .end()
             return false;
+        }
+        if (dataItem.Value === "6") {          
+            let reportName = "ManagementRequest";         
+            let urlBuilder = `/ReportDesign?requestNumber=${codeRequest}&reportName=${reportName}`;
+            window.location = urlBuilder;
+            $.ajax({
+                type: "POST",
+                url: urlBuilder,
+                dataType: "json",
+                contentType: "application/json",
+                success: function () {
+                    window.location = urlBuilder;
+                },
+                error: function () {
+
+                }
+            });
         }
     }
     function deleted() {

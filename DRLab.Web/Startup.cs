@@ -1,5 +1,9 @@
 using Askmethat.Aspnet.JsonLocalizer.Extensions;
 using AutoMapper;
+using DevExpress.AspNetCore;
+using DevExpress.AspNetCore.Reporting;
+using DevExpress.XtraReports.Web.Extensions;
+using DevExpress.XtraReports.Web.WebDocumentViewer;
 using DRLab.Data.Base;
 using DRLab.Data.Entities;
 using DRLab.Data.Interfaces;
@@ -41,12 +45,20 @@ namespace DRLab.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDevExpressControls();
 
             services.AddDbContext<DataBaseContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
-
+            services.ConfigureReportingServices(configurator => {
+                configurator.ConfigureReportDesigner(designerConfigurator => {
+                    designerConfigurator.RegisterDataSourceWizardConfigFileConnectionStringsProvider();
+                });
+                configurator.ConfigureWebDocumentViewer(viewerConfigurator => {
+                    viewerConfigurator.UseCachedReportSourceBuilder();
+                });
+            });
             services.AddAutoMapper();
             services.AddSingleton(Mapper.Configuration);
             services.AddScoped<IMapper>(sp => new Mapper(sp.GetRequiredService<AutoMapper.IConfigurationProvider>(), sp.GetService));
@@ -96,6 +108,7 @@ namespace DRLab.Web
             });
 
          
+            DefaultWebDocumentViewerContainer.UseCachedReportSourceBuilder();
 
 
 
@@ -132,7 +145,9 @@ namespace DRLab.Web
             var locOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(locOptions.Value);
             var reportDirectory = Path.Combine(env.ContentRootPath, "Reports");
-
+            DevExpress.XtraReports.Web.Extensions.ReportStorageWebExtension.RegisterExtensionGlobal(new ReportStorageWebExtension1(reportDirectory));
+            DevExpress.XtraReports.Configuration.Settings.Default.UserDesignerOptions.DataBindingMode = DevExpress.XtraReports.UI.DataBindingMode.Expressions;
+            app.UseDevExpressControls();
             System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls12;
 
             if (env.IsDevelopment())

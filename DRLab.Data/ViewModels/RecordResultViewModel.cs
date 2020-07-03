@@ -48,5 +48,6 @@ namespace DRLab.Data.ViewModels
         public string sampleDescription { get; set; }
         public string weight { get; set; }
         public string remarkToLab { get; set; }
+        public string SampleMatrix { get; set; }
     }
 }

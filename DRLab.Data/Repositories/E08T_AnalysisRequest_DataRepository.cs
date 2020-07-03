@@ -1,5 +1,5 @@
 ﻿using AutoMapper.QueryableExtensions;
-using Dapper;
+
 using DRLab.Data.Base;
 using DRLab.Data.Entities;
 using DRLab.Data.Interfaces;

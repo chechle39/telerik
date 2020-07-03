@@ -9,5 +9,6 @@ namespace DRLab.Services.Interfaces
     public interface IE00T_SampleMatrixService
     {
         public Task<List<E00T_SampleMatrixViewModel>> GetAllSampleMatrix(string text);
+        Task<bool> Create(E00T_SampleMatrixViewModel Data);
     }
 }   

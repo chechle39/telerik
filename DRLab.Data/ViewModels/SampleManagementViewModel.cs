@@ -38,8 +38,12 @@ namespace DRLab.Data.ViewModels
         [Display(Name = "Approve")]
         public int Approve { get; set; }
 
+    }    
+    public class SerchSampleManagementReport
+    {      
+        public string RequestNumber { get; set; }
+        public string ReportName { get; set; }
     }
-
     public class SerchSampleManagement
     {
         public string StartDate { get; set; }

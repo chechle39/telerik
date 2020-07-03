@@ -1,4 +1,5 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using DRLab.Data.Base;
 using DRLab.Data.Entities;
 using DRLab.Data.Interfaces;
@@ -38,6 +39,22 @@ namespace DRLab.Data.Repositories
                 }
                 return null;
             }
+        }
+
+        public async Task<bool> SaveSampleMatrix(E00T_SampleMatrixViewModel SaveSampleMatrixrequest)
+        {
+            var saveSampleMatrixrequest = Mapper.Map<E00T_SampleMatrixViewModel, E00T_SampleMatrix>(SaveSampleMatrixrequest);
+
+            Entities.Add(saveSampleMatrixrequest);
+            return await Task.FromResult(true);
+        }
+
+        public async Task<bool> UpdateSampleMatrix(E00T_SampleMatrixViewModel SaveSampleMatrixrequest)
+        {
+            var saveSampleMatrixrequest = Mapper.Map<E00T_SampleMatrixViewModel, E00T_SampleMatrix>(SaveSampleMatrixrequest);
+
+            Entities.Update(saveSampleMatrixrequest);
+            return await Task.FromResult(true);
         }
     }
 }

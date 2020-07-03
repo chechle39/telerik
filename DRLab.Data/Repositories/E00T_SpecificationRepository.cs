@@ -21,9 +21,9 @@ namespace DRLab.Data.Repositories
             return await Task.FromResult(true);
         }
 
-        public async Task<bool> UpdateSpecification(E00T_SpecificationViewModel SaveAnalysisRequestInforequest)
+        public async Task<bool> UpdateSpecification(E00T_SpecificationViewModel SaveSpecificationrequest)
         {
-            var saveAnalysisRequestInforequest = Mapper.Map<E00T_SpecificationViewModel, E00T_Specification>(SaveAnalysisRequestInforequest);
+            var saveAnalysisRequestInforequest = Mapper.Map<E00T_SpecificationViewModel, E00T_Specification>(SaveSpecificationrequest);
 
             Entities.Update(saveAnalysisRequestInforequest);
             return await Task.FromResult(true);

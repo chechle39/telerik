@@ -153,6 +153,7 @@
 
 <script type="text/javascript">
     var data = [];
+    let codeSample;
     function refresh() {
         reLoadData();
     }
@@ -206,10 +207,10 @@
 
 
     }
-     function onChangex(arg) {
-      console.log("The selected product ids are: [" + this.selectedKeyNames().join(", ") + "]");
-      
-            
+     function onChangex(arg) {   
+         var grid = $("#Grid").data("kendoGrid");
+         var selectedItem = grid.dataItem(grid.select());
+         codeSample = selectedItem.requestNo;        
     }
 
     function showEdit() {
@@ -263,24 +264,24 @@
     function change(e) {
     };
     function onSelectRequestAction(e) {
-        var dataItem = this.dataItem(e.item);
-        if (dataItem.Value === "2") {
-            var deleteRequest = [];       
-            var grid = $("#Grid").data("kendoGrid");
-           var selectedItem = grid.dataItem(grid.select());
-            window.location = `/ReportDesign`;
-          $.ajax({
+        var dataItem = this.dataItem(e.item);      
+        if (dataItem.Value === "2") {            
+            var grid = $("#Grid").data("kendoGrid");           
+            let reportName = "ManagementSample";          
+            let urlBuilder = `/ReportDesign?requestNumber=${codeSample}&reportName=${reportName}`;
+            window.location = urlBuilder;            
+            $.ajax({
                  type: "POST",
-                        url: "/ReportDesign",                       
+                         url: urlBuilder,                       
                         dataType: "json",
                         contentType: "application/json",
                         success: function () {                          
-
+                            window.location = urlBuilder;  
                         },
                         error: function () {
 
                         }
-                    });
+            });
         }
     }
     function onClicSearch() {

@@ -68,7 +68,7 @@
                                                 Value = "2"
                                         },
                                         })
-                                    .Value("1")
+                                    .Value("0")
                                     .HtmlAttributes(new { style = "width: 100%", @class = "k-dropdown--clear" })
                                         )
                                     </div>
@@ -373,11 +373,25 @@
     var specdata = [];
     var curent;
     function changeDR(e) {
-        //var value = $("#color").val();
-        //$("#cap")
-        //    .toggleClass("black-cap", value == 1)
-        //    .toggleClass("orange-cap", value == 2)
-        //    .toggleClass("grey-cap", value == 3);
+        var dataItem = this.dataItem(e.item);
+        if (dataItem.Value === "1") {      
+            var codeRequest = document.getElementById("requestNo").innerHTML;
+            let reportName = "ManagementRequest";     
+            let urlBuilder = `/ReportDesign?requestNumber=${codeRequest}&reportName=${reportName}`;
+            window.location = urlBuilder;
+            $.ajax({
+                type: "POST",
+                url: urlBuilder,
+                dataType: "json",
+                contentType: "application/json",
+                success: function () {
+                    window.location = urlBuilder;
+                },
+                error: function () {
+
+                }
+            });
+        }
     };
     function customFunction(input) {
 
@@ -1087,6 +1101,7 @@
     function goBack() {
         window.history.back();
     }
+
 </script>
 
 <style>

@@ -46,7 +46,7 @@ namespace DRLab.Data.Repositories
                             unit = iii.Unit,
                             WOID = iii.WOID,
                             LVNCode = iii.LVNCode,
-                            AnalysisCode = iii.AnalysisCode
+                            AnalysisCode = iii.AnalysisCode,
                         };
                         recordResultGridViewModel.Add(RecordResult);
                     }
@@ -59,7 +59,8 @@ namespace DRLab.Data.Repositories
                         sampleCode = item.sampleCode,
                         sampleDescription = item.sampleDescription,
                         sampleName = item.sampleName,
-                        weight = item.weight
+                        weight = item.weight,
+                        SampleMatrix = workingOrderItem[0].SampleMatrix
                     };
                     dataList.Add(getRecordResult);
                 }    
