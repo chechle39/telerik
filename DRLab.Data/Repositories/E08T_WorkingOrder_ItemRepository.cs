@@ -47,6 +47,7 @@ namespace DRLab.Data.Repositories
                             WOID = iii.WOID,
                             LVNCode = iii.LVNCode,
                             AnalysisCode = iii.AnalysisCode,
+                            ValidationResult = iii.ValidationResult
                         };
                         recordResultGridViewModel.Add(RecordResult);
                     }
@@ -80,6 +81,8 @@ namespace DRLab.Data.Repositories
                     var obj = checkExits[0];
                     obj.Result = item.Result;
                     obj.ResultText = item.ResultText;
+                    obj.ReviewResult = item.ReviewResult;
+                    obj.ValidationResult = item.ValidationResult;
                     Entities.Update(obj);
                 }
                

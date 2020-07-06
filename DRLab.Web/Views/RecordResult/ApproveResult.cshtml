@@ -1,6 +1,6 @@
 ﻿@model DRLab.Data.ViewModels.AnalysisRequest_InfoStringDate
 @{
-    ViewData["Title"] = "RecordResult";
+    ViewData["Title"] = "RiviewRequest";
 }
 @section Scripts{
     <script src="~/app/RecordResult/RecordResult.js"></script>
@@ -42,7 +42,7 @@
                                 <div class="card-header row" style="margin-left: 0px;">
 
                                     <div class="col-4">
-                                        <h3 class="card-title" style="font-size: 25px">Record Result</h3>
+                                        <h3 class="card-title" style="font-size: 25px">Approve Result</h3>
 
 
                                     </div>
@@ -150,42 +150,18 @@
                                     </div>
 
 
-
-
-                                    <div hidden class="form-group row margin-left-0">
-
-                                        @*<div class="col-5 row">
-                                            <span>Remark To Lab</span>
-                                            <div class="col-sm-9 mr-t">
-                                                <textarea disabled id="remarkToLab"  placeholder="Remark To Lab" class="k-textbox" style="margin-left: 2px;width: 100%;height: calc(1.42857143em + 10px)"></textarea>
-
-                                            </div>
-                                        </div>*@
-
+                                    <div class="form-group row margin-left-0">
+                                        <div class="row col-4"></div>
+                                        <div class=" col-5"></div>
                                         <div class="row col-3">
-                                            <span>Weight</span>
-                                            <div class="col-sm-9 mr-t">
-                                                @(Html.Kendo().TextBox().Enable(false)
-                                                .Name("weight")
-                                                .HtmlAttributes(new { placeholder = "Weight", style = "width: 87%;height: calc(1.42857143em + 10px);margin-left: 45px", })
-                                                )
+                                            <div style="margin-left: 53%">
+                                                <span onclick="recheck()" class="span-underline-pd-35">Recheck</span>
+                                                <span onclick="accept()" class="span-underline-accept">Approve</span>
                                             </div>
 
                                         </div>
-
-                                      
-                                    </div>
-                                    <div class="form-group row margin-left-0">
-
-                                        
-                                      
-                                    </div>
-                                    <div style="margin-bottom: 25px;">
-
-
                                     </div>
 
-                                  
 
                                     <div class="form-group row">
 
@@ -194,47 +170,52 @@
                                         .HtmlAttributes(new { style = "height:auto;" })
                                         .Columns(columns =>
                                         {
-                                            columns.Bound(p => p.specification).Title("Specification").Width("20%");
+                                            columns.Select().Width(50);
+                                            columns.Bound(p => p.specification).Title("Specification").Width("17%");
                                             columns.Bound(p => p.Mark).Title("Mark");
-                                            columns.Bound(p => p.method).Title("Method").Width("20%");
+                                            columns.Bound(p => p.method).Title("Method").Width("17%");
                                             columns.Bound(p => p.unit).Title("Unit");
                                             columns.Bound(p => p.LOD).Title("LOD");
-                                            columns.Bound(p => p.Result).Title("Result").Width("10%").Format("{0:n2}")
-;
+                                            columns.Bound(p => p.Result).Title("Result").Width("10%").Format("{0:n2}");
                                             columns.Bound(p => p.ResultText).Title("Text Result").Width("10%");
                                             columns.Bound(p => p.ExpectationDate).Title("Expectation Date").Width("10%").ClientTemplate("#= kendo.toString(kendo.parseDate(ExpectationDate), 'dd/MM/yyyy') #");
-                                            columns.Bound(p => p.ReviewResult).Title("Review Status").ClientTemplate("<span id='badge_#=WOID#' class='badgeTemplate'></span>"); ;
+                                            columns.Bound(p => p.ReviewResult).Title("Review Status").ClientTemplate("<span style = 'cursor: pointer;'  id='badge_#=AnalysisCode#' class='badgeTemplate'></span>");
+                                            columns.Bound(p => p.ValidationResult).Title("Approve Status").ClientTemplate("<span style = 'cursor: pointer;' onclick='onChangeStatus(this)' id='temp_#=AnalysisCode#' class='temp'></span>");
                                         })
+
                                         .Navigatable()
-                                        .Editable(editable => editable.Mode(GridEditMode.InCell))
                                         .Pageable()
                                         .Sortable()
                                         .Scrollable()
-                                        .Events(events => events.DataBound("onDataBound"))
+                                        .Events(events =>
+                                        events.DataBound("onDataBound")
+                                        .Change("onChangeCell"))
                                         .DataSource(dataSource => dataSource
                                         .Custom()
                                         .PageSize(20)
                                         .Batch(true)
                                         .Schema(schema =>
                                         {
-                                            schema.Model(model =>
-                                            {
-                                                model.Id(p => p.WOID);
-                                                model.Field(p => p.WOID).Editable(false).From("WOID");
-                                                model.Field(p => p.LVNCode).Editable(false).From("LVNCode");
-                                                model.Field(p => p.LVNCode).Editable(false).From("AnalysisCode");
-                                                model.Field(p => p.specification).From("specification");
-                                                model.Field(p => p.Mark).From("Mark");
-                                                model.Field(p => p.method).From("method");
-                                                model.Field(p => p.unit).From("unit");
-                                                model.Field(p => p.LOD).From("LOD");
-                                                model.Field(p => p.Result).From("Result");
-                                                model.Field(p => p.ResultText).From("ResultText");
-                                                model.Field(p => p.ExpectationDate).From("ExpectationDate");
-                                                model.Field(p => p.ReviewResult).From("ReviewResult");
-                                            })
-                                            .Data(d => "schemaData")
-                                            .Total(t => "schemaTotal");
+                                        schema.Model(model =>
+                                        {
+                                        model.Id(p => p.AnalysisCode);
+                                        model.Field(p => p.AnalysisCode).Editable(false).From("AnalysisCode");
+                                        model.Field(p => p.LVNCode).Editable(false).From("LVNCode");
+                                        model.Field(p => p.WOID).Editable(false).From("WOID");
+
+                                        model.Field(p => p.specification).From("specification");
+                                        model.Field(p => p.Mark).From("Mark");
+                                        model.Field(p => p.method).From("method");
+                                        model.Field(p => p.unit).From("unit");
+                                        model.Field(p => p.LOD).From("LOD");
+                                        model.Field(p => p.Result).From("Result");
+                                        model.Field(p => p.ResultText).From("ResultText");
+                                        model.Field(p => p.ExpectationDate).From("ExpectationDate");
+                                        model.Field(p => p.ReviewResult).From("ReviewResult");
+                                        model.Field(p => p.ValidationResult).From("ReviewResult");
+                                        })
+                                        .Data(d => "schemaData")
+                                        .Total(t => "schemaTotal");
                                         })))
                                     </div>
                                 </div>
@@ -257,23 +238,164 @@
     var data = [];
     myData = [];
     var specdata = [];
+    var listCheck = [];
     var curent;
+    function recheck() {
+        if (listCheck.length === 0) {
+            return;
+        } else {
+            var grid = $("#Grid").data("kendoGrid");
+            for (var i = 0; i < listCheck.length; i++) {
+                grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ValidationResult = -1;
+            }
+            var dataSource = new kendo.data.DataSource({
+                data: grid._data,
+                pageSize: 20,
+                schema: {
+                    model: {
+                        id: "AnalysisCode",
+                        fields: {
+                            specification: {
+                                editable: false
+                            },
+                            Mark: {
+                                editable: false
+                            },
+                            method: {
+                                editable: false
+                            },
+                            LOD: {
+                                editable: false
+                            },
+                            unit: {
+                                editable: false
+                            },
+                            ExpectationDate: {
+                                editable: false
+                            },
+                            ReviewResult: {
+                                editable: false
+                            },
+                            Result: {
+                                editable: false
+                            },
+                            ResultText: {
+                                editable: false
+                            },
+                        },
+                    }
+                }
+            });
+            grid.setDataSource(dataSource);
+            listCheck = [];
+        }
+    }
+    function accept() {
+        if (listCheck.length === 0) {
+            return;
+        } else {
+            var grid = $("#Grid").data("kendoGrid");
+            for (var i = 0; i < listCheck.length; i++) {
+                grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ValidationResult = 1;
+            }
+            var dataSource = new kendo.data.DataSource({
+                data: grid._data,
+                pageSize: 20,
+                schema: {
+                    model: {
+                        id: "AnalysisCode",
+                        fields: {
+                            specification: {
+                                editable: false
+                            },
+                            Mark: {
+                                editable: false
+                            },
+                            method: {
+                                editable: false
+                            },
+                            LOD: {
+                                editable: false
+                            },
+                            unit: {
+                                editable: false
+                            },
+                            ExpectationDate: {
+                                editable: false
+                            },
+                            ReviewResult: {
+                                editable: false
+                            },
+                            Result: {
+                                editable: false
+                            },
+                            ResultText: {
+                                editable: false
+                            },
+                        },
+                    }
+                }
+            });
+            grid.setDataSource(dataSource);
+            listCheck = [];
+        }
+    }
+    function onChangeStatus(e) {
+        var grid = $("#Grid").data("kendoGrid");
+        var dataItem = grid.dataItem($(e).closest("tr"));
+        var grid = $("#Grid").data("kendoGrid");
+        grid._data.filter(x => x.AnalysisCode === dataItem.AnalysisCode)[0].ValidationResult = 0;
+        var dataSource = new kendo.data.DataSource({
+            data: grid._data,
+            pageSize: 20,
+            schema: {
+                model: {
+                    id: "AnalysisCode",
+                    fields: {
+                        specification: {
+                            editable: false
+                        },
+                        Mark: {
+                            editable: false
+                        },
+                        method: {
+                            editable: false
+                        },
+                        LOD: {
+                            editable: false
+                        },
+                        unit: {
+                            editable: false
+                        },
+                        ExpectationDate: {
+                            editable: false
+                        },
+                        ReviewResult: {
+                            editable: false
+                        },
+                        Result: {
+                            editable: false
+                        },
+                        ResultText: {
+                            editable: false
+                        },
+                    },
+                }
+            }
+        });
+        grid.setDataSource(dataSource);
+    }
     function customFunction(input) {
-
         if (input.attr('name') === "time" && input.val() == "14:00") {
             return false;
         }
-
         return true;
     }
-
     $(function () {
         var validator = $("#ticketsForm").data("kendoValidator");
         var validationSummary = $("#validation-summary");
-
         $("form").submit(function (event) {
             event.preventDefault();
-
             if (validator.validate()) {
                 validationSummary.html("<div class='k-messagebox k-messagebox-success'>Hooray! Your tickets has been booked!</div>");
             } else {
@@ -282,14 +404,11 @@
         });
     });
     function schemaData() {
-
         return data;
-
     }
     function schemaTotal(response) {
         return data.length;
     }
-
     function onSelectaddSpecification(e) {
         var grid = $("#Grid").data("kendoGrid");
         specdata = grid.dataSource._pristineData;
@@ -300,11 +419,9 @@
             url: "/Testing_Info/GetTestingInfoBySpecId",
             data: { id: dataItem.analysisCode },
             dataType: "json",
-
             success: function (response) {
                 //specdata = response;
                 //if (specdata.length > 0) {
-
                 //}
                 for (var i = 0; i < response.length; i++) {
                     if (specdata.filter(x => x.analysisCode === response[i].analysisCode).length === 0) {
@@ -317,8 +434,8 @@
                     data: specdata,
                     pageSize: 20,
                     schema: {
-
                         model: {
+                            id: "AnalysisCode",
                             fields: {
                                 specification: {
                                     editable: false
@@ -328,28 +445,26 @@
                                 },
                                 method: {
                                     editable: false
-
                                 },
                                 LOD: {
                                     editable: false
-
                                 },
-
                                 unit: {
                                     editable: false
-
                                 },
-  
                                 ExpectationDate: {
                                     editable: false
-
                                 },
                                 ReviewResult: {
                                     editable: false
-
                                 },
-                            }
-
+                                Result: {
+                                    editable: false
+                                },
+                                ResultText: {
+                                    editable: false
+                                },
+                            },
                         }
                     }
                 });
@@ -365,21 +480,17 @@
                 });
                 if (render !== undefined) {
                     $('#temlate').html(render);
-
                 }
             },
             error: function () {
-
             }
         });
     }
-
     // load data and style for active page
     myData = [];
     var curent;
     function active_page(element, rows, req_per_page) {
         if (myData.length === 0) {
-
             $.ajax({
                 type: "GET",
                 url: "/RecordResult/GetRecordResultList",
@@ -398,13 +509,15 @@
                         $('#sampleMatrix').val(response[0].SampleMatrix);
                         $('#weight').val(response[0].weight);
                         $('#templateMark').val('');
-
+                        for (var i = 0; i < grid._data.length; i++) {
+                            response[0].Data.filter(x => x.AnalysisCode === grid._data[i].AnalysisCode)[0].ValidationResult = grid._data[i].ValidationResult;
+                        }
                         var dataSource = new kendo.data.DataSource({
                             data: response[0].Data,
                             pageSize: 20,
                             schema: {
-
                                 model: {
+                                    id: "AnalysisCode",
                                     fields: {
                                         specification: {
                                             editable: false
@@ -414,40 +527,36 @@
                                         },
                                         method: {
                                             editable: false
-
                                         },
                                         LOD: {
                                             editable: false
-
                                         },
-
                                         unit: {
                                             editable: false
-
                                         },
-
                                         ExpectationDate: {
                                             editable: false
-
                                         },
                                         ReviewResult: {
                                             editable: false
-
                                         },
-                                    }
-
+                                        Result: {
+                                            editable: false
+                                        },
+                                        ResultText: {
+                                            editable: false
+                                        },
+                                    },
                                 }
                             }
                         });
                         grid.setDataSource(dataSource);
                     } else {
-
-
                         var dataSource = new kendo.data.DataSource({
                             data: [],
                             pageSize: 20,
                             schema: {
-
+                                id: "AnalysisCode",
                                 model: {
                                     fields: {
                                         specification: {
@@ -458,34 +567,31 @@
                                         },
                                         method: {
                                             editable: false
-
                                         },
                                         LOD: {
                                             editable: false
-
                                         },
-
                                         unit: {
                                             editable: false
-
                                         },
-
                                         ExpectationDate: {
                                             editable: false
-
                                         },
                                         ReviewResult: {
                                             editable: false
-
+                                        },
+                                        Result: {
+                                            editable: false
+                                        },
+                                        ResultText: {
+                                            editable: false
                                         },
                                     }
-
                                 }
                             }
                         });
                         grid.setDataSource(dataSource);
                     }
-
                     for (var i = 0; i < parseInt(document.getElementById("flag").innerHTML); i++) {
                         if (response[i] !== undefined) {
                             const a = {
@@ -499,16 +605,13 @@
                                 templateMark: "",
                                 sampleMatrix: response[i].SampleMatrix,
                                 data: response[i].Data
-
                             };
                             myData.push(a);
                         } else {
-                            const a = { simpleName: '', simpleCode: '', descriptionCustomer: '', innerCode: '', remarkToLab: '', weight: ''};
+                            const a = { simpleName: '', simpleCode: '', descriptionCustomer: '', innerCode: '', remarkToLab: '', weight: '' };
                             myData.push(a);
                         }
-
                     }
-
                     var current_page = checkClass(document.getElementsByClassName('active'));
                     var curent = parseInt(current_page[0].innerText)
                     var next_link = document.getElementById('next_link');
@@ -609,10 +712,13 @@
                 }
             }
         }
-
-
     }
-
+    $("#refresh").change(function () {
+        if ($(this).is(':checked')) {
+            var grid = $("#Grid").data("kendoGrid");
+            grid.dataSource.read();
+        }
+    });
     function checkClass(classList) {
         var a = [];
         for (var i = 0; i < classList.length; i++) {
@@ -620,7 +726,6 @@
                 a.push(classList[i]);
             }
         }
-
         return a;
     }
     var response = [];
@@ -634,7 +739,9 @@
         response[curent - 1].remarkToLab = $('#remarkToLab').val();
         response[curent - 1].weight = $('#weight').val();
         response[curent - 1].sampleMatrix = $('#sampleMatrix').val();
+        // var hander = handerDataGrid()
         response[curent - 1].data = handerDataGrid();
+        //response[curent - 1].deleted = handerDataGridDeleted();
         const resp = response.slice(req_per_page * (page_no - 1), req_per_page * page_no);
         if (response[page_no - 1].simpleCode === '') {
             var requestNo = ["SampleCode", "InLabCode"];
@@ -660,13 +767,12 @@
         $('#remarkToLab').val(response[page_no - 1].remarkToLab);
         $('#sampleMatrix').val(response[page_no - 1].sampleMatrix);
         $('#weight').val(response[page_no - 1].weight);
-
         var dataSource = new kendo.data.DataSource({
             data: response[page_no - 1].data,
             pageSize: 20,
             schema: {
-
                 model: {
+                    id: "AnalysisCode",
                     fields: {
                         specification: {
                             editable: false
@@ -676,33 +782,31 @@
                         },
                         method: {
                             editable: false
-
                         },
                         LOD: {
                             editable: false
-
                         },
-
                         unit: {
                             editable: false
-
                         },
                         ExpectationDate: {
                             editable: false
-
                         },
                         ReviewResult: {
                             editable: false
-
                         },
-                    }
-
+                        Result: {
+                            editable: false
+                        },
+                        ResultText: {
+                            editable: false
+                        },
+                    },
                 }
             }
         });
         grid.setDataSource(dataSource);
     }
-
     function handerDataGridDeleted(request) {
         var myGrid = [];
         var grid = $("#Grid").data("kendoGrid");
@@ -720,7 +824,6 @@
                 LVNCode: grid.dataSource._destroyed[i].LVNCode,
                 AnalysisCode: grid.dataSource._destroyed[i].AnalysisCode
             };
-
             myGrid.push(object);
         }
         return myGrid;
@@ -741,14 +844,14 @@
                 specification: grid._data[i].specification,
                 unit: grid._data[i].unit,
                 LVNCode: grid._data[i].LVNCode,
-                AnalysisCode: grid._data[i].AnalysisCode
+                AnalysisCode: grid._data[i].AnalysisCode,
+                ValidationResult: grid._data[i].ValidationResult,
             };
             myGrid.push(object);
         }
         return myGrid;
     }
     function SaveEntity() {
-
         var saveRequest = [];
         if (response.length > 0) {
             var x = checkClass(document.getElementsByClassName('active'))
@@ -798,7 +901,6 @@
                 notification.show({
                     message: "Save Successful"
                 }, "success");
-
             },
             error: function () {
                 var notification = $("#notificationEdit").data("kendoNotification");
@@ -813,46 +915,46 @@
                         message: "Save error"
                     }, "error");
                 }
-
-
             }
         });
     }
-
     function change(e) {
-       
     };
-
     function onDataBound(e) {
         var grid = $("#Grid").data("kendoGrid");
         grid.table.find("tr").each(function () {
             var dataItem = grid.dataItem(this);
-            var type = dataItem.ReviewResult === 1 ? 'warning' : dataItem.ReviewResult === 2 ? 'success' : 'error';
-            var text = dataItem.ReviewResult === 1 ? 'Accept' : dataItem.ReviewResult === 2 ? 'Approved' : 'Recheck';
+            var type = dataItem.ReviewResult === 1 ? 'success' : dataItem.ReviewResult === -1 ? 'error' : '';
+            var text = dataItem.ReviewResult === 1 ? 'Accept' : dataItem.ReviewResult === -1 ? 'Recheck' : '';
+            var type1 = dataItem.ValidationResult === 1 ? 'success' : dataItem.ValidationResult === -1 ? 'error' : '';
+            var text1 = dataItem.ValidationResult === 1 ? 'Accept' : dataItem.ValidationResult === -1 ? 'Recheck' : '';
             $(this).find('script').each(function () {
                 eval($(this).html());
             });
-
             $(this).find(".badgeTemplate").kendoBadge({
                 type: type,
                 value: text,
             });
-
-
+            $(this).find(".temp").kendoBadge({
+                type: type1,
+                value: text1,
+            });
             kendo.bind($(this), dataItem);
         });
     }
     function goBack() {
         window.history.back();
     }
-  
+
+    function onChangeCell(arg) {
+        listCheck = this.selectedKeyNames();
+    }
 </script>
 
 <style>
     /*.k-invalid-msg {
         // display: inline !important;
     }*/
-
     .k-pager-info {
         display: inherit !important;
     }
@@ -864,11 +966,9 @@
     .k-grid tbody tr {
         line-height: 14px;
     }
-
     /*.k-button {
         height: 30px;
     }*/
-
     .btn-raised {
         background-color: #92d050 !important;
         color: #fff !important;
@@ -890,7 +990,6 @@
         height: 30px !important;
     }
 
-
     .margin-left-0 {
         margin-left: 0px;
     }
@@ -898,7 +997,6 @@
     .form-group {
         margin-bottom: 8px !important;
     }
-
 
     .demo-section p {
         margin: 3px 0 20px;
@@ -908,8 +1006,6 @@
     .demo-section .k-button {
         width: 250px;
     }
-
-
     /* Notifications */
     .k-notification h3 {
         padding: 30px 10px 5px;
@@ -921,27 +1017,21 @@
         margin: 20px;
         float: left;
     }
-
-
     /* Info template */
     .new-mail {
         width: 300px;
         height: 100px;
     }
-
     /* Error template */
     .wrong-pass {
         width: 300px;
         height: 100px;
     }
-
     /* Success template */
     .upload-success {
         width: 300px;
         height: 50px;
     }
-
-
     /* For Bootstrap v4 theme */
     .k-bootstrap-v4 .k-notification h3 {
         padding: 10px 10px 5px;
@@ -957,8 +1047,6 @@
         width: calc( 300px - 2.5rem );
         height: calc( 100px - 1.5rem );
     }
-
-
     /* For Material v2 theme */
     .k-material-v2 .k-notification h3 {
         padding: 10px 10px 5px;
@@ -1024,14 +1112,12 @@
         <div class="form-group row">
             <div class="col-3">
                 <span onclick=openDialog() class="span-underline">Request No: <span id="requestNo">{{requestNo}}</span></span>
-
             </div>
             <div class="col-9">
                 <span style="color: orange;" class="mr-left">Receive Day: {{receivceDate}}</span>
                 <span style="color: orange;" class="mr-left">Return Day: {{dateOfSendingResult}}</span>
             </div>
         </div>
-
         <div class="form-group row">
             <div class="col-3">
                 <span style="color: blue;">{{companyName}}</span>
@@ -1041,14 +1127,11 @@
             </div>
         </div>
     </div>
-
 </script>
 <script id="table-total" type="x-tmpl-mustache">
-
     <h5 style="float: right;padding-right: 14px">Total: {{tong}}</h5>
 </script>
 <script>
-
     function openDialog() {
         var dialog = $('#dialogEdit');
         var numOfSam = $("#numOfSam").data("kendoNumericTextBox");

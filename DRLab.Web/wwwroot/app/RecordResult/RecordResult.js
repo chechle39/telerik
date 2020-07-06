@@ -54,6 +54,7 @@
                             schema: {
 
                                 model: {
+                                    id: "AnalysisCode",
                                     fields: {
                                         specification: {
                                             editable: false
@@ -89,7 +90,6 @@
                                             editable: checkUrl === '/RecordResult/RiviewRequest/' ? false : true
                                         },
                                     }
-
                                 }
                             }
                         });

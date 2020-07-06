@@ -74,5 +74,25 @@ namespace DRLab.Web.Controllers
             };
             return View(rp);
         }
+
+        public async Task<IActionResult> ApproveResult(string requestNo)
+        {
+            var data = await _e08T_AnalysisRequest_InfoService.GetRequestInfoByRequestNo(requestNo);
+            var rp = new AnalysisRequest_InfoStringDate()
+            {
+                requestNo = data.requestNo,
+                address = data.address,
+                contactID = data.contactID,
+                contactName = data.contactName,
+                customerCode = data.customerCode,
+                customerID = data.customerID,
+                dateOfSendingResult = data.dateOfSendingResult.Value.ToString("dd/MM/yyyy hh:mm"),
+                email = data.email,
+                note = data.note,
+                numberSample = data.numberSample,
+                receivceDate = data.receivceDate.Value.ToString("dd/MM/yyyy hh:mm"),
+            };
+            return View(rp);
+        }
     }
 }

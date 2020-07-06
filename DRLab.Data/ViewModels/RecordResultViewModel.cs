@@ -29,6 +29,7 @@ namespace DRLab.Data.ViewModels
         public int? ReviewResult { get; set; }
         public string LVNCode { get; set; }
         public string AnalysisCode { get; set; }
+        public int? ValidationResult { get; set; }
     }
 
     public class SearchRecordResult 

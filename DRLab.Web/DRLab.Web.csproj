@@ -34,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Reports\ManagementSample.repx" />
+    <None Remove="Reports\XtraReport.repx" />
     <None Remove="Reports\XtraReport1.repx" />
   </ItemGroup>
 
@@ -43,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Reports\ManagementSample.repx" />
+    <EmbeddedResource Include="Reports\XtraReport.repx" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,11 +52,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Reports\ManagementSample.cs">
-      <DependentUpon>ManagementSample.repx</DependentUpon>
+    <Compile Update="Reports\XtraReport.cs">
+      <DependentUpon>XtraReport.repx</DependentUpon>
     </Compile>
-    <Compile Update="Reports\ManagementSample.Designer.cs">
-      <DependentUpon>ManagementSample.repx</DependentUpon>
+    <Compile Update="Reports\XtraReport.Designer.cs">
+      <DependentUpon>XtraReport.repx</DependentUpon>
     </Compile>
     <Compile Update="Reports\XtraReport1.cs">
       <DependentUpon>XtraReport1.repx</DependentUpon>
