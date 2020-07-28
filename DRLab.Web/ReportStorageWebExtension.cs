@@ -48,19 +48,10 @@ namespace DRLab.Web {
             // This method is called only for valid URLs after the IsValidUrl method is called.
             try {
                 using (var reportFile = File.Open(Path.Combine(reportDirectory, url + FileExtension), FileMode.Open))
-                  using (var memoryStream = new MemoryStream()) {
-                      
-                    var rq = new SerchSampleManagement();
-                    {
-
-                        rq.StartDate = "1 / 6 / 2020";
-                        rq.EndDate = "10 / 6 / 2020";
-                    }
-                    var report = new Example.Reports.XtraReport();
+                  using (var memoryStream = new MemoryStream()) {                     
+                   
                     ObjectDataSource dataSource = new ObjectDataSource();
-                    dataSource.Constructor = new ObjectConstructorInfo();
-                    dataSource = (ObjectDataSource)_sampleManagementDapperService.GetSampleManagement(rq).Result; ;
-                    report.DataSource = dataSource;
+                    dataSource.Constructor = new ObjectConstructorInfo();                 
                     reportFile.CopyTo(memoryStream);
                     return memoryStream.ToArray();
                   }

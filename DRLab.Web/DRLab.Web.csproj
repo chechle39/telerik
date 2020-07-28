@@ -9,7 +9,11 @@
     <PackageReference Include="AutoMapper" Version="6.1.1" />
     <PackageReference Include="Askmethat.Aspnet.JsonLocalizer" Version="2.2.0" />
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.447" />
+    <PackageReference Include="ClosedXML.Extensions.Mvc" Version="0.3.0" />
     <PackageReference Include="DevExpress.AspNetCore.Reporting" Version="19.2.6" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="2.11.0" />
+    <PackageReference Include="EPPlus.Core" Version="1.5.4" />
+    <PackageReference Include="Grpc.Core" Version="2.30.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -20,6 +24,7 @@
 	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
 	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.3" />
 	  <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
+	  <PackageReference Include="WebGrease" Version="1.6.0" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -34,7 +39,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Reports\XtraReport.repx" />
+    <None Remove="Reports\ManagementRequest.repx" />
+    <None Remove="Reports\ManagementSample.repx" />
     <None Remove="Reports\XtraReport1.repx" />
   </ItemGroup>
 
@@ -43,20 +49,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Reports\XtraReport.repx" />
+    <EmbeddedResource Include="Reports\ManagementRequest.repx" />
+    <EmbeddedResource Include="Reports\ManagementSample.repx" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DRLab.Common\DRLab.Common.csproj" />
     <ProjectReference Include="..\DRLab.Data\DRLab.Data.csproj" />
     <ProjectReference Include="..\DRLab.Services\DRLab.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Reports\XtraReport.cs">
-      <DependentUpon>XtraReport.repx</DependentUpon>
+    <Compile Update="Reports\ManagementRequest.cs">
+      <DependentUpon>ManagementRequest.repx</DependentUpon>
     </Compile>
-    <Compile Update="Reports\XtraReport.Designer.cs">
-      <DependentUpon>XtraReport.repx</DependentUpon>
+    <Compile Update="Reports\ManagementRequest.Designer.cs">
+      <DependentUpon>ManagementRequest.repx</DependentUpon>
+    </Compile>
+    <Compile Update="Reports\ManagementSample.cs">
+      <DependentUpon>ManagementSample.repx</DependentUpon>
+    </Compile>
+    <Compile Update="Reports\ManagementSample.Designer.cs">
+      <DependentUpon>ManagementSample.repx</DependentUpon>
     </Compile>
     <Compile Update="Reports\XtraReport1.cs">
       <DependentUpon>XtraReport1.repx</DependentUpon>
@@ -64,5 +78,9 @@
     <Compile Update="Reports\XtraReport1.Designer.cs">
       <DependentUpon>XtraReport1.repx</DependentUpon>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\export-files\" />
   </ItemGroup>
 </Project>

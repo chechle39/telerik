@@ -31,7 +31,14 @@ namespace DRLab.Data.Repositories
         {
             foreach(var item in request)
             {
+                var deleteOldData = Entities.AsNoTracking().Where(x=>x.requestNo == item.requestNo && x.LVNCode == item.LVNCode).ToList();
+                if (deleteOldData.Count() > 0)
+                {
+                    Entities.RemoveRange(deleteOldData);
+                    _unitOfWork.SaveChanges();
+                }
                
+
                 if (item.Data.Count() > 0 && item.sampleName != "")
                 {
                     _unitOfWork.BeginTransaction();
@@ -67,7 +74,7 @@ namespace DRLab.Data.Repositories
                                 sampleMatrix = item.sampleMatrix != null ? item.sampleMatrix : checksap != null ? checksap : item.sampleMatrix,
                                 specification = iitem.specification,
                                 specMark = iitem.Mark,
-                                turnAroundDay = null,
+                                turnAroundDay = iitem.TurnAroundDay,
                                 unit = iitem.unit,
                                 urgentRate = iitem.Urgent
                             };
@@ -88,7 +95,7 @@ namespace DRLab.Data.Repositories
                                 sampleMatrix = check[0].sampleMatrix, 
                                 specification = iitem.specification,
                                 specMark = iitem.Mark,
-                                turnAroundDay = null,
+                                turnAroundDay = iitem.TurnAroundDay,
                                 unit = iitem.unit,
                                 urgentRate = iitem.Urgent
                             };
@@ -97,51 +104,7 @@ namespace DRLab.Data.Repositories
                         
                     }
                     _unitOfWork.CommitTransaction();
-                }
-                //if (item.Deleted != null)
-                //{
-                //    if (item.Deleted.Count() > 0)
-                //    {
-                //        foreach (var iii in item.Deleted)
-                //        {
-                //            //_unitOfWork.BeginTransaction();
-                //            var checkDelete = await Entities.Where(x => x.analysisCode == iii.analysisCode && x.requestNo == item.requestNo && x.LVNCode == item.LVNCode).AsNoTracking().ToListAsync();
-                //            if (checkDelete.Count() > 0)
-                //            {
-                //                var e08T_AnalysisRequest_Data = new E08T_AnalysisRequest_Data()
-                //                {
-                //                    analysisCode = iii.analysisCode,
-                //                    LOD = iii.LOD,
-                //                    LVNCode = item.LVNCode,
-                //                    max = null,
-                //                    method = iii.method,
-                //                    min = null,
-                //                    precision = null,
-                //                    price = iii.Price,
-                //                    requestNo = item.requestNo,
-                //                    sampleMatrix = item.sampleMatrix != null ? iii.sampleMatrix : checkDelete[0].sampleMatrix,
-                //                    specification = item.specification != null ? iii.specification : checkDelete[0].specification,
-                //                    specMark = iii.Mark,
-                //                    turnAroundDay = null,
-                //                    unit = iii.unit,
-                //                    urgentRate = iii.Urgent
-                //                };
-                //                Entities.Remove(e08T_AnalysisRequest_Data);
-                //            }
-                //            //_unitOfWork.CommitTransaction();
-                //            //using (var sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
-                //            //{
-                //            //    await sqlConnection.OpenAsync();
-                //            //    var dynamicParameters = new DynamicParameters();
-                //            //    var eventName = sqlConnection.QueryFirst<string>("DELETE  FROM[dbo].[E08T_AnalysisRequest_Data] WHERE requestNo = '" + item.requestNo + """ + "  and analysisCode =" + iii.analysisCode);
-
-                //            //}
-                //        }
-                //    }
-                    
-                    
-                //}
-
+                }              
             }
             await _e08T_AnalysisRequest_ItemRepository.CreatAnalysisRequestItem(request);
             return await Task.FromResult(true);
@@ -215,49 +178,43 @@ namespace DRLab.Data.Repositories
             foreach(var item in data)
             {
                 var listGridManagementViewModel = new List<GridManagementViewModel>();
-                try
+                var e00T_CustomerGridViewModel = new List<E00T_CustomerGridViewModel>();
+                var analysisData = await Entities.Where(x => x.LVNCode == item.LVNCode).ToListAsync();
+                foreach (var iitem in analysisData)
                 {
-                    var e00T_CustomerGridViewModel = new List<E00T_CustomerGridViewModel>();
-                    var analysisData = await Entities.Where(x => x.LVNCode == item.LVNCode).ToListAsync();
-                    foreach (var iitem in analysisData)
+                    var dataCustomerGridViewModel = new E00T_CustomerGridViewModel()
                     {
-                        var dataCustomerGridViewModel = new E00T_CustomerGridViewModel()
-                        {
-                            analysisCode = iitem.analysisCode,
-                            LOD = iitem.LOD,
-                            Mark = iitem.specMark,
-                            max = iitem.max,
-                            method = iitem.method,
-                            min = iitem.min,
-                            Price = Convert.ToInt32(iitem.price),
-                            sampleMatrix = iitem.sampleMatrix,
-                            specification = iitem.specification,
-                            TAT = null,
-                            unit = iitem.unit,
-                            Urgent = iitem.urgentRate,
+                        analysisCode = iitem.analysisCode,
+                        LOD = iitem.LOD,
+                        Mark = iitem.specMark,
+                        max = iitem.max,
+                        method = iitem.method,
+                        min = iitem.min,
+                        Price = Convert.ToInt32(iitem.price),
+                        sampleMatrix = iitem.sampleMatrix,
+                        specification = iitem.specification,
+                        TurnAroundDay = iitem.turnAroundDay,
+                        unit = iitem.unit,
+                        Urgent = iitem.urgentRate,
 
-                        };
-                        e00T_CustomerGridViewModel.Add(dataCustomerGridViewModel);
-                    }
-                    var createCustomeRequest = new CreateCustomeRequest()
-                    {
-                        Data = e00T_CustomerGridViewModel.Count() > 0 ? e00T_CustomerGridViewModel : null,
-                        specification = analysisData.Count() > 0 ? analysisData[0].specification : null,
-                        LVNCode = item.LVNCode,
-                        remarkToLab = item.remarkToLab,
-                        requestNo = item.requestNo,
-                        sampleCode = item.sampleCode,
-                        sampleDescription = item.sampleDescription,
-                        sampleMatrix = analysisData.Count() > 0 ? analysisData[0].sampleMatrix : null,
-                        sampleName = item.sampleName,
-                        weight = item.weight,
                     };
-                    dataList.Add(createCustomeRequest);
-                } catch (Exception ex)
-                {
-
+                    e00T_CustomerGridViewModel.Add(dataCustomerGridViewModel);
                 }
-                
+                var createCustomeRequest = new CreateCustomeRequest()
+                {
+                    Data = e00T_CustomerGridViewModel.Count() > 0 ? e00T_CustomerGridViewModel : null,
+                    specification = analysisData.Count() > 0 ? analysisData[0].specification : null,
+                    LVNCode = item.LVNCode,
+                    remarkToLab = item.remarkToLab,
+                    requestNo = item.requestNo,
+                    sampleCode = item.sampleCode,
+                    sampleDescription = item.sampleDescription,
+                    sampleMatrix = analysisData.Count() > 0 ? analysisData[0].sampleMatrix : null,
+                    sampleName = item.sampleName,
+                    weight = item.weight,
+                };
+                dataList.Add(createCustomeRequest);
+
             }
             return dataList;
         }

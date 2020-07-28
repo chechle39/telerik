@@ -52,5 +52,12 @@ namespace DRLab.Services.IntegrationServices
             _uow.SaveChanges();
             return await Task.FromResult(true);
         }
+
+        public async Task<bool> UpdateListAnalysisRequestInfo(List<E08T_AnalysisRequest_InfoViewModel> SaveAnalysisRequestInforequest)
+        {
+            await _e08T_AnalysisRequest_InfoRepository.UpdateListAnalysisRequestInfo(SaveAnalysisRequestInforequest);
+            _uow.SaveChanges();
+            return await Task.FromResult(true);
+        }
     }
 }

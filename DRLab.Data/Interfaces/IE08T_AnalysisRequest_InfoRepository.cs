@@ -13,5 +13,6 @@ namespace DRLab.Data.Interfaces
 
         Task<bool> DeleteAnalysisRequestInfo(string[] requestNo);
         Task<List<SampleManagementViewModel>> GetRequestInfoSample(SerchSampleManagement request);
+        Task<bool> UpdateListAnalysisRequestInfo(List<E08T_AnalysisRequest_InfoViewModel> SaveAnalysisRequestInforequest);
     }
 }

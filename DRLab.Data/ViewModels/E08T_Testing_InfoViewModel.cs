@@ -13,6 +13,8 @@ namespace DRLab.Data.ViewModels
         [Required]
         [Display(Name = "Specification")]
         public string specification { get; set; }
+        [Display(Name = "Spec Code")]
+        public string specCode { get; set; }
         [Required]
         [Display(Name = "Method")]
         public string method { get; set; }
@@ -40,6 +42,8 @@ namespace DRLab.Data.ViewModels
         public string specification { get; set; }
         [Display(Name = "New Specification")]
         public string newspecification { get; set; }
+        [Display(Name = "New Specification Code")]
+        public string specCode { get; set; }
         [Required]
         [Display(Name = "Method")]
         public string method { get; set; }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DRLab.Data.Entities;
+using DRLab.Data.Identity;
 using DRLab.Data.ViewModels;
 
 namespace DRLab.Services.Mappers
@@ -17,6 +18,12 @@ namespace DRLab.Services.Mappers
             CreateMap<E00T_SampleMatrix, E00T_SampleMatrixViewModel>();
             CreateMap<E08T_AnalysisRequest_Item, E08T_AnalysisRequest_ItemViewModel>();
             CreateMap<E08T_AnalysisRequest_Data, E00T_CustomerGridViewModel>();
+            CreateMap<Assignment, AssignmentViewModel>();
+            CreateMap<AppUser, ApplicationUserViewModel>();
+            CreateMap<Assignment, AssignmentViewModel>();
+            CreateMap<Assignment, AssignmentViewModelUserandSpec>();
+            CreateMap<AppRole, ApplicationRoleViewModel>();
+            CreateMap<FieldAutoTable, FieldAutoTableViewModel>();
         }
     }
 }

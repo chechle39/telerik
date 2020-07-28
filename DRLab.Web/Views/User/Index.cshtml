@@ -1,0 +1,610 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+@(Html.Kendo().Notification()
+    .Name("notification")
+    .Position(p => p.Pinned(true).Top(30).Right(30))
+    .Stacking(NotificationStackingSettings.Down)
+    .Templates(t =>
+    {
+        t.Add().Type("success").ClientTemplateID("successTemplate");
+        t.Add().Type("error").ClientTemplateID("errorTemplate");
+    })
+)
+@using Kendo.Mvc
+@section Scripts{
+    <script src="~/app/User/index.js" asp-append-version="true"></script>
+    <script>
+        var rq = new UserController();
+        rq.initialize();
+    </script>
+}
+
+<section id="isCheck" class="content">
+    <div class="container-fluid">
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <!-- left column -->
+                    <div class="col-md-12">
+                        <!-- general form elements -->
+                        <div class="card">
+                            <div id="ticketsForm" class="k-form k-form-vertical" kendo-validator="true">
+                                <div class="card-header row">
+
+                                    <div class="col-4">
+                                        <h3 class="card-title" style="font-size: 25px">User Management </h3><h6 onclick=onClicSearch() id="btnsearch" style="margin-left: 12px;margin-top: 10px;cursor: pointer;" class="fas fa-search"></h6>
+                                        <div id="dayTem"></div>
+                                    </div>
+                                    <div class="col-2">
+                                        @(Html.Kendo().DropDownList()
+                                        .Name("color")
+                                        .DataTextField("Text")
+                                        .DataValueField("Value")
+                                        .Events(e => e.Change("change").Select("onSelectAction"))
+                                        .BindTo(new List<SelectListItem>() {
+                                        new SelectListItem() {
+                                            Text = "Bulk Actions",
+                                            Value = "0"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Delete",
+                                            Value = "1"
+                                        },
+
+                                        })
+                                    .Value("0")
+                                    .HtmlAttributes(new { style = "width: 100%", @class = "k-dropdown--clear" })
+                                    )
+                                    </div>
+                                    <div class="col-6">
+                                        <div style="float:right">
+                                            <button onclick="addNewUser()" class="k-button k-primary px-3 py-2">Add new user</button>
+                                            <button onclick="refresh()" class="k-button px-3 py-2">Refresh</button>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <!-- /.card-header -->
+                                <!-- form start -->
+                                <div class="card-body">
+                                    @(Html.Kendo().Grid<DRLab.Data.ViewModels.ApplicationUserViewModel>()
+                                        .Name("Grid")
+                                        .HtmlAttributes(new { style = "height:auto;" })
+                                        .Columns(columns =>
+                                        {
+                                            columns.Select().Width(50);
+                                            columns.Bound(p => p.FullName).Title("Full name");
+                                            columns.Bound(p => p.Email).Title("Email");
+                                            columns.Bound(p => p.BirthDay).Title("BirthDay").ClientTemplate("#= kendo.toString(kendo.parseDate(BirthDay), 'dd/MM/yyyy') #");
+                                            columns.Bound(p => p.DateCreated).Title("Date created").ClientTemplate("#= kendo.toString(kendo.parseDate(DateCreated), 'dd/MM/yyyy') #");
+                                            columns.Bound(p => p.Gender).Title("Gender");
+                                            columns.Bound(p => p.Address).Title("Address");
+                                            columns.Bound(p => p.PhoneNumber).Title("Phone Number");
+                                            columns.Bound(p => p.Status).Title("Status").ClientTemplate("<span id='badge_#=FullName#' class='badgeTemplate'></span>").Width("150px");
+                                            columns.Command(command =>
+                                            {
+                                                command.Custom("Edit")
+                                                 .IconClass("k-icon k-i-edit")
+                                                  .Click("showEdit")
+                                                    .Text("Edit")
+                                                    .HtmlAttributes(new { style = "width:43%" });
+                                                command.Custom("Destroy")
+                                                    .IconClass("k-icon k-i-trash")
+                                                    .Click("showDeleteConfirmation")
+                                                    .Text("Delete")
+                                                    .HtmlAttributes(new { style = "width:49%" });
+                                            }).Width("12%");
+                                        })
+                                         .Events(ev => ev.Change("onChangex").DataBound("onDataBound"))
+                                        .Pageable()
+                                        .Sortable()
+                                        .Scrollable()
+                                        .DataSource(dataSource => dataSource
+                                        .Custom()
+                                        .PageSize(20)
+                                        .Batch(true)
+                                        .Schema(schema =>
+                                        {
+                                            schema.Model(model =>
+                                            {
+                                                model.Id(p => p.Id);
+                                                model.Field(p => p.FullName).Editable(false).From("FullName");
+                                                model.Field(p => p.Email).From("Email");
+                                                model.Field(p => p.BirthDay).From("BirthDay");
+                                                model.Field(p => p.DateCreated).From("DateCreated");
+                                                model.Field(p => p.Gender).From("Gender");
+                                                model.Field(p => p.Address).From("Address");
+                                                model.Field(p => p.PhoneNumber).From("PhoneNumber");
+                                                model.Field(p => p.Status).From("Status");
+                                            })
+                                            .Data(d => "schemaData")
+                                            .Total(t => "schemaTotal");
+                                        })))
+                                </div>
+                                <!-- /.card-body -->
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </div>
+
+</section>
+@Html.Partial("AddUser.cshtml")
+@Html.Partial("EditUser.cshtml")
+<script type="text/javascript">
+    var data = [];
+    var deleteRequest;
+    function showDeleteConfirmation(e) {
+        deleteRequest = [];
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        deleteRequest.push(dataItem.id);
+        var kendoWindow = $("<div />").kendoDialog({
+            title: "Confirm",
+            resizable: false,
+            modal: true,
+            actions: [
+                { text: 'No', primary: true, },
+                {
+                    text: 'Yes', action: deleted,
+                }
+            ],
+        });
+        kendoWindow.data("kendoDialog")
+            .content($("#delete-confirmation").html()).open();
+        kendoWindow
+            .find(".delete-confirm,.delete-cancel")
+            .click(function () {
+                
+                kendoWindow.data("kendoDialog").close();
+            })
+            .end()
+    }
+    function deleted() {
+        $.ajax({
+            type: "POST",
+            url: "/User/Delete",
+            data: JSON.stringify(deleteRequest),
+            dataType: "json",
+            contentType: "application/json",
+            success: function () {
+                var notification = $("#notification").data("kendoNotification");
+                notification.show({
+                    message: "Delete Successful"
+                }, "success");
+                $.ajax({
+                    type: "GET",
+                    url: "/User/GetUser",
+                    dataType: "json",
+                    beforeSend: function () {
+                    },
+                    success: function (response) {
+                        var grid = $("#Grid").data("kendoGrid");
+                        var dataSource = new kendo.data.DataSource({
+                            data: response,
+                            pageSize: 20,
+                            schema: {
+                                model: {
+                                    id: "Id"
+                                }
+                            }
+                        });
+                        grid.setDataSource(dataSource);
+
+                    },
+                    error: function (status) {
+                    }
+                });
+            },
+            error: function () {
+
+            }
+        });
+    }
+
+    function addNewUser() {
+
+        resetForm();
+     
+    }
+    function resetForm() {
+        $.ajax({
+            type: "GET",
+            url: "/Role/GetAllRoleCbb",
+            dataType: "json",
+            success: function (responseRole) {
+                var dialog = $('#dialog');
+                dialog.data("kendoDialog").open();
+                fullName: $('#fullName').val('');
+                email: $('#email').val('');
+                password: $('#passwordDrlab').val('');
+                userName: $('#email').val('');
+                address: $('#address').val('');
+                phoneNumber: $('#phoneNumber').val('');
+                var applicantVm = kendo.observable({
+                    updated: false,
+                    PersonId: self.personId,
+                    Id: self.selectedId,
+
+                    DoctoralLevelId: 'Nam',
+                    name: "DoctoralLevelId",
+                    applicantTypeItems: [
+                        { caption: "Nam", value: 'Nam' },
+                        { caption: "Nữ", value: 'Nữ' },
+                        { caption: "Khác", value: 'Khác' },
+                    ]
+                });
+                var applicantVmStt = kendo.observable({
+                    updated: false,
+                    PersonId: self.personId,
+                    Id: self.selectedId,
+
+                    DoctoralLevelSttId: 'Active',
+                    name: "DoctoralLevelSttId",
+                    applicantTypeItemsStt: [
+                        { caption: "Active", value: 'Active' },
+                        { caption: "In Active", value: 'In Active' },
+                    ]
+                });
+
+                kendo.bind($(".radio-group-stt"), applicantVmStt);
+                kendo.bind($(".radio-group"), applicantVm);
+                var comboRole = $("#role").data("kendoComboBox");
+                var dataSource1 = new kendo.data.DataSource({
+                    data: responseRole
+                });
+                comboRole.setDataSource(dataSource1);
+                comboRole.dataSource._pristineData = responseRole;
+                comboRole.select(comboRole.dataSource._pristineData.indexOf(comboRole.dataSource._pristineData.filter(x => x.Name === 'Technican')[0]));
+                $("#role").data("kendoComboBox").value(comboRole.dataSource._pristineData.filter(x => x.Name === 'Technican')[0].Id);
+            },
+            error: function (status) {
+            }
+        });
+        
+
+    }
+    function refresh() {
+        reLoadData();
+    }
+    var selectedRequestNo;
+    function onChangex(arg) {
+
+        selectedRequestNo = this.selectedKeyNames();
+        //console.log("The selected product ids are: [" + this.selectedKeyNames().join(", ") + "]");
+    }
+
+    function showEdit(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+
+        $.ajax({
+            type: "GET",
+            url: "/User/GetById",
+            data: { id: dataItem.id },
+            dataType: "Json",
+            success: function (response) {
+                $.ajax({
+                    type: "GET",
+                    url: "/Role/GetAllRoleCbb", 
+                    dataType: "json",
+                    success: function (responseRole) {
+                        var dialog = $('#dialogEdit');
+                        dialog.data("kendoDialog").open();
+                        $('#id').val(response.Id);
+                        fullName: $('#fullNameEdit').val(response.FullName);
+                        email: $('#emailEdit').val(response.Email);
+                        userName: $('#emailEdit').val(response.UserName);
+                        address: $('#addressEdit').val(response.Address);
+                        phoneNumber: $('#phoneNumberEdit').val(response.PhoneNumber);
+                        //status: $("[name='status']:checked")[0].labels[0].innerHTML;
+                        //gender: $("[name='gender']:checked")[0].labels[0].innerHTML;
+                        var applicantVm = kendo.observable({
+                            updated: false,
+                            PersonId: self.personId,
+                            Id: self.selectedId,
+
+                            DoctoralLevelId: response.Gender,
+                            name: "DoctoralLevelId",
+                            applicantTypeItems: [
+                                { caption: "Nam", value: 'Nam' },
+                                { caption: "Nữ", value: 'Nữ' },
+                                { caption: "Khác", value: 'Khác' },
+                            ]
+                        });
+                        var stt = response.Status === 1 ? 'Active' : 'In Active';
+                        var applicantVmStt = kendo.observable({
+                            updated: false,
+                            PersonId: self.personId,
+                            Id: self.selectedId,
+
+                            DoctoralLevelSttId: stt,
+                            name: "DoctoralLevelSttId",
+                            applicantTypeItemsStt: [
+                                { caption: "Active", value: 'Active' },
+                                { caption: "In Active", value: 'In Active' },
+                            ]
+                        });
+
+                        kendo.bind($(".radio-group-stt"), applicantVmStt);
+                        kendo.bind($(".radio-group"), applicantVm);
+                        var comboRole = $("#roleEdit").data("kendoComboBox");
+                         var dataSource1 = new kendo.data.DataSource({
+                             data: responseRole
+                         });
+                        comboRole.setDataSource(dataSource1);
+                        comboRole.dataSource._pristineData = responseRole;
+                        comboRole.select(comboRole.dataSource._pristineData.indexOf(comboRole.dataSource._pristineData.filter(x => x.Name === response.Roles[0])[0]));
+                        $("#roleEdit").data("kendoComboBox").value(comboRole.dataSource._pristineData.filter(x => x.Name === response.Roles[0])[0].Id);
+                    },
+                    error: function (status) {
+                    }
+                });
+                
+            },
+            error: function () {
+            }
+        });
+    }
+    function schemaData() {
+
+        return schemaData;
+    }
+    function schemaTotal(response) {
+        return data.length;
+    }
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+
+    function onDataBound(e) {
+        var grid = $("#Grid").data("kendoGrid");
+        grid.table.find("tr").each(function () {
+
+            var dataItem = grid.dataItem(this);
+            var type = dataItem.RequestStatus === 1 ? 'success' : dataItem.RequestStatus === 2 ? 'success' : 'warning';
+            var text = dataItem.RequestStatus === 1 ? 'CONFIRMED' : dataItem.RequestStatus === 2 ? 'CONFIRMED' : 'PROCESSING';
+
+            $(this).find('script').each(function () {
+                eval($(this).html());
+            });
+
+            $(this).find(".badgeTemplate").kendoBadge({
+                type: type,
+                value: text,
+            });
+
+
+            kendo.bind($(this), dataItem);
+        });
+    }
+
+    function returnFalse() {
+        return false;
+    }
+
+    function change(e) {
+    };
+    function onSelectAction(e) {
+        var dataItem = this.dataItem(e.item);
+        if (dataItem.Value === "1") {
+            $.ajax({
+                type: "POST",
+                url: "/User/Delete",
+                data: JSON.stringify(selectedRequestNo),
+                dataType: "json",
+                contentType: "application/json",
+                success: function () {
+                    var notification = $("#notification").data("kendoNotification");
+                    notification.show({
+                        message: "Delete Successful"
+                    }, "success");
+                    $.ajax({
+                        type: "GET",
+                        url: "/User/GetUser",
+                        dataType: "json",
+                        beforeSend: function () {
+                        },
+                        success: function (response) {
+                            var grid = $("#Grid").data("kendoGrid");
+                            var dataSource = new kendo.data.DataSource({
+                                data: response,
+                                pageSize: 20,
+                                schema: {
+                                    model: {
+                                        id: "Id"
+                                    }
+                                }
+                            });
+                            grid.setDataSource(dataSource);
+
+                        },
+                        error: function (status) {
+                        }
+                    });
+                },
+                error: function () {
+
+                }
+            });
+        } 
+    }
+    function onClicSearch() {
+        var dialog = $('#dialog');
+        dialog.data("kendoDialog").open();
+    }
+    function reLoadData() {
+        $.ajax({
+            type: "GET",
+            url: "/User/GetUser",
+            dataType: "json",
+            beforeSend: function () {
+            },
+            success: function (response) {
+                var grid = $("#Grid").data("kendoGrid");
+                var dataSource = new kendo.data.DataSource({
+                    data: response,
+                    pageSize: 20,
+                    schema: {
+                        model: {
+                            id: "Id"
+                        }
+                    }
+                });
+                grid.setDataSource(dataSource);
+
+            },
+            error: function (status) {
+            }
+        });
+    };
+</script>
+
+
+<style>
+    .k-window-title k-dialog-title::before {
+        content: 'Confirmation' !important;
+    }
+
+    .k-grid tr .checkbox-align {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .k-grid-content {
+        height: auto !important;
+    }
+
+    .k-grid tbody tr {
+        line-height: 14px !important;
+    }
+
+    .btn-raised {
+        background-color: #92d050 !important;
+        color: #fff !important;
+        border-color: #92d050;
+    }
+
+    .k-grid tbody .k-button {
+        min-width: 0px !important;
+        height: 20px;
+    }
+
+    div.k-window {
+        min-width: 15% !important;
+    }
+
+    .k-notification h3 {
+        padding: 30px 10px 5px;
+        font-size: 1em;
+        line-height: normal;
+    }
+
+    .k-notification img {
+        margin: 20px;
+        float: left;
+    }
+
+
+    /* Info template */
+    .new-mail {
+        width: 300px;
+        height: 100px;
+    }
+
+    /* Error template */
+    .wrong-pass {
+        width: 300px;
+        height: 100px;
+    }
+
+    /* Success template */
+    .upload-success {
+        width: 300px;
+        height: 50px;
+    }
+
+
+    /* For Bootstrap v4 theme */
+    .k-bootstrap-v4 .k-notification h3 {
+        padding: 10px 10px 5px;
+    }
+
+    .k-bootstrap-v4 .k-notification img {
+        margin: 10px 20px 0 0;
+    }
+
+    .k-bootstrap-v4 .new-mail,
+    .k-bootstrap-v4 .wrong-pass,
+    .k-bootstrap-v4 .upload-success {
+        width: calc( 300px - 2.5rem );
+        height: calc( 100px - 1.5rem );
+    }
+
+
+    /* For Material v2 theme */
+    .k-material-v2 .k-notification h3 {
+        padding: 10px 10px 5px;
+    }
+
+    .k-material-v2 .k-notification img {
+        margin: 10px 20px 0 0;
+    }
+
+    .form-group {
+        margin-bottom: 8px !important;
+    }
+
+    .k-material-v2 .new-mail,
+    .k-material-v2 .wrong-pass,
+    .k-material-v2 .upload-success {
+        width: 270px;
+        height: 70px;
+    }
+    /*.k-dropdown .k-dropdown-wrap {
+        color: black !important;
+        background-color: white !important;
+        background-image: none !important;
+    }*/
+</style>
+<script id="date-templateData" type="x-tmpl-mustache">
+    <h6 id="dayData">{{day}}</h6>
+</script>
+<script id="delete-confirmation" type="text/x-kendo-template">
+    <p class="delete-message"> Are you sure?</p>
+
+</script>
+
+<script id="successTemplate" type="text/x-kendo-template">
+    <div class="upload-success">
+        <img src="@Url.Content("~/Shared/success-icon.png")" />
+        <h3>#= message #</h3>
+    </div>
+</script>
+<script id="errorTemplate" type="text/x-kendo-template">
+    <div class="wrong-pass">
+        <img src="@Url.Content("~/Shared/error-icon.png")" />
+        <h3>#= title #</h3>
+        <p>#= message #</p>
+    </div>
+</script>

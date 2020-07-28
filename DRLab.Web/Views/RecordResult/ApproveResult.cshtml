@@ -1,6 +1,6 @@
 ﻿@model DRLab.Data.ViewModels.AnalysisRequest_InfoStringDate
 @{
-    ViewData["Title"] = "RiviewRequest";
+    ViewData["Title"] = "ApproveRequest";
 }
 @section Scripts{
     <script src="~/app/RecordResult/RecordResult.js"></script>
@@ -43,8 +43,6 @@
 
                                     <div class="col-4">
                                         <h3 class="card-title" style="font-size: 25px">Approve Result</h3>
-
-
                                     </div>
                                     <div class="col-3">
                                         @(Html.Kendo().DropDownList()
@@ -96,7 +94,8 @@
                                     </div>
 
                                     <div class="form-group row margin-left-0">
-                                        <div hidden class="col-5 row">
+
+                                        <div class="col-5 row">
                                             <span>Sample Name</span>
 
                                             <div class="col-sm-9 mr-t ">
@@ -104,65 +103,60 @@
                                             </div>
                                         </div>
 
-                                        <div hidden class="row col-5">
-                                            <span>Sample Code</span>
+                                        <div class="row col-5">
+                                            <span>Inner Code</span>
                                             <div class="col-sm-9 mr-t">
                                                 @(Html.Kendo().TextBox().Enable(false)
-                                                .Name("simpleCode")
-                                                .HtmlAttributes(new { placeholder = "Sample Code", style = "width: 50%;height: calc(1.42857143em + 10px);margin-left: 8px" })
+                                                .Name("innerCode")
+                                                .HtmlAttributes(new { placeholder = "Inner Code", style = "width: 100%;height: calc(1.42857143em + 10px);margin-left: 22px" })
                                                 )
+                                            </div>
 
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row margin-left-0">
+                                        <div class="col-5 row">
+                                            <span>Sample Matrix</span>
+
+                                            <div class="col-sm-9 mr-t ">
+                                                @(Html.Kendo().TextBox().Enable(false)
+                                                .Name("sampleMatrix")
+                                                .HtmlAttributes(new { placeholder = "Sample Matrix", style = "width: 100%;height: calc(1.42857143em + 10px);margin-left: 5px" })
+                                                )
+                                            </div>
+                                        </div>
+
+                                        <div class="row col-5">
+                                            <span>Remark to Lab</span>
+                                            <div style="margin-left: 0px;" class="col-sm-9 mr-t ">
+                                                <textarea disabled id="remarkToLab" placeholder="Remark To Lab" class="k-textbox" style="margin-left: 2px;width: 100%;height: calc(1.42857143em + 10px)"></textarea>
                                             </div>
 
                                         </div>
 
                                     </div>
                                     <div class="form-group row margin-left-0">
-
-                                        <div hidden class="col-5 row">
-                                            <span>Description</span>
-                                            <div class="col-sm-9 mr-t">
-                                                <textarea disabled id="descriptionCustomer" placeholder="Description" class="k-textbox" style="width: 100%;margin-left: 21px;height: calc(1.42857143em + 10px)"></textarea>
-                                            </div>
-                                        </div>
-
-                                        <div class="row col-12">
-                                            <span>Inner Code</span>
-                                            <div class="col-sm-2 mr-t">
-                                                @(Html.Kendo().TextBox().Enable(false)
-                                                .Name("innerCode")
-                                                .HtmlAttributes(new { placeholder = "Inner Code", style = "width: 50%;height: calc(1.42857143em + 10px);margin-left: 22px" })
-                                                )
-                                            </div>
-                                            <span>Sample Matrix</span>
-                                            <div class="col-sm-3 mr-t">
-                                                @(Html.Kendo().TextBox().Enable(false)
-                                                .Name("sampleMatrix")
-                                                .HtmlAttributes(new { placeholder = "Sample Matrix", style = "width: 80%;height: calc(1.42857143em + 10px);margin-left: 22px" })
-                                                )
-                                            </div>
+                                        <div class="col-5 row">
                                             <span>Remark to Lab</span>
-                                            <div class="col-sm-3 mr-t">
-                                                <textarea disabled id="remarkToLab" placeholder="Remark To Lab" class="k-textbox" style="margin-left: 2px;width: 100%;height: calc(1.42857143em + 10px)"></textarea>
 
+                                            <div style="margin-left: 2px;" class="col-sm-9 mr-t ">
+                                                <textarea disabled id="remarkToLab" placeholder="Remark To Lab" class="k-textbox" style="margin-left: 2px;width: 100%;height: calc(1.42857143em + 10px)"></textarea>
                                             </div>
                                         </div>
                                     </div>
-
-
                                     <div class="form-group row margin-left-0">
                                         <div class="row col-4"></div>
                                         <div class=" col-5"></div>
                                         <div class="row col-3">
-                                            <div style="margin-left: 53%">
+                                            <div style="margin-left: 50%">
                                                 <span onclick="recheck()" class="span-underline-pd-35">Recheck</span>
                                                 <span onclick="accept()" class="span-underline-accept">Approve</span>
                                             </div>
 
                                         </div>
                                     </div>
-
-
                                     <div class="form-group row">
 
                                         @(Html.Kendo().Grid<DRLab.Data.ViewModels.RecordResultGridViewModel>()
@@ -221,10 +215,7 @@
                                 </div>
                                 <!-- /.card-body -->
                                 <div id="temlate">
-
                                 </div>
-
-
                             </form>
                         </div>
                     </div>
@@ -241,12 +232,20 @@
     var listCheck = [];
     var curent;
     function recheck() {
+        var listCheckx = listCheck;
         if (listCheck.length === 0) {
             return;
         } else {
             var grid = $("#Grid").data("kendoGrid");
             for (var i = 0; i < listCheck.length; i++) {
-                grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ValidationResult = -1;
+               // grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ValidationResult = -1;
+                if (grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ValidationResult === 1) {
+                    grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ValidationResult = -1;
+                } else if (grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ValidationResult === 0) {
+                    grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ValidationResult = -1;
+                } else {
+                    grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ValidationResult = 0;
+                }
             }
             var dataSource = new kendo.data.DataSource({
                 data: grid._data,
@@ -287,16 +286,28 @@
                 }
             });
             grid.setDataSource(dataSource);
-            listCheck = [];
+            for (var i = 0; i < listCheckx.length; i++) {
+               /// for()
+                const select = grid._data.findIndex(x => x.AnalysisCode === listCheckx[i]);
+                grid.select("tr:eq(" + select.toString() + ")");
+            }
         }
     }
     function accept() {
+        var listCheckx = listCheck;
         if (listCheck.length === 0) {
             return;
         } else {
             var grid = $("#Grid").data("kendoGrid");
             for (var i = 0; i < listCheck.length; i++) {
-                grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ValidationResult = 1;
+               // grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ValidationResult = 1;
+                if (grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ValidationResult === 1) {
+                    grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ValidationResult = 0;
+                } else if (grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ValidationResult === 0) {
+                    grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ValidationResult = 1;
+                } else {
+                    grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ValidationResult = 1;
+                }
             }
             var dataSource = new kendo.data.DataSource({
                 data: grid._data,
@@ -337,7 +348,10 @@
                 }
             });
             grid.setDataSource(dataSource);
-            listCheck = [];
+            for (var i = 0; i < listCheckx.length; i++) {
+                const select = grid._data.findIndex(x => x.AnalysisCode === listCheckx[i]);
+                grid.select("tr:eq(" + select.toString() + ")");
+            }
         }
     }
     function onChangeStatus(e) {
@@ -493,7 +507,7 @@
         if (myData.length === 0) {
             $.ajax({
                 type: "GET",
-                url: "/RecordResult/GetRecordResultList",
+                url: "/RecordResult/GetRecordResulAccepttList",
                 data: { requestNo: document.getElementById("flag4").innerHTML },
                 dataType: "json",
                 success: function (response) {
@@ -713,12 +727,6 @@
             }
         }
     }
-    $("#refresh").change(function () {
-        if ($(this).is(':checked')) {
-            var grid = $("#Grid").data("kendoGrid");
-            grid.dataSource.read();
-        }
-    });
     function checkClass(classList) {
         var a = [];
         for (var i = 0; i < classList.length; i++) {
@@ -927,7 +935,7 @@
             var type = dataItem.ReviewResult === 1 ? 'success' : dataItem.ReviewResult === -1 ? 'error' : '';
             var text = dataItem.ReviewResult === 1 ? 'Accept' : dataItem.ReviewResult === -1 ? 'Recheck' : '';
             var type1 = dataItem.ValidationResult === 1 ? 'success' : dataItem.ValidationResult === -1 ? 'error' : '';
-            var text1 = dataItem.ValidationResult === 1 ? 'Accept' : dataItem.ValidationResult === -1 ? 'Recheck' : '';
+            var text1 = dataItem.ValidationResult === 1 ? 'Approve' : dataItem.ValidationResult === -1 ? 'Recheck' : '';
             $(this).find('script').each(function () {
                 eval($(this).html());
             });

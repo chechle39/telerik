@@ -74,6 +74,88 @@
                         }
                     });
                     gridData.setDataSource(dataSource);
+                    gridData.table.on('keydown', function (e) {
+                        if (e.keyCode === 40 && $($(e.target).closest('.k-edit-cell'))[0]) {
+                            e.preventDefault();
+                            var currentNumberOfItems = gridData.dataSource.view().length;
+                            var row = $(e.target).closest('tr').index();
+                            var col = gridData.cellIndex($(e.target).closest('td'));
+
+                            var dataItem = gridData.dataItem($(e.target).closest('tr'));
+                            var field = gridData.columns[col].field;
+                            var value = $(e.target).val();
+                            dataItem.set(field, value);
+
+                            if (row >= 0 && row < currentNumberOfItems && col >= 0 && col < gridData.columns.length) {
+                                var nextCellRow = row;
+                                var nextCellCol = col;
+
+                                if (e.shiftKey) {
+                                    if (nextCellRow - 1 < 0) {
+                                        nextCellRow = currentNumberOfItems - 1;
+                                        nextCellCol--;
+                                    } else {
+                                        nextCellRow--;
+                                    }
+                                } else {
+                                    if (nextCellRow + 1 >= currentNumberOfItems) {
+                                        nextCellRow = 0;
+                                        nextCellCol++;
+                                    } else {
+                                        nextCellRow++;
+                                    }
+                                }
+
+                                if (nextCellCol >= gridData.columns.length || nextCellCol < 0) {
+                                    return;
+                                }
+
+                                // wait for cell to close and Grid to rebind when changes have been made
+                                setTimeout(function () {
+                                    gridData.editCell(gridData.tbody.find("tr:eq(" + nextCellRow + ") td:eq(" + nextCellCol + ")"));
+                                });
+                            }
+                        } else if (e.keyCode === 38 && $($(e.target).closest('.k-edit-cell'))[0]) {
+                            e.preventDefault();
+                            var currentNumberOfItems = gridData.dataSource.view().length;
+                            var row = $(e.target).closest('tr').index();
+                            var col = gridData.cellIndex($(e.target).closest('td'));
+
+                            var dataItem = gridData.dataItem($(e.target).closest('tr'));
+                            var field = gridData.columns[col].field;
+                            var value = $(e.target).val();
+                            dataItem.set(field, value);
+
+                            if (row >= 0 && row < currentNumberOfItems && col >= 0 && col < gridData.columns.length) {
+                                var nextCellRow = row;
+                                var nextCellCol = col;
+
+                                if (e.shiftKey) {
+                                    if (nextCellRow - 1 < 0) {
+                                        nextCellRow = currentNumberOfItems - 1;
+                                        nextCellCol--;
+                                    } else {
+                                        nextCellRow--;
+                                    }
+                                } else {
+                                    if (nextCellRow + 1 >= currentNumberOfItems) {
+                                        nextCellRow--;
+                                    } else {
+                                        nextCellRow--;
+                                    }
+                                }
+
+                                if (nextCellCol >= gridData.columns.length || nextCellCol < 0) {
+                                    return;
+                                }
+
+                                // wait for cell to close and Grid to rebind when changes have been made
+                                setTimeout(function () {
+                                    gridData.editCell(gridData.tbody.find("tr:eq(" + nextCellRow + ") td:eq(" + nextCellCol + ")"));
+                                });
+                            }
+                        }
+                    });
                 } else {
                     var requestNo = ["SampleCode", "InLabCode"];
                     $.ajax({
@@ -90,7 +172,7 @@
                         }
                     });
                     var grid1 = $("#GridCustomerEdit").data("kendoGrid");
-
+                    
                     $('#simpleName').val('');
                     $('#descriptionCustomer').val('');
                     $('#remarkToLab').val('');
@@ -103,6 +185,88 @@
                         pageSize: 20,
                     });
                     grid1.setDataSource(dataSource);
+                    grid1.table.on('keydown', function (e) {
+                        if (e.keyCode === 40 && $($(e.target).closest('.k-edit-cell'))[0]) {
+                            e.preventDefault();
+                            var currentNumberOfItems = grid1.dataSource.view().length;
+                            var row = $(e.target).closest('tr').index();
+                            var col = grid1.cellIndex($(e.target).closest('td'));
+
+                            var dataItem = grid1.dataItem($(e.target).closest('tr'));
+                            var field = grid1.columns[col].field;
+                            var value = $(e.target).val();
+                            dataItem.set(field, value);
+
+                            if (row >= 0 && row < currentNumberOfItems && col >= 0 && col < grid1.columns.length) {
+                                var nextCellRow = row;
+                                var nextCellCol = col;
+
+                                if (e.shiftKey) {
+                                    if (nextCellRow - 1 < 0) {
+                                        nextCellRow = currentNumberOfItems - 1;
+                                        nextCellCol--;
+                                    } else {
+                                        nextCellRow--;
+                                    }
+                                } else {
+                                    if (nextCellRow + 1 >= currentNumberOfItems) {
+                                        nextCellRow = 0;
+                                        nextCellCol++;
+                                    } else {
+                                        nextCellRow++;
+                                    }
+                                }
+
+                                if (nextCellCol >= grid1.columns.length || nextCellCol < 0) {
+                                    return;
+                                }
+
+                                // wait for cell to close and Grid to rebind when changes have been made
+                                setTimeout(function () {
+                                    grid1.editCell(grid1.tbody.find("tr:eq(" + nextCellRow + ") td:eq(" + nextCellCol + ")"));
+                                });
+                            } else if (e.keyCode === 38 && $($(e.target).closest('.k-edit-cell'))[0]) {
+                                e.preventDefault();
+                                var currentNumberOfItems = grid1.dataSource.view().length;
+                                var row = $(e.target).closest('tr').index();
+                                var col = grid1.cellIndex($(e.target).closest('td'));
+
+                                var dataItem = grid1.dataItem($(e.target).closest('tr'));
+                                var field = grid1.columns[col].field;
+                                var value = $(e.target).val();
+                                dataItem.set(field, value);
+
+                                if (row >= 0 && row < currentNumberOfItems && col >= 0 && col < grid1.columns.length) {
+                                    var nextCellRow = row;
+                                    var nextCellCol = col;
+
+                                    if (e.shiftKey) {
+                                        if (nextCellRow - 1 < 0) {
+                                            nextCellRow = currentNumberOfItems - 1;
+                                            nextCellCol--;
+                                        } else {
+                                            nextCellRow--;
+                                        }
+                                    } else {
+                                        if (nextCellRow + 1 >= currentNumberOfItems) {
+                                            nextCellRow--;
+                                        } else {
+                                            nextCellRow--;
+                                        }
+                                    }
+
+                                    if (nextCellCol >= grid1.columns.length || nextCellCol < 0) {
+                                        return;
+                                    }
+
+                                    // wait for cell to close and Grid to rebind when changes have been made
+                                    setTimeout(function () {
+                                        grid1.editCell(grid1.tbody.find("tr:eq(" + nextCellRow + ") td:eq(" + nextCellCol + ")"));
+                                    });
+                                }
+                            }
+                        }
+                    });
                 }
 
 

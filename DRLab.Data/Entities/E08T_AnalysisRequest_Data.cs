@@ -51,7 +51,6 @@ namespace DRLab.Data.Entities
         public Nullable<double> price { get; set; }
         public Nullable<double> turnAroundDay { get; set; }
         public string specMark { get; set; }
-    
         public virtual E08T_AnalysisRequest_Item E08T_AnalysisRequest_Item { get; set; }
     }
 }

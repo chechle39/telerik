@@ -12,8 +12,80 @@
         $('#exampleModal').modal('hide');
         $('#exampleModal').css('display', 'none');
     });
+    var dialogRubber = $('#dialogRubber');
+    dialogRubber.kendoDialog({
+        width: "1000px",
+        title: "PHÂN HẠNG CAO SU SVR",
+        closable: true,
+        modal: false,
+        content: "",
+        visible: false,
 
+        actions: [
+            { text: 'Cancel' },
+            {
+                text: 'Save', primary: true,
+                action: onRubber,
+
+            }
+        ],
+        //   close: onClose
+    });
+    function onRubber() {
+        var combobox = $("#chiTieu").data("kendoDropDownList");
+        var arr = [];
+        var gridx = $("#GridRubber").data("kendoGrid");
+        for (var i = 0; i < gridx.columns.length; i++) {
+            if (gridx.columns[i].field !== "MauSo") {
+                for (var index = 0; index < gridx._data.length; index++) {
+                    const obj = {
+                        iD: 0,
+                        sampleCode: $('#simpleCode').val(),
+                        columName: gridx.columns[i].field,
+                        value: gridx._data[index][gridx.columns[i].field],
+                        Denominator: gridx._data[index]["MauSo"],
+                        dKSVR: combobox.text(),
+                        requestNo: document.getElementById("flag4").innerHTML,
+                    };
+                    arr.push(obj);
+                };
+            }
+            
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/RecordResult/CreateFieldTable",
+            data: JSON.stringify(arr),
+            dataType: 'json',
+            contentType: 'application/json',
+            processData: false,
+            success: function (response) {
+                var data = handerDataGridDeleted(response);
+                $.ajax({
+                    type: "POST",
+                    url: "/RecordResult/UpdateEntity",
+                    data: JSON.stringify(data),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+       
+                        initForm();
+                    },
+                    error: function () {
+
+
+                    }
+                });
+            },
+            error: function () {
+               
+            },
+
+        })
+    }
     function initForm() {
+
         var requestNo = ["RequestNo", "SampleCode", "InLabCode"];
         var template = $('#table-template').html();
         var render = "";
@@ -27,9 +99,18 @@
             companyName: document.getElementById("flag7").innerHTML
         });
         $('#tbl-content').html(render);
+        var url = '';
+        if (checkUrl === '/RecordResult/ApproveResult/') {
+            url = '/RecordResult/GetRecordResulAccepttList';
+        } else if (checkUrl === '/RecordResult/RiviewRequest/')  {
+            url = '/RecordResult/GetRecordResultList';
+        }
+        else {
+            url = '/RecordResult/GetRecordResultDapperList';
+        }
         $.ajax({
             type: "GET",
-            url: "/RecordResult/GetRecordResultList",
+            url: url,
             data: { requestNo: document.getElementById("flag4").innerHTML },
             dataType: "json",
             success: function (response) {
@@ -94,6 +175,49 @@
                             }
                         });
                         grid.setDataSource(dataSource);
+                        grid.table.on('keydown', function (e) {
+                            if (e.keyCode === 40 && $($(e.target).closest('.k-edit-cell'))[0]) {
+                                e.preventDefault();
+                                var currentNumberOfItems = grid.dataSource.view().length;
+                                var row = $(e.target).closest('tr').index();
+                                var col = grid.cellIndex($(e.target).closest('td'));
+
+                                var dataItem = grid.dataItem($(e.target).closest('tr'));
+                                var field = grid.columns[col].field;
+                                var value = $(e.target).val();
+                                dataItem.set(field, value);
+
+                                if (row >= 0 && row < currentNumberOfItems && col >= 0 && col < grid.columns.length) {
+                                    var nextCellRow = row;
+                                    var nextCellCol = col;
+
+                                    if (e.shiftKey) {
+                                        if (nextCellRow - 1 < 0) {
+                                            nextCellRow = currentNumberOfItems - 1;
+                                            nextCellCol--;
+                                        } else {
+                                            nextCellRow--;
+                                        }
+                                    } else {
+                                        if (nextCellRow + 1 >= currentNumberOfItems) {
+                                            nextCellRow = 0;
+                                            nextCellCol++;
+                                        } else {
+                                            nextCellRow++;
+                                        }
+                                    }
+
+                                    if (nextCellCol >= grid.columns.length || nextCellCol < 0) {
+                                        return;
+                                    }
+
+                                    // wait for cell to close and Grid to rebind when changes have been made
+                                    setTimeout(function () {
+                                        grid.editCell(grid.tbody.find("tr:eq(" + nextCellRow + ") td:eq(" + nextCellCol + ")"));
+                                    });
+                                }
+                            }
+                        });
                     } else {
                         var grid = $("#Grid").data("kendoGrid");
                         var dataSource = new kendo.data.DataSource({
@@ -101,6 +225,49 @@
                             pageSize: 20,
                         });
                         grid.setDataSource(dataSource);
+                        grid.table.on('keydown', function (e) {
+                            if (e.keyCode === 40 && $($(e.target).closest('.k-edit-cell'))[0]) {
+                                e.preventDefault();
+                                var currentNumberOfItems = grid.dataSource.view().length;
+                                var row = $(e.target).closest('tr').index();
+                                var col = grid.cellIndex($(e.target).closest('td'));
+
+                                var dataItem = grid.dataItem($(e.target).closest('tr'));
+                                var field = grid.columns[col].field;
+                                var value = $(e.target).val();
+                                dataItem.set(field, value);
+
+                                if (row >= 0 && row < currentNumberOfItems && col >= 0 && col < grid.columns.length) {
+                                    var nextCellRow = row;
+                                    var nextCellCol = col;
+
+                                    if (e.shiftKey) {
+                                        if (nextCellRow - 1 < 0) {
+                                            nextCellRow = currentNumberOfItems - 1;
+                                            nextCellCol--;
+                                        } else {
+                                            nextCellRow--;
+                                        }
+                                    } else {
+                                        if (nextCellRow + 1 >= currentNumberOfItems) {
+                                            nextCellRow = 0;
+                                            nextCellCol++;
+                                        } else {
+                                            nextCellRow++;
+                                        }
+                                    }
+
+                                    if (nextCellCol >= grid.columns.length || nextCellCol < 0) {
+                                        return;
+                                    }
+
+                                    // wait for cell to close and Grid to rebind when changes have been made
+                                    setTimeout(function () {
+                                        grid.editCell(grid.tbody.find("tr:eq(" + nextCellRow + ") td:eq(" + nextCellCol + ")"));
+                                    });
+                                }
+                            }
+                        });
                     }
 
                 } else {
@@ -119,6 +286,49 @@
                         pageSize: 20,
                     });
                     grid1.setDataSource(dataSource);
+                    grid1.table.on('keydown', function (e) {
+                        if (e.keyCode === 40 && $($(e.target).closest('.k-edit-cell'))[0]) {
+                            e.preventDefault();
+                            var currentNumberOfItems = grid1.dataSource.view().length;
+                            var row = $(e.target).closest('tr').index();
+                            var col = grid1.cellIndex($(e.target).closest('td'));
+
+                            var dataItem = grid1.dataItem($(e.target).closest('tr'));
+                            var field = grid1.columns[col].field;
+                            var value = $(e.target).val();
+                            dataItem.set(field, value);
+
+                            if (row >= 0 && row < currentNumberOfItems && col >= 0 && col < grid.columns.length) {
+                                var nextCellRow = row;
+                                var nextCellCol = col;
+
+                                if (e.shiftKey) {
+                                    if (nextCellRow - 1 < 0) {
+                                        nextCellRow = currentNumberOfItems - 1;
+                                        nextCellCol--;
+                                    } else {
+                                        nextCellRow--;
+                                    }
+                                } else {
+                                    if (nextCellRow + 1 >= currentNumberOfItems) {
+                                        nextCellRow = 0;
+                                        nextCellCol++;
+                                    } else {
+                                        nextCellRow++;
+                                    }
+                                }
+
+                                if (nextCellCol >= grid1.columns.length || nextCellCol < 0) {
+                                    return;
+                                }
+
+                                // wait for cell to close and Grid to rebind when changes have been made
+                                setTimeout(function () {
+                                    grid1.editCell(grid1.tbody.find("tr:eq(" + nextCellRow + ") td:eq(" + nextCellCol + ")"));
+                                });
+                            }
+                        }
+                    });
                 }
                 const data = { "req_per_page": 1, "page_no": 1 };
                 pagination(data, parseInt(document.getElementById("flag").innerHTML));
@@ -172,7 +382,154 @@
         return a;
     }
 
-
+    function handerDataGridDeleted(request) {
+        var myGrid = [];
+        var grid = $("#Grid").data("kendoGrid");
+        for (var i = 0; i < grid._data.length; i++) {
+            switch (grid._data[i].SpecCode) {
+                case "ML":
+                    var object = {
+                        ExpectationDate: grid._data[i].ExpectationDate,
+                        LOD: grid._data[i].LOD,
+                        Mark: grid._data[i].Mark,
+                        method: grid._data[i].method,
+                        Result: request.ML,
+                        ResultText: grid._data[i].ResultText,
+                        ReviewResult: grid._data[i].ReviewResult,
+                        WOID: grid._data[i].WOID,
+                        specification: grid._data[i].specification,
+                        unit: grid._data[i].unit,
+                        LVNCode: grid._data[i].LVNCode,
+                        AnalysisCode: grid._data[i].AnalysisCode
+                    };
+                    myGrid.push(object);
+                    break;
+                case "Color":
+                    var object = {
+                        ExpectationDate: grid._data[i].ExpectationDate,
+                        LOD: grid._data[i].LOD,
+                        Mark: grid._data[i].Mark,
+                        method: grid._data[i].method,
+                        Result: request.Color,
+                        ResultText: grid._data[i].ResultText,
+                        ReviewResult: grid._data[i].ReviewResult,
+                        WOID: grid._data[i].WOID,
+                        specification: grid._data[i].specification,
+                        unit: grid._data[i].unit,
+                        LVNCode: grid._data[i].LVNCode,
+                        AnalysisCode: grid._data[i].AnalysisCode
+                    };
+                    myGrid.push(object);
+                    break;
+                case "PRI":
+                    var object = {
+                        ExpectationDate: grid._data[i].ExpectationDate,
+                        LOD: grid._data[i].LOD,
+                        Mark: grid._data[i].Mark,
+                        method: grid._data[i].method,
+                        Result: request.PRI,
+                        ResultText: grid._data[i].ResultText,
+                        ReviewResult: grid._data[i].ReviewResult,
+                        WOID: grid._data[i].WOID,
+                        specification: grid._data[i].specification,
+                        unit: grid._data[i].unit,
+                        LVNCode: grid._data[i].LVNCode,
+                        AnalysisCode: grid._data[i].AnalysisCode
+                    };
+                    myGrid.push(object);
+                    break;
+                case "P0":
+                    var object = {
+                        ExpectationDate: grid._data[i].ExpectationDate,
+                        LOD: grid._data[i].LOD,
+                        Mark: grid._data[i].Mark,
+                        method: grid._data[i].method,
+                        Result: request.P0,
+                        ResultText: grid._data[i].ResultText,
+                        ReviewResult: grid._data[i].ReviewResult,
+                        WOID: grid._data[i].WOID,
+                        specification: grid._data[i].specification,
+                        unit: grid._data[i].unit,
+                        LVNCode: grid._data[i].LVNCode,
+                        AnalysisCode: grid._data[i].AnalysisCode
+                    };
+                    myGrid.push(object);
+                    break;
+                case "Nitrogen":
+                    var object = {
+                        ExpectationDate: grid._data[i].ExpectationDate,
+                        LOD: grid._data[i].LOD,
+                        Mark: grid._data[i].Mark,
+                        method: grid._data[i].method,
+                        Result: request.Nitro,
+                        ResultText: grid._data[i].ResultText,
+                        ReviewResult: grid._data[i].ReviewResult,
+                        WOID: grid._data[i].WOID,
+                        specification: grid._data[i].specification,
+                        unit: grid._data[i].unit,
+                        LVNCode: grid._data[i].LVNCode,
+                        AnalysisCode: grid._data[i].AnalysisCode
+                    };
+                    myGrid.push(object);
+                    break;
+                case "Volatile matter":
+                    var object = {
+                        ExpectationDate: grid._data[i].ExpectationDate,
+                        LOD: grid._data[i].LOD,
+                        Mark: grid._data[i].Mark,
+                        method: grid._data[i].method,
+                        Result: request.Volatilematter,
+                        ResultText: grid._data[i].ResultText,
+                        ReviewResult: grid._data[i].ReviewResult,
+                        WOID: grid._data[i].WOID,
+                        specification: grid._data[i].specification,
+                        unit: grid._data[i].unit,
+                        LVNCode: grid._data[i].LVNCode,
+                        AnalysisCode: grid._data[i].AnalysisCode
+                    };
+                    myGrid.push(object);
+                    break;
+                case "Ash":
+                    var object = {
+                        ExpectationDate: grid._data[i].ExpectationDate,
+                        LOD: grid._data[i].LOD,
+                        Mark: grid._data[i].Mark,
+                        method: grid._data[i].method,
+                        Result: request.Ash,
+                        ResultText: grid._data[i].ResultText,
+                        ReviewResult: grid._data[i].ReviewResult,
+                        WOID: grid._data[i].WOID,
+                        specification: grid._data[i].specification,
+                        unit: grid._data[i].unit,
+                        LVNCode: grid._data[i].LVNCode,
+                        AnalysisCode: grid._data[i].AnalysisCode
+                    };
+                    myGrid.push(object);
+                    break;
+                case "Dirt":
+                    var object = {
+                        ExpectationDate: grid._data[i].ExpectationDate,
+                        LOD: grid._data[i].LOD,
+                        Mark: grid._data[i].Mark,
+                        method: grid._data[i].method,
+                        Result: request.Dirt,
+                        ResultText: grid._data[i].ResultText,
+                        ReviewResult: grid._data[i].ReviewResult,
+                        WOID: grid._data[i].WOID,
+                        specification: grid._data[i].specification,
+                        unit: grid._data[i].unit,
+                        LVNCode: grid._data[i].LVNCode,
+                        AnalysisCode: grid._data[i].AnalysisCode
+                    };
+                    myGrid.push(object);
+                    break;
+                default:
+                // code block
+            }
+            
+        }
+        return myGrid;
+    }
     // Render the table's row in table request-table
     function render_table_rows(rows, req_per_page, page_no) {
         const response = JSON.parse(window.atob(rows));

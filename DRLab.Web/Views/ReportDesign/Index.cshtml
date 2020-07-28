@@ -5,29 +5,17 @@
 <link rel="stylesheet" href="~/css/viewer.part.bundle.css" />
 <script src="~/js/viewer.part.bundle.js"></script>
 @{
-    DateTime datetemp = new DateTime();
     var report = new DevExpress.XtraReports.UI.XtraReport();
     if (@Model.ReportName == "ManagementSample")
     {
         report = new DRLab.Web.Reports.ManagementSample();
-        
-        report.Parameters[0].Visible = false;
-        //report.Parameters[1].Value = @Model.EndDate;
-        //report.Parameters[0].Value = DateTime.Parse(@Model.StartDate);
-        //datetemp = DateTime.Parse(@Model.EndDate);
-        //report.Parameters[1].Value = datetemp.AddHours(23).AddMinutes(59);
-        report.Parameters[0].Value = @Model.RequestNumber;
+      
     }
     if (@Model.ReportName == "ManagementRequest")    {
-        report = new DRLab.Web.Reports.ManagementRequest();       
-        report.Parameters[0].Visible = false;
-        //report.Parameters[1].Value = @Model.EndDate;
-        //report.Parameters[0].Value = DateTime.Parse(@Model.StartDate);
-        //datetemp = DateTime.Parse(@Model.EndDate);
-        //report.Parameters[1].Value = datetemp.AddHours(23).AddMinutes(59);
+        report = new DRLab.Web.Reports.ManagementRequest();
         report.Parameters[0].Value = @Model.RequestNumber;
+        report.Parameters[0].Visible = false;
     }
-
 }
 
 <h1 hidden id="flagReportName">@Model.ReportName</h1>

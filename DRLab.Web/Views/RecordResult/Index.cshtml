@@ -93,10 +93,20 @@
 
                                         <div class="box pagination">
                                         </div>
+                                        <button onclick="addRubber()" style="height: 28px;" class="k-button k-primary px-3 py-2">Save</button>
+
+
                                     </div>
 
+                                    <div hidden class="col-sm-9 mr-t">
+                                        @(Html.Kendo().TextBox().Enable(false)
+                                                .Name("simpleCode")
+                                                .HtmlAttributes(new { placeholder = "Inner Code", style = "width: 100%;height: calc(1.42857143em + 10px);margin-left: 22px" })
+                                                )
+                                    </div>
                                     <div class="form-group row margin-left-0">
-                                        <div hidden class="col-5 row">
+
+                                        <div class="col-5 row">
                                             <span>Sample Name</span>
 
                                             <div class="col-sm-9 mr-t ">
@@ -104,63 +114,43 @@
                                             </div>
                                         </div>
 
-                                        <div hidden class="row col-5">
-                                            <span>Sample Code</span>
-                                            <div class="col-sm-9 mr-t">
-                                                @(Html.Kendo().TextBox().Enable(false)
-                                                .Name("simpleCode")
-                                                .HtmlAttributes(new { placeholder = "Sample Code", style = "width: 50%;height: calc(1.42857143em + 10px);margin-left: 8px" })
-                                                )
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-                                    <div class="form-group row margin-left-0">
-
-                                        <div hidden class="col-5 row">
-                                            <span>Description</span>
-                                            <div class="col-sm-9 mr-t">
-                                                <textarea disabled id="descriptionCustomer" placeholder="Description" class="k-textbox" style="width: 100%;margin-left: 21px;height: calc(1.42857143em + 10px)"></textarea>
-                                            </div>
-                                        </div>
-
-                                        <div class="row col-12">
+                                        <div class="row col-5">
                                             <span>Inner Code</span>
-                                            <div class="col-sm-2 mr-t">
+                                            <div class="col-sm-9 mr-t">
                                                 @(Html.Kendo().TextBox().Enable(false)
                                                 .Name("innerCode")
-                                                .HtmlAttributes(new { placeholder = "Inner Code", style = "width: 50%;height: calc(1.42857143em + 10px);margin-left: 22px" })
+                                                .HtmlAttributes(new { placeholder = "Inner Code", style = "width: 100%;height: calc(1.42857143em + 10px);margin-left: 22px" })
                                                 )
                                             </div>
-                                            <span>Sample Matrix</span>
-                                            <div class="col-sm-3 mr-t">
-                                                @(Html.Kendo().TextBox().Enable(false)
-                                                .Name("sampleMatrix")
-                                                .HtmlAttributes(new { placeholder = "Sample Matrix", style = "width: 80%;height: calc(1.42857143em + 10px);margin-left: 22px" })
-                                                )
-                                            </div>
-                                            <span>Remark to Lab</span>
-                                            <div class="col-sm-3 mr-t">
-                                                <textarea disabled id="remarkToLab" placeholder="Remark To Lab" class="k-textbox" style="margin-left: 2px;width: 100%;height: calc(1.42857143em + 10px)"></textarea>
 
-                                            </div>
                                         </div>
+
                                     </div>
 
+                                    <div class="form-group row margin-left-0">
+                                        <div class="col-5 row">
+                                            <span>Sample Matrix</span>
 
+                                            <div class="col-sm-9 mr-t ">
+                                                @(Html.Kendo().TextBox().Enable(false)
+                                                .Name("sampleMatrix")
+                                                .HtmlAttributes(new { placeholder = "Sample Matrix", style = "width: 100%;height: calc(1.42857143em + 10px);margin-left: 5px" })
+                                                )
+                                            </div>
+                                        </div>
+
+                                        <div class="row col-5">
+                                            <span>Remark to Lab</span>
+                                            <div style="margin-left: 0px;" class="col-sm-9 mr-t ">
+                                                <textarea disabled id="remarkToLab" placeholder="Remark To Lab" class="k-textbox" style="margin-left: 2px;width: 100%;height: calc(1.42857143em + 10px)"></textarea>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
 
 
                                     <div hidden class="form-group row margin-left-0">
-
-                                        @*<div class="col-5 row">
-                                            <span>Remark To Lab</span>
-                                            <div class="col-sm-9 mr-t">
-                                                <textarea disabled id="remarkToLab"  placeholder="Remark To Lab" class="k-textbox" style="margin-left: 2px;width: 100%;height: calc(1.42857143em + 10px)"></textarea>
-
-                                            </div>
-                                        </div>*@
 
                                         <div class="row col-3">
                                             <span>Weight</span>
@@ -173,19 +163,19 @@
 
                                         </div>
 
-                                      
+
                                     </div>
                                     <div class="form-group row margin-left-0">
 
-                                        
-                                      
+
+
                                     </div>
                                     <div style="margin-bottom: 25px;">
 
 
                                     </div>
 
-                                  
+
 
                                     <div class="form-group row">
 
@@ -220,6 +210,7 @@
                                             schema.Model(model =>
                                             {
                                                 model.Id(p => p.WOID);
+                                                model.Field(p => p.SpecCode).Editable(false).From("SpecCode");
                                                 model.Field(p => p.WOID).Editable(false).From("WOID");
                                                 model.Field(p => p.LVNCode).Editable(false).From("LVNCode");
                                                 model.Field(p => p.LVNCode).Editable(false).From("AnalysisCode");
@@ -253,6 +244,7 @@
         </section>
     </div><!-- /.container-fluid -->
 </section>
+@Html.Partial("RubberClassification.cshtml")
 <script>
     var data = [];
     myData = [];
@@ -339,7 +331,7 @@
                                     editable: false
 
                                 },
-  
+
                                 ExpectationDate: {
                                     editable: false
 
@@ -354,6 +346,88 @@
                     }
                 });
                 grid.setDataSource(dataSource);
+                grid.table.on('keydown', function (e) {
+                    if (e.keyCode === 40 && $($(e.target).closest('.k-edit-cell'))[0]) {
+                        e.preventDefault();
+                        var currentNumberOfItems = grid.dataSource.view().length;
+                        var row = $(e.target).closest('tr').index();
+                        var col = grid.cellIndex($(e.target).closest('td'));
+
+                        var dataItem = grid.dataItem($(e.target).closest('tr'));
+                        var field = grid.columns[col].field;
+                        var value = $(e.target).val();
+                        dataItem.set(field, value);
+
+                        if (row >= 0 && row < currentNumberOfItems && col >= 0 && col < grid.columns.length) {
+                            var nextCellRow = row;
+                            var nextCellCol = col;
+
+                            if (e.shiftKey) {
+                                if (nextCellRow - 1 < 0) {
+                                    nextCellRow = currentNumberOfItems - 1;
+                                    nextCellCol--;
+                                } else {
+                                    nextCellRow--;
+                                }
+                            } else {
+                                if (nextCellRow + 1 >= currentNumberOfItems) {
+                                    nextCellRow = 0;
+                                    nextCellCol++;
+                                } else {
+                                    nextCellRow++;
+                                }
+                            }
+
+                            if (nextCellCol >= grid.columns.length || nextCellCol < 0) {
+                                return;
+                            }
+
+                            // wait for cell to close and Grid to rebind when changes have been made
+                            setTimeout(function () {
+                                grid.editCell(grid.tbody.find("tr:eq(" + nextCellRow + ") td:eq(" + nextCellCol + ")"));
+                            });
+                        }
+                    } else if (e.keyCode === 38 && $($(e.target).closest('.k-edit-cell'))[0]) {
+                        e.preventDefault();
+                        var currentNumberOfItems = grid.dataSource.view().length;
+                        var row = $(e.target).closest('tr').index();
+                        var col = grid.cellIndex($(e.target).closest('td'));
+
+                        var dataItem = grid.dataItem($(e.target).closest('tr'));
+                        var field = grid.columns[col].field;
+                        var value = $(e.target).val();
+                        dataItem.set(field, value);
+
+                        if (row >= 0 && row < currentNumberOfItems && col >= 0 && col < grid.columns.length) {
+                            var nextCellRow = row;
+                            var nextCellCol = col;
+
+                            if (e.shiftKey) {
+                                if (nextCellRow - 1 < 0) {
+                                    nextCellRow = currentNumberOfItems - 1;
+                                    nextCellCol--;
+                                } else {
+                                    nextCellRow--;
+                                }
+                            } else {
+                                if (nextCellRow + 1 >= currentNumberOfItems) {
+                                    nextCellRow--;
+                                } else {
+                                    nextCellRow--;
+                                }
+                            }
+
+                            if (nextCellCol >= grid.columns.length || nextCellCol < 0) {
+                                return;
+                            }
+
+                            // wait for cell to close and Grid to rebind when changes have been made
+                            setTimeout(function () {
+                                grid.editCell(grid.tbody.find("tr:eq(" + nextCellRow + ") td:eq(" + nextCellCol + ")"));
+                            });
+                        }
+                    }
+                });
                 var total = 0;
                 for (var i = 0; i < response.length; i++) {
                     total += response[i].Price;
@@ -382,7 +456,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "/RecordResult/GetRecordResultList",
+                url: "/RecordResult/GetRecordResultDapperList",
                 data: { requestNo: document.getElementById("flag4").innerHTML },
                 dataType: "json",
                 success: function (response) {
@@ -440,6 +514,88 @@
                             }
                         });
                         grid.setDataSource(dataSource);
+                        grid.table.on('keydown', function (e) {
+                            if (e.keyCode === 40 && $($(e.target).closest('.k-edit-cell'))[0]) {
+                                e.preventDefault();
+                                var currentNumberOfItems = grid.dataSource.view().length;
+                                var row = $(e.target).closest('tr').index();
+                                var col = grid.cellIndex($(e.target).closest('td'));
+
+                                var dataItem = grid.dataItem($(e.target).closest('tr'));
+                                var field = grid.columns[col].field;
+                                var value = $(e.target).val();
+                                dataItem.set(field, value);
+
+                                if (row >= 0 && row < currentNumberOfItems && col >= 0 && col < grid.columns.length) {
+                                    var nextCellRow = row;
+                                    var nextCellCol = col;
+
+                                    if (e.shiftKey) {
+                                        if (nextCellRow - 1 < 0) {
+                                            nextCellRow = currentNumberOfItems - 1;
+                                            nextCellCol--;
+                                        } else {
+                                            nextCellRow--;
+                                        }
+                                    } else {
+                                        if (nextCellRow + 1 >= currentNumberOfItems) {
+                                            nextCellRow = 0;
+                                            nextCellCol++;
+                                        } else {
+                                            nextCellRow++;
+                                        }
+                                    }
+
+                                    if (nextCellCol >= grid.columns.length || nextCellCol < 0) {
+                                        return;
+                                    }
+
+                                    // wait for cell to close and Grid to rebind when changes have been made
+                                    setTimeout(function () {
+                                        grid.editCell(grid.tbody.find("tr:eq(" + nextCellRow + ") td:eq(" + nextCellCol + ")"));
+                                    });
+                                }
+                            } else if (e.keyCode === 38 && $($(e.target).closest('.k-edit-cell'))[0]) {
+                                e.preventDefault();
+                                var currentNumberOfItems = grid.dataSource.view().length;
+                                var row = $(e.target).closest('tr').index();
+                                var col = grid.cellIndex($(e.target).closest('td'));
+
+                                var dataItem = grid.dataItem($(e.target).closest('tr'));
+                                var field = grid.columns[col].field;
+                                var value = $(e.target).val();
+                                dataItem.set(field, value);
+
+                                if (row >= 0 && row < currentNumberOfItems && col >= 0 && col < grid.columns.length) {
+                                    var nextCellRow = row;
+                                    var nextCellCol = col;
+
+                                    if (e.shiftKey) {
+                                        if (nextCellRow - 1 < 0) {
+                                            nextCellRow = currentNumberOfItems - 1;
+                                            nextCellCol--;
+                                        } else {
+                                            nextCellRow--;
+                                        }
+                                    } else {
+                                        if (nextCellRow + 1 >= currentNumberOfItems) {
+                                            nextCellRow--;
+                                        } else {
+                                            nextCellRow--;
+                                        }
+                                    }
+
+                                    if (nextCellCol >= grid.columns.length || nextCellCol < 0) {
+                                        return;
+                                    }
+
+                                    // wait for cell to close and Grid to rebind when changes have been made
+                                    setTimeout(function () {
+                                        grid.editCell(grid.tbody.find("tr:eq(" + nextCellRow + ") td:eq(" + nextCellCol + ")"));
+                                    });
+                                }
+                            }
+                        });
                     } else {
 
 
@@ -484,6 +640,88 @@
                             }
                         });
                         grid.setDataSource(dataSource);
+                        grid.table.on('keydown', function (e) {
+                            if (e.keyCode === 40 && $($(e.target).closest('.k-edit-cell'))[0]) {
+                                e.preventDefault();
+                                var currentNumberOfItems = grid.dataSource.view().length;
+                                var row = $(e.target).closest('tr').index();
+                                var col = grid.cellIndex($(e.target).closest('td'));
+
+                                var dataItem = grid.dataItem($(e.target).closest('tr'));
+                                var field = grid.columns[col].field;
+                                var value = $(e.target).val();
+                                dataItem.set(field, value);
+
+                                if (row >= 0 && row < currentNumberOfItems && col >= 0 && col < grid.columns.length) {
+                                    var nextCellRow = row;
+                                    var nextCellCol = col;
+
+                                    if (e.shiftKey) {
+                                        if (nextCellRow - 1 < 0) {
+                                            nextCellRow = currentNumberOfItems - 1;
+                                            nextCellCol--;
+                                        } else {
+                                            nextCellRow--;
+                                        }
+                                    } else {
+                                        if (nextCellRow + 1 >= currentNumberOfItems) {
+                                            nextCellRow = 0;
+                                            nextCellCol++;
+                                        } else {
+                                            nextCellRow++;
+                                        }
+                                    }
+
+                                    if (nextCellCol >= grid.columns.length || nextCellCol < 0) {
+                                        return;
+                                    }
+
+                                    // wait for cell to close and Grid to rebind when changes have been made
+                                    setTimeout(function () {
+                                        grid.editCell(grid.tbody.find("tr:eq(" + nextCellRow + ") td:eq(" + nextCellCol + ")"));
+                                    });
+                                }
+                            } else if (e.keyCode === 38 && $($(e.target).closest('.k-edit-cell'))[0]) {
+                                e.preventDefault();
+                                var currentNumberOfItems = grid.dataSource.view().length;
+                                var row = $(e.target).closest('tr').index();
+                                var col = grid.cellIndex($(e.target).closest('td'));
+
+                                var dataItem = grid.dataItem($(e.target).closest('tr'));
+                                var field = grid.columns[col].field;
+                                var value = $(e.target).val();
+                                dataItem.set(field, value);
+
+                                if (row >= 0 && row < currentNumberOfItems && col >= 0 && col < grid.columns.length) {
+                                    var nextCellRow = row;
+                                    var nextCellCol = col;
+
+                                    if (e.shiftKey) {
+                                        if (nextCellRow - 1 < 0) {
+                                            nextCellRow = currentNumberOfItems - 1;
+                                            nextCellCol--;
+                                        } else {
+                                            nextCellRow--;
+                                        }
+                                    } else {
+                                        if (nextCellRow + 1 >= currentNumberOfItems) {
+                                            nextCellRow--;
+                                        } else {
+                                            nextCellRow--;
+                                        }
+                                    }
+
+                                    if (nextCellCol >= grid.columns.length || nextCellCol < 0) {
+                                        return;
+                                    }
+
+                                    // wait for cell to close and Grid to rebind when changes have been made
+                                    setTimeout(function () {
+                                        grid.editCell(grid.tbody.find("tr:eq(" + nextCellRow + ") td:eq(" + nextCellCol + ")"));
+                                    });
+                                }
+                            }
+                        });
                     }
 
                     for (var i = 0; i < parseInt(document.getElementById("flag").innerHTML); i++) {
@@ -503,7 +741,7 @@
                             };
                             myData.push(a);
                         } else {
-                            const a = { simpleName: '', simpleCode: '', descriptionCustomer: '', innerCode: '', remarkToLab: '', weight: ''};
+                            const a = { simpleName: '', simpleCode: '', descriptionCustomer: '', innerCode: '', remarkToLab: '', weight: '' };
                             myData.push(a);
                         }
 
@@ -701,6 +939,88 @@
             }
         });
         grid.setDataSource(dataSource);
+        grid.table.on('keydown', function (e) {
+            if (e.keyCode === 40 && $($(e.target).closest('.k-edit-cell'))[0]) {
+                e.preventDefault();
+                var currentNumberOfItems = grid.dataSource.view().length;
+                var row = $(e.target).closest('tr').index();
+                var col = grid.cellIndex($(e.target).closest('td'));
+
+                var dataItem = grid.dataItem($(e.target).closest('tr'));
+                var field = grid.columns[col].field;
+                var value = $(e.target).val();
+                dataItem.set(field, value);
+
+                if (row >= 0 && row < currentNumberOfItems && col >= 0 && col < grid.columns.length) {
+                    var nextCellRow = row;
+                    var nextCellCol = col;
+
+                    if (e.shiftKey) {
+                        if (nextCellRow - 1 < 0) {
+                            nextCellRow = currentNumberOfItems - 1;
+                            nextCellCol--;
+                        } else {
+                            nextCellRow--;
+                        }
+                    } else {
+                        if (nextCellRow + 1 >= currentNumberOfItems) {
+                            nextCellRow = 0;
+                            nextCellCol++;
+                        } else {
+                            nextCellRow++;
+                        }
+                    }
+
+                    if (nextCellCol >= grid.columns.length || nextCellCol < 0) {
+                        return;
+                    }
+
+                    // wait for cell to close and Grid to rebind when changes have been made
+                    setTimeout(function () {
+                        grid.editCell(grid.tbody.find("tr:eq(" + nextCellRow + ") td:eq(" + nextCellCol + ")"));
+                    });
+                }
+            } else if (e.keyCode === 38 && $($(e.target).closest('.k-edit-cell'))[0]) {
+                e.preventDefault();
+                var currentNumberOfItems = grid.dataSource.view().length;
+                var row = $(e.target).closest('tr').index();
+                var col = grid.cellIndex($(e.target).closest('td'));
+
+                var dataItem = grid.dataItem($(e.target).closest('tr'));
+                var field = grid.columns[col].field;
+                var value = $(e.target).val();
+                dataItem.set(field, value);
+
+                if (row >= 0 && row < currentNumberOfItems && col >= 0 && col < grid.columns.length) {
+                    var nextCellRow = row;
+                    var nextCellCol = col;
+
+                    if (e.shiftKey) {
+                        if (nextCellRow - 1 < 0) {
+                            nextCellRow = currentNumberOfItems - 1;
+                            nextCellCol--;
+                        } else {
+                            nextCellRow--;
+                        }
+                    } else {
+                        if (nextCellRow + 1 >= currentNumberOfItems) {
+                            nextCellRow--;
+                        } else {
+                            nextCellRow--;
+                        }
+                    }
+
+                    if (nextCellCol >= grid.columns.length || nextCellCol < 0) {
+                        return;
+                    }
+
+                    // wait for cell to close and Grid to rebind when changes have been made
+                    setTimeout(function () {
+                        grid.editCell(grid.tbody.find("tr:eq(" + nextCellRow + ") td:eq(" + nextCellCol + ")"));
+                    });
+                }
+            }
+        });
     }
 
     function handerDataGridDeleted(request) {
@@ -820,15 +1140,15 @@
     }
 
     function change(e) {
-       
+
     };
 
     function onDataBound(e) {
         var grid = $("#Grid").data("kendoGrid");
         grid.table.find("tr").each(function () {
             var dataItem = grid.dataItem(this);
-            var type = dataItem.ReviewResult === 1 ? 'warning' : dataItem.ReviewResult === 2 ? 'success' : 'error';
-            var text = dataItem.ReviewResult === 1 ? 'Accept' : dataItem.ReviewResult === 2 ? 'Approved' : 'Recheck';
+            var type = dataItem.ReviewResult === 1 ? 'success' : dataItem.ReviewResult === -1 ? 'error' : 'info';
+            var text = dataItem.ReviewResult === 1 ? 'Accept' : dataItem.ReviewResult === -1 ? 'Recheck' : 'Pending';
             $(this).find('script').each(function () {
                 eval($(this).html());
             });
@@ -845,7 +1165,151 @@
     function goBack() {
         window.history.back();
     }
-  
+    function addRubber() {
+        var dialog = $('#dialogRubber');
+        dialog.data("kendoDialog").open();
+        $.ajax({
+            type: "GET",
+            url: "/RecordResult/GeFielByCode",
+            data: { code: $('#simpleCode').val() },
+            dataType: "Json",
+            success: function (response) {
+               
+                if (response.length > 0) {
+                    var arr = [];
+                    for (var i = 0; i < response.length; i++) {
+                        const obj = {
+                            MauSo: i + 1,
+                            Dirt: response[i].Dirt,
+                            Ash: response[i].Ash,
+                            Volatilematter: response[i].Volatilematter,
+                            Nitro: response[i].Nitro,
+                            P0: response[i].P0,
+                            PRI: response[i].PRI,
+                            Color: response[i].Color,
+                            ML: response[i].ML,
+                        }
+                        arr.push(obj);
+                    }
+                    var grid = $("#GridRubber").kendoGrid({
+                        dataSource: {
+                            data: arr,
+                            pageSize: 10,
+                            schema: {
+                                model: {
+                                    fields: {
+                                        MauSo: { type: "number", editable: false },
+                                        Dirt: { type: "number", editable: true },
+                                        Ash: { type: "number", editable: true },
+                                        Volatilematter: { type: "number", editable: true },
+                                        Nitro: { type: "number", editable: true },
+                                        P0: { type: "number", editable: true },
+                                        PRI: { type: "number", editable: true },
+                                        Color: { type: "number", editable: true },
+                                        ML: { type: "number", editable: true }
+                                    }
+                                }
+                            }
+                        },
+                        scrollable: true,
+                        navigatable: true,
+                        editable: {
+                            mode: "incell"
+                        },
+                        sortable: true,
+                        pageable: {
+                            // refresh: true,
+                            pageSizes: true
+                        },
+                        toolbar: [
+                            {
+                                name: "my-create",
+                                text: "Add new record"
+                            }
+                        ],
+                        columns: [
+                            { field: "MauSo", title: "Mẫu số", format: "{0:1}" },
+                            { field: "Dirt", title: "CHẤT/B", format: "{0:n2}" },
+                            { field: "Ash", title: "TRO", format: "{0:n2}" },
+                            { field: "Volatilematter", title: "BAY HƠI", format: "{0:n2}" },
+                            { field: "Nitro", title: "ĐẠM", format: "{0:n2}" },
+                            { field: "P0", title: "P0", format: "{0:n2}" },
+                            { field: "PRI", title: "PRI", format: "{0:n2}" },
+                            { field: "Color", title: "MÀU", format: "{0:n2}" },
+                            { field: "ML", title: "MOONEY", format: "{0:n2}" },
+                        ],
+                    }).data("kendoGrid");
+
+                } else {
+                    var grid = $("#GridRubber").kendoGrid({
+                        dataSource: {
+                            data: [],
+                            pageSize: 10,
+                            schema: {
+                                model: {
+                                    fields: {
+                                        MauSo: { type: "number", editable: false },
+                                        Dirt: { type: "number", editable: true },
+                                        Ash: { type: "number", editable: true },
+                                        Volatilematter: { type: "number", editable: true },
+                                        Nitro: { type: "number", editable: true },
+                                        P0: { type: "number", editable: true },
+                                        PRI: { type: "number", editable: true },
+                                        Color: { type: "number", editable: true },
+                                        ML: { type: "number", editable: true }
+                                    }
+                                }
+                            }
+                        },
+                        scrollable: true,
+                        navigatable: true,
+                        editable: {
+                            mode: "incell"
+                        },
+                        sortable: true,
+                        pageable: {
+                            // refresh: true,
+                            pageSizes: true
+                        },
+                        toolbar: [
+                            {
+                                name: "my-create",
+                                text: "Add new record"
+                            }
+                        ],
+                        columns: [
+                            { field: "MauSo", title: "Mẫu số", format: "{0:1}" },
+                            { field: "Dirt", title: "CHẤT/B", format: "{0:n2}" },
+                            { field: "Ash", title: "TRO", format: "{0:n2}" },
+                            { field: "Volatilematter", title: "BAY HƠI", format: "{0:n2}" },
+                            { field: "Nitro", title: "ĐẠM", format: "{0:n2}" },
+                            { field: "P0", title: "P0", format: "{0:n2}" },
+                            { field: "PRI", title: "PRI", format: "{0:n2}" },
+                            { field: "Color", title: "MÀU", format: "{0:n2}" },
+                            { field: "ML", title: "MOONEY", format: "{0:n2}" },
+                        ],
+                    }).data("kendoGrid");
+                }
+                
+                $(".k-grid-my-create", grid.element).on("click", function (e) {
+                    var gridy = $("#GridRubber").data("kendoGrid");
+                    const obj = {
+                        MauSo: gridy.dataSource._ranges[0].data.length + 1, Dirt: 0, Ash: 0, Volatilematter: 0, Nitro: 0, P0: 0, PRI: 0, Color: 0, ML: 0
+                    };
+                    var dataSource = grid.dataSource;
+                    var total = dataSource.data().length;
+                    dataSource.insert(total, obj);
+                    dataSource.page(dataSource.totalPages());
+                    grid.editRow(grid.tbody.children().last());
+                });
+
+            },
+            error: function () {
+            }
+        });
+        
+   
+    }
 </script>
 
 <style>
@@ -1005,6 +1469,9 @@
         background-color: white !important;
         background-image: none !important;
     }
+    .k-dialog {
+        top: 20% !important ;
+    }
 </style>
 <script id="errorTemplate" type="text/x-kendo-template">
     <div class="wrong-pass">
@@ -1077,4 +1544,5 @@
         var f = d + " " + date.split(' ')[1]
         return f;
     }
+
 </script>

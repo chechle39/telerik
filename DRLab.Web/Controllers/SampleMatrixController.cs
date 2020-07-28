@@ -21,6 +21,7 @@ namespace DRLab.Web.Controllers
         {
             return await _e00T_SampleMatrixService.GetAllSampleMatrix(text);
         }
+        [HttpPost]
         public async Task<ActionResult> SampleMatrix_Create(E00T_SampleMatrixViewModel data_request)
         {
 
@@ -28,7 +29,7 @@ namespace DRLab.Web.Controllers
             {
                 await _e00T_SampleMatrixService.Create(data_request);
             }
-            return Ok();
+            return new OkObjectResult(data_request);
         }
     }
 }

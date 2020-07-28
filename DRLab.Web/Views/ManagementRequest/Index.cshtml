@@ -8,12 +8,14 @@
     .Stacking(NotificationStackingSettings.Down)
     .Templates(t =>
     {
+        t.Add().Type("error").ClientTemplateID("errorTemplate");
         t.Add().Type("success").ClientTemplateID("successTemplate");
     })
 )
 @using Kendo.Mvc
 @section Scripts{
     <script src="~/app/ManagementRequest/ManagementRequest.js" asp-append-version="true"></script>
+    <script src="~/lib/FileSaver/FileSaver.min.js" asp-append-version="true"></script>
     <script>
         var rq = new ManagementRequestController();
         rq.initialize();
@@ -51,20 +53,12 @@
                                             Value = "0"
                                         },
                                         new SelectListItem() {
-                                            Text = "Set Confirm",
-                                            Value = "1"
-                                        },
-                                        new SelectListItem() {
                                                 Text = "Export to Lab",
                                                 Value = "2"
                                         },
                                         new SelectListItem() {
                                                 Text = "Send Email",
                                                 Value = "3"
-                                        },
-                                        new SelectListItem() {
-                                                Text = "Remove Confirm",
-                                                Value = "4"
                                         },
                                         new SelectListItem() {
                                                 Text = "Delete Request",
@@ -90,6 +84,18 @@
                                 <!-- /.card-header -->
                                 <!-- form start -->
                                 <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-4"></div>
+                                        <div class="col-5"></div>
+                                        <div class="col-3">
+                                            <div style="float: right;margin-right: 6px;" class="row">
+                                                <span onclick="setComfirm()" class="span-underline-pd-35">Set comfirm</span>
+                                                <span onclick="removeComfirm()" class="span-underline-accept">Remove comfirm</span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
                                     @(Html.Kendo().Grid<DRLab.Data.ViewModels.GridManagementViewModel>()
                                         .Name("Grid")
                                         .HtmlAttributes(new { style = "height:auto;" })
@@ -160,6 +166,7 @@
 @Html.Partial("search.cshtml")
 
 <script type="text/javascript">
+    var DataRequestGird = [];
     var data = [];
     var codeRequest;
     function refresh() {
@@ -169,7 +176,7 @@
     var deleteRequest;
 
     function showDeleteConfirmation(e) {
-         deleteRequest = [];
+        deleteRequest = [];
 
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
@@ -221,7 +228,6 @@
     var deleteAray = [];
     function onChangex(arg) {
         deleteAray = this.selectedKeyNames();
-        //console.log("The selected product ids are: [" + this.selectedKeyNames().join(", ") + "]");
         var grid = $("#Grid").data("kendoGrid");
         var selectedItem = grid.dataItem(grid.select());
         codeRequest = selectedItem.requestNo;
@@ -308,7 +314,7 @@
                 .find(".delete-confirm,.delete-cancel")
                 .click(function () {
                     if ($(this).hasClass("delete-confirm")) {
-                        
+
                     }
 
                     kendoWindow.data("kendoDialog").close();
@@ -316,22 +322,56 @@
                 .end()
             return false;
         }
-        if (dataItem.Value === "6") {          
-            let reportName = "ManagementRequest";         
-            let urlBuilder = `/ReportDesign?requestNumber=${codeRequest}&reportName=${reportName}`;
-            window.location = urlBuilder;
-            $.ajax({
-                type: "POST",
-                url: urlBuilder,
-                dataType: "json",
-                contentType: "application/json",
-                success: function () {
-                    window.location = urlBuilder;
-                },
-                error: function () {
+        if (dataItem.Value === "6") {         
+            if (codeRequest !== null && codeRequest !== undefined) {
+                let reportName = "ManagementRequest";
+                let urlBuilder = `/ReportDesign?requestNumber=${codeRequest}&reportName=${reportName}`;
+                window.location = urlBuilder;
+                $.ajax({
+                    type: "POST",
+                    url: urlBuilder,
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function () {
+                        window.location = urlBuilder;
+                    },
+                    error: function () {
 
-                }
-            });
+                    }
+                });
+                codeRequest = undefined;
+                reLoadData();
+            } else {
+                var notification = $("#notification").data("kendoNotification");
+                notification.show({
+                    title: "Show Report Fails",
+                    message: "Please choose one Request"
+                }, "error");
+            }
+        }
+        if (dataItem.Value === "2") {
+            if (codeRequest !== null && codeRequest !== undefined) {
+                var oReq = new XMLHttpRequest();
+                oReq.open("post", `/ManagementRequest/ExportToLab?requestNo=${codeRequest}`, true);
+
+                oReq.responseType = "blob";
+
+                oReq.onload = function (oEvent) {
+                    var blob = new Blob([oReq.response], { type: "text/csv" });
+                    // ...
+                    saveAs(blob, "RequestToLab.xlsx");
+                };
+                oReq.send();
+                codeRequest = undefined;
+                reLoadData();
+            } else {
+                var notification = $("#notification").data("kendoNotification");
+                notification.show({
+                    title: "Wrong Export",
+                    message: "Please choose only one sample to export."
+                }, "error");
+            }
+
         }
     }
     function deleted() {
@@ -387,6 +427,13 @@
                     }
                 });
                 grid.setDataSource(dataSource);
+                if (deleteAray.length > 0) {
+                    var listCheckx = deleteAray;
+                    for (var i = 0; i < listCheckx.length; i++) {
+                        const select = grid._data.findIndex(x => x.requestNo === listCheckx[i]);
+                        grid.select("tr:eq(" + select.toString() + ")");
+                    }
+                }
                 var dateTemplate = $('#date-templateData').html();
                 var renderDateTem = "";
                 renderDateTem += Mustache.render(dateTemplate, {
@@ -398,6 +445,55 @@
             }
         });
     };
+    function setComfirm() {
+        $.ajax({
+            type: "POST",
+            url: "/ManagementRequest/UpdateEntityAnalysisRequestInfo",
+            data: JSON.stringify(handelGrid(deleteAray, true)),
+            dataType: "json",
+            contentType: "application/json",
+            processData: false,
+            success: function (response) {
+                reLoadData();
+            },
+            error: function () {
+
+            }
+        });
+    }
+    function removeComfirm() {
+        $.ajax({
+            type: "POST",
+            url: "/ManagementRequest/UpdateEntityAnalysisRequestInfo",
+            data: JSON.stringify(handelGrid(deleteAray, false)),
+            dataType: "json",
+            contentType: "application/json",
+            processData: false,
+            success: function (response) {
+                reLoadData();
+            },
+            error: function () {
+
+            }
+        });
+    }
+    function handelGrid(arr, e) {
+        var grid = $("#Grid").data("kendoGrid");
+        var arrReturn = [];
+        for (var i = 0; i < arr.length; i++) {
+            if (e) {
+                grid._data.filter(x => x.requestNo === arr[i])[0].status = 1
+                const object = grid._data.filter(x => x.requestNo === arr[i])[0];
+                arrReturn.push(object)
+            } else {
+                grid._data.filter(x => x.requestNo === arr[i])[0].status = 0
+                const object = grid._data.filter(x => x.requestNo === arr[i])[0];
+                arrReturn.push(object)
+            }
+
+        }
+        return arrReturn;
+    }
 </script>
 
 
@@ -501,14 +597,18 @@
         width: 270px;
         height: 70px;
     }
-
-
 </style>
 <script id="date-templateData" type="x-tmpl-mustache">
     <h6 id="dayData">{{day}}</h6>
 </script>
 <script id="delete-confirmation" type="text/x-kendo-template">
     <p class="delete-message">Are you sure?</p>
+</script>
+<script id="errorTemplate" type="text/x-kendo-template">
+    <div class="wrong-pass">
+        <h3>#= title #</h3>
+        <p>#= message #</p>
+    </div>
 </script>
 <script id="successTemplate" type="text/x-kendo-template">
     <div class="upload-success">

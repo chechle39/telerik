@@ -51,10 +51,11 @@ namespace DRLab.Data.ViewModels
         [Range(0, int.MaxValue)]
         public Nullable<int> Urgent { get; set; }
         [Display(Name = "TAT")]
-        public string TAT { get; set; }
+        public Nullable<double> TurnAroundDay { get; set; }
         public Nullable<double> min { get; set; }
         public Nullable<double> max { get; set; }
         public string sampleMatrix { get; set; }
+        public string specCode { get; set; }
     }
 
     public class CreateCustomeRequest

@@ -38,7 +38,38 @@ namespace DRLab.Data.ViewModels
         [Display(Name = "Approve")]
         public int Approve { get; set; }
 
-    }    
+    }
+    public class SampleManagementExportViewModel
+    {
+        public string requestNo { get; set; }
+        public string sampleCode { get; set; }
+        public string sampleName { get; set; }
+        public string sampleMatrix { get; set; }
+        public Nullable<System.DateTime> receivceDate { get; set; }
+        public float DirtX { get; set; }
+        public float Dirt3sd { get; set; }
+        public float DirtSum { get; set; }
+        public float AshX { get; set; }
+        public float Ash3sd { get; set; }
+        public float AshSum { get; set; }
+        public float VolatileX { get; set; }
+        public float VolatileXmax { get; set; }
+        public float NitoX { get; set; }
+        public float NitoXmax { get; set; }
+        public float P0Xmin { get; set; }
+        public float P0X { get; set; }
+        public float P0Xmax { get; set; }
+        public float PRIXmin { get; set; }
+        public float PRIX { get; set; }
+        public float PRIXmax { get; set; }
+        public float ColorXmin { get; set; }
+        public float ColorX { get; set; }
+        public float ColorXmax { get; set; }
+        public float MLXmin { get; set; }
+        public float MLX { get; set; }
+        public float MLXmax { get; set; }
+        public string Rank { get; set; }
+    }
     public class SerchSampleManagementReport
     {      
         public string RequestNumber { get; set; }

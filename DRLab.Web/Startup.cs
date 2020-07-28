@@ -2,10 +2,10 @@ using Askmethat.Aspnet.JsonLocalizer.Extensions;
 using AutoMapper;
 using DevExpress.AspNetCore;
 using DevExpress.AspNetCore.Reporting;
-using DevExpress.XtraReports.Web.Extensions;
 using DevExpress.XtraReports.Web.WebDocumentViewer;
 using DRLab.Data.Base;
 using DRLab.Data.Entities;
+using DRLab.Data.Identity;
 using DRLab.Data.Interfaces;
 using DRLab.Data.Repositories;
 using DRLab.Services.IntegrationServices;
@@ -15,12 +15,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -45,12 +45,15 @@ namespace DRLab.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDevExpressControls();
-
             services.AddDbContext<DataBaseContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
+            services.AddDevExpressControls();
+            services.AddIdentity<AppUser, AppRole>()
+               .AddEntityFrameworkStores<DataBaseContext>()
+               .AddDefaultTokenProviders();
+           
             services.ConfigureReportingServices(configurator => {
                 configurator.ConfigureReportDesigner(designerConfigurator => {
                     designerConfigurator.RegisterDataSourceWizardConfigFileConnectionStringsProvider();
@@ -58,6 +61,22 @@ namespace DRLab.Web
                 configurator.ConfigureWebDocumentViewer(viewerConfigurator => {
                     viewerConfigurator.UseCachedReportSourceBuilder();
                 });
+            });
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.MaxFailedAccessAttempts = 10;
+
+                // User settings
+                options.User.RequireUniqueEmail = true;
             });
             services.AddAutoMapper();
             services.AddSingleton(Mapper.Configuration);
@@ -68,6 +87,7 @@ namespace DRLab.Web
             services.AddTransient<IE08T_AnalysisRequest_ItemRepository, E08T_AnalysisRequest_ItemRepository>();
             services.AddTransient<IE08T_Testing_InfoRepository, E08T_Testing_InfoRepository>();
             services.AddTransient<IE00T_SampleMatrixRepository, E00T_SampleMatrixRepository>();
+            services.AddTransient<IFieldAutoTableRepository, FieldAutoTableRepository>();
             services.AddTransient<IE00T_CustomerRepository, E00T_CustomerRepository>();
             services.AddTransient<IE00T_Customer_ItemRepository, E00T_Customer_ItemRepository>();
             services.AddTransient<IE00T_SpecificationRepository, E00T_SpecificationRepository>();
@@ -78,16 +98,29 @@ namespace DRLab.Web
             services.AddTransient<ITesting_DataService, Testing_DataService>();
             services.AddTransient<ISpecificationService, SpecificationService>();
             services.AddTransient<IE00T_Customer_ItemService, E00T_Customer_ItemService>();
+            services.AddTransient<IFieldAutoTableService, FieldAutoTableService>();
             services.AddTransient<IE08T_AnalysisRequest_InfoService, E08T_AnalysisRequest_InfoService>();
+            services.AddTransient<IE08T_AnalysisRequest_ItemService, E08T_AnalysisRequest_ItemService>();
+            services.AddTransient<IE08T_AnalysisRequest_ItemRepository, E08T_AnalysisRequest_ItemRepository>();
             services.AddTransient<IE00T_SampleMatrixService, E00T_SampleMatrixService>();
             services.AddTransient<IE08T_Testing_InfoRepository, E08T_Testing_InfoRepository>();
             services.AddTransient<IGetRequestNoDapperService, GetRequestNoDapperService>();
             services.AddTransient<ISampleManagementDapperService, SampleManagementDapperService>();
             services.AddTransient<ILabManagmentDapperService, LabManagmentDapperService>();
+            services.AddTransient<ISampleManagementReportDapper, SampleManagementReportDapperService>();
             services.AddTransient<IE08T_WorkingOrder_ItemRepository, E08T_WorkingOrder_ItemRepository>();
             services.AddTransient<IE08T_WorkingOrder_ItemService, E08T_WorkingOrder_ItemService>();
             services.AddTransient<IE08T_WorkingOrder_InfoService, E08T_WorkingOrder_InfoService>();
             services.AddTransient<IE08T_WorkingOrder_InfoRepository, E08T_WorkingOrder_InfoRepository>();
+            services.AddTransient<IE08T_TemplateMarkRepository, E08T_TemplateMarkRepository>();
+            services.AddTransient<IE08T_TemplateMarkService, E08T_TemplateMarkService>();
+            services.AddTransient<IAssignmentRepository, AssignmentRepository>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddScoped<UserManager<AppUser>, UserManager<AppUser>>();
+            services.AddScoped<RoleManager<AppRole>, RoleManager<AppRole>>();
+            services.AddTransient<IAssignmentRepository, AssignmentRepository>();
+            services.AddTransient<IAsiignmentService, AsiignmentService>();
+            services.AddTransient<IRoleService, RoleService>();
             services.AddScoped<DbContext, DataBaseContext>();
             services.AddControllers().AddJsonOptions(jsonOptions =>
             {

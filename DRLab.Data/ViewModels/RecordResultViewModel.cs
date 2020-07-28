@@ -20,7 +20,7 @@ namespace DRLab.Data.ViewModels
         [Display(Name = "Result")]
         [DataType("Integer")]
         [Range(0, int.MaxValue)]
-        public Nullable<int> Result { get; set; }
+        public Nullable<float> Result { get; set; }
         [Display(Name = "ResultText")]
         public string ResultText { get; set; }
         [Display(Name = "ExpectationDate")]
@@ -30,6 +30,7 @@ namespace DRLab.Data.ViewModels
         public string LVNCode { get; set; }
         public string AnalysisCode { get; set; }
         public int? ValidationResult { get; set; }
+        public string SpecCode { get; set; }
     }
 
     public class SearchRecordResult 

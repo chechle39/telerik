@@ -96,7 +96,8 @@
                                     </div>
 
                                     <div class="form-group row margin-left-0">
-                                        <div hidden class="col-5 row">
+
+                                        <div class="col-5 row">
                                             <span>Sample Name</span>
 
                                             <div class="col-sm-9 mr-t ">
@@ -104,59 +105,48 @@
                                             </div>
                                         </div>
 
-                                        <div hidden class="row col-5">
-                                            <span>Sample Code</span>
-                                            <div class="col-sm-9 mr-t">
-                                                @(Html.Kendo().TextBox().Enable(false)
-                                                .Name("simpleCode")
-                                                .HtmlAttributes(new { placeholder = "Sample Code", style = "width: 50%;height: calc(1.42857143em + 10px);margin-left: 8px" })
-                                                )
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-                                    <div class="form-group row margin-left-0">
-
-                                        <div hidden class="col-5 row">
-                                            <span>Description</span>
-                                            <div class="col-sm-9 mr-t">
-                                                <textarea disabled id="descriptionCustomer" placeholder="Description" class="k-textbox" style="width: 100%;margin-left: 21px;height: calc(1.42857143em + 10px)"></textarea>
-                                            </div>
-                                        </div>
-
-                                        <div class="row col-12">
+                                        <div class="row col-5">
                                             <span>Inner Code</span>
-                                            <div class="col-sm-2 mr-t">
+                                            <div class="col-sm-9 mr-t">
                                                 @(Html.Kendo().TextBox().Enable(false)
                                                 .Name("innerCode")
-                                                .HtmlAttributes(new { placeholder = "Inner Code", style = "width: 50%;height: calc(1.42857143em + 10px);margin-left: 22px" })
+                                                .HtmlAttributes(new { placeholder = "Inner Code", style = "width: 100%;height: calc(1.42857143em + 10px);margin-left: 22px" })
                                                 )
                                             </div>
-                                            <span>Sample Matrix</span>
-                                            <div class="col-sm-3 mr-t">
-                                                @(Html.Kendo().TextBox().Enable(false)
-                                                .Name("sampleMatrix")
-                                                .HtmlAttributes(new { placeholder = "Sample Matrix", style = "width: 80%;height: calc(1.42857143em + 10px);margin-left: 22px" })
-                                                )
-                                            </div>
-                                            <span>Remark to Lab</span>
-                                            <div class="col-sm-3 mr-t">
-                                                <textarea disabled id="remarkToLab" placeholder="Remark To Lab" class="k-textbox" style="margin-left: 2px;width: 100%;height: calc(1.42857143em + 10px)"></textarea>
 
-                                            </div>
                                         </div>
+
                                     </div>
 
+                                    <div class="form-group row margin-left-0">
+                                        <div class="col-5 row">
+                                            <span>Sample Matrix</span>
+
+                                            <div class="col-sm-9 mr-t ">
+                                                @(Html.Kendo().TextBox().Enable(false)
+                                                .Name("sampleMatrix")
+                                                .HtmlAttributes(new { placeholder = "Sample Matrix", style = "width: 100%;height: calc(1.42857143em + 10px);margin-left: 5px" })
+                                                )
+                                            </div>
+                                        </div>
+
+                                        <div class="row col-5">
+                                            <span>Remark to Lab</span>
+                                            <div style="margin-left: 0px;" class="col-sm-9 mr-t ">
+                                                <textarea disabled id="remarkToLab" placeholder="Remark To Lab" class="k-textbox" style="margin-left: 2px;width: 100%;height: calc(1.42857143em + 10px)"></textarea>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
 
                                     <div class="form-group row margin-left-0">
                                         <div class="row col-5"></div>
-                                        <div class=" col-5"></div>
-                                        <div class="row col-2">
-                                            <div style="margin-left: 33%">
+                                        <div class=" col-4"></div>
+                                        <div class="row col-3">
+                                            <div style="margin-left: 54%">
                                                 <span onclick="recheck()" class="span-underline-pd-35">Recheck</span>
-                                                <span  onclick="accept()" class="span-underline-accept">Accept</span>
+                                                <span onclick="accept()" class="span-underline-accept">Accept</span>
                                             </div>
 
                                         </div>
@@ -199,7 +189,7 @@
                                                 model.Field(p => p.AnalysisCode).Editable(false).From("AnalysisCode");
                                                 model.Field(p => p.LVNCode).Editable(false).From("LVNCode");
                                                 model.Field(p => p.WOID).Editable(false).From("WOID");
-                                                
+
                                                 model.Field(p => p.specification).From("specification");
                                                 model.Field(p => p.Mark).From("Mark");
                                                 model.Field(p => p.method).From("method");
@@ -236,13 +226,22 @@
     var specdata = [];
     var listCheck = [];
     var curent;
+
     function recheck() {
+        var listCheckx = listCheck;
         if (listCheck.length === 0) {
             return;
         } else {
             var grid = $("#Grid").data("kendoGrid");
             for (var i = 0; i < listCheck.length; i++) {
-                grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ReviewResult = -1;
+                
+                if (grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ReviewResult === 1) {
+                    grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ReviewResult = -1;
+                } else if (grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ReviewResult === 0) {
+                    grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ReviewResult = -1;
+                } else {
+                    grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ReviewResult = 0;
+                }
             }
             var dataSource = new kendo.data.DataSource({
                 data: grid._data,
@@ -283,16 +282,28 @@
                 }
             });
             grid.setDataSource(dataSource);
-            listCheck = [];
+            for (var ii = 0; ii <= listCheckx.length; ii++) {
+                const select = grid._data.findIndex(x => x.AnalysisCode === listCheckx[ii]);
+                grid.select("tr:eq(" + select.toString() + ")");
+            }
+            
+          //  listCheck = [];
         }
     }
     function accept() {
+        var listCheckx = listCheck;
         if (listCheck.length === 0) {
             return;
         } else {
             var grid = $("#Grid").data("kendoGrid");
             for (var i = 0; i < listCheck.length; i++) {
-                grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ReviewResult = 1;
+                if (grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ReviewResult === 1) {
+                    grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ReviewResult = 0;
+                } else if (grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ReviewResult === 0) {
+                    grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ReviewResult = 1;
+                } else {
+                    grid._data.filter(x => x.AnalysisCode === listCheck[i])[0].ReviewResult = 1;
+                }
             }
             var dataSource = new kendo.data.DataSource({
                 data: grid._data,
@@ -333,7 +344,10 @@
                 }
             });
             grid.setDataSource(dataSource);
-            listCheck = [];
+            for (var i = 0; i < listCheckx.length; i++) {
+                const select = grid._data.findIndex(x => x.AnalysisCode === listCheckx[i]);
+                grid.select("tr:eq(" + select.toString() + ")");
+            }
         }
     }
     function onChangeStatus(e) {
@@ -408,7 +422,6 @@
     function onSelectaddSpecification(e) {
         var grid = $("#Grid").data("kendoGrid");
         specdata = grid.dataSource._pristineData;
-        //grid.bind("save", grid_save);
         var dataItem = this.dataItem(e.item.index());
         $.ajax({
             type: "GET",
@@ -1143,4 +1156,6 @@
         var f = d + " " + date.split(' ')[1]
         return f;
     }
+
+
 </script>

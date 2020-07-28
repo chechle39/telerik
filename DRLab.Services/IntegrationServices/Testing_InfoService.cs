@@ -40,6 +40,7 @@ namespace DRLab.Services.IntegrationServices
                     result.analysisCode = data.analysisCode;
                     result.specID = data.specID;
                     result.specification = data.specification;
+                    result.specCode = data.specCode;
                     result.method = data.method;
                     result.unit = data.unit;
                     result.turnAroundTime = data.turnAroundTime;
@@ -80,6 +81,7 @@ namespace DRLab.Services.IntegrationServices
                     analysisCode = analysisCode,
                     specID = resultId[0].specID,
                     specification = Data.specification,
+                  //  specCode = resultId[0].specCode,
                     method = Data.method,
                     unit = Data.unit,
                     turnAroundTime = Data.turnAroundTime,
@@ -95,15 +97,17 @@ namespace DRLab.Services.IntegrationServices
                 {
                     request.specID = null;
                     request.specification = Data.specification;
+                 //   request.specCode = Data.specCode;
                 }
                 await _Specifi.Create(request);
                 var newSpecif = new List<E00T_SpecificationViewModel>();
                 newSpecif = await _Specifi.GetbyName(Data.specification);
-                var client = new E08T_Testing_Info()
+                var client =  new E08T_Testing_Info()
                 {
                     analysisCode = analysisCode,
                     specID = newSpecif[0].specID,
                     specification = Data.specification,
+                 //   specCode = newSpecif[0].specCode,
                     method = Data.method,
                     unit = Data.unit,
                     turnAroundTime = Data.turnAroundTime,
@@ -126,6 +130,7 @@ namespace DRLab.Services.IntegrationServices
                 {
                     request.specID = null;
                     request.specification = Data.specification;
+                  //  request.specCode = Data.specCode;
                 }
                 await _Specifi.Create(request);
               
@@ -136,6 +141,7 @@ namespace DRLab.Services.IntegrationServices
                     analysisCode = Data.analysisCode,
                     specID = newSpecif[0].specID,
                     specification = Data.specification,
+                  //  specCode = newSpecif[0].specCode,
                     method = Data.method,
                     unit = Data.unit,
                     turnAroundTime = Data.turnAroundTime,
@@ -147,20 +153,49 @@ namespace DRLab.Services.IntegrationServices
             }
             else {
                 var newSpecif = await _Specifi.GetbyName(Data.specification);
-                var client = new E08T_Testing_Info()
-                {
+                //if (newSpecif[0].specCode != Data.specCode)
+                //{
+                //    var request = new E00T_SpecificationViewModel();
+                //    {
+                //        request.specID = newSpecif[0].specID;
+                //        request.specification = Data.specification;
+                //        request.specCode = Data.specCode;
+                //    }
+                //    await _Specifi.Update(request);
+                //    var client = new E08T_Testing_Info()
+                //    {
 
-                    analysisCode = Data.analysisCode,
-                    specID = newSpecif[0].specID,
-                    specification = Data.specification,
-                    method = Data.method,
-                    unit = Data.unit,
-                    turnAroundTime = Data.turnAroundTime,
-                    reformTestResult = Data.reformTestResult,
-                    note = Data.note,
-                };
-                _test.Update(client);
-                _uow.SaveChanges();
+                //        analysisCode = Data.analysisCode,
+                //        specID = newSpecif[0].specID,
+                //        specification = Data.specification,
+                //        specCode = Data.specCode,
+                //        method = Data.method,
+                //        unit = Data.unit,
+                //        turnAroundTime = Data.turnAroundTime,
+                //        reformTestResult = Data.reformTestResult,
+                //        note = Data.note,
+                //    };
+                //    _test.Update(client);
+                //    _uow.SaveChanges();
+                //}
+                //else {
+                //    var client = new E08T_Testing_Info()
+                //    {
+
+                //        analysisCode = Data.analysisCode,
+                //        specID = newSpecif[0].specID,
+                //        specification = Data.specification,
+                //       // specCode = newSpecif[0].specCode,
+                //        method = Data.method,
+                //        unit = Data.unit,
+                //        turnAroundTime = Data.turnAroundTime,
+                //        reformTestResult = Data.reformTestResult,
+                //        note = Data.note,
+                //    };
+                //    _test.Update(client);
+                //    _uow.SaveChanges();
+                //}
+               
             }
             
             return null;
@@ -192,6 +227,7 @@ namespace DRLab.Services.IntegrationServices
                 {
                     request.specID = null;
                     request.specification = Data.newspecification;
+                 //   request.specCode = Data.specCode;
                 }
                 await _Specifi.Create(request);
                 var resultId = new List<E00T_SpecificationViewModel>();
@@ -201,6 +237,7 @@ namespace DRLab.Services.IntegrationServices
                     analysisCode = Data.analysisCode,
                     specID = resultId[0].specID,
                     specification = Data.newspecification,
+                  //  specCode = resultId[0].specCode,
                     method = Data.method,
                     unit = Data.unit,
                     turnAroundTime = Data.turnAroundTime,
@@ -220,6 +257,7 @@ namespace DRLab.Services.IntegrationServices
                         analysisCode = Data.analysisCode,
                         specID = specifi[0].specID,
                         specification = Data.specification,
+                       // specCode = specifi[0].specCode,
                         method = Data.method,
                         unit = Data.unit,
                         turnAroundTime = Data.turnAroundTime,

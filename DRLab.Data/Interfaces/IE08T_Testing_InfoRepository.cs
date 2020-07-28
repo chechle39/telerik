@@ -8,5 +8,6 @@ namespace DRLab.Data.Interfaces
     {
         public Task<List<E08T_Testing_InfoViewModel>> GetE08TTestingInfoCombobox(string text);
         public Task<List<E00T_CustomerGridViewModel>> GetE08TTestingInfoBySpecId(string analysisCode);
+        public Task<List<E08T_Testing_InfoViewModel>> Getdata();
     }
 }

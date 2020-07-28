@@ -20,20 +20,24 @@ namespace DRLab.Data.Entities
         {
             this.E08T_Testing_Data = new HashSet<E08T_Testing_Data>();
             this.E08T_Testing_Info = new HashSet<E08T_Testing_Info>();
+            this.Assignments = new HashSet<Assignment>();
         }        
 
-        public E00T_Specification(long? specID,string specification)
+        public E00T_Specification(long? specID,string specification, string SpecCode)
         {
             this.specID = specID;
             this.specification = specification;
+            this.specCode = specCode;
         }
         [Key]
         public Nullable<long> specID { get; set; }
         public string specification { get; set; }
-    
+        public string specCode { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<E08T_Testing_Data> E08T_Testing_Data { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<E08T_Testing_Info> E08T_Testing_Info { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Assignment> Assignments { get; set; }
     }
 }

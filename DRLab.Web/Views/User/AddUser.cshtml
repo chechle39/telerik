@@ -1,0 +1,239 @@
+﻿@addTagHelper *, Kendo.Mvc
+
+<div id="example">
+    <div id="dialog">
+        <div id="horizontal-form">
+
+            <form id="userForm" class="k-form k-form-vertical">
+                <div hidden class="row mb-2">
+                    <div class="col-3">
+                    </div>
+                    <div class="col-9">
+                        @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new {  style = "width: 100%" })
+                    .Name("id")
+                    )
+                        @*<span class="validate-announc">
+                Please enter fullname
+            </span>*@
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-3">
+                        <span style="vertical-align: sub;">Full Name</span>
+                    </div>
+                    <div class="col-9">
+                        @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new { placeholder = "Full name", required = "required", style = "width: 100%" })
+                    .Name("fullName")
+                    )
+                        @*<span class="validate-announc">
+                    Please enter fullname
+                </span>*@
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col-3">
+                        <span style="vertical-align: sub;">Password</span>
+                    </div>
+                    <div class="col-9">
+                        @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new { placeholder = "Password", autocomplete = "off", required = "required", style = "width: 100%" })
+                    .Name("passwordDrlab")
+                    )
+                        @*<span class="validate-announc">
+                    Please enter Password
+                </span>*@
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-3">
+                        <span style="vertical-align: sub;">Comfirm Password</span>
+                    </div>
+                    <div class="col-9">
+                        @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new { placeholder = "Comfirm Password", autocomplete = "off", required = "required", style = "width: 100%" })
+                    .Name("comfirmPasswordDrlab")
+                    )
+                        @*<span class="validate-announc">
+                    Please enter Password
+                </span>*@
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-3">
+                        <span style="vertical-align: sub;">Role</span>
+                    </div>
+                    <div class="col-9">
+                        @(Html.Kendo().ComboBox()
+                        .Name("role")
+                        .Placeholder("Select Role")
+                        .DataTextField("Name")
+                        .DataValueField("Id")
+                        .HtmlAttributes(new {style = "width:100%"})
+
+                        .AutoBind(false)
+                        .DataSource(source =>
+                        {
+                           source.Read(read =>
+                           {
+                               read.Action("GetAllRole", "Role");
+                           })
+                           .ServerFiltering(true);
+                        })
+                        .Filter("startswith"))
+                        @*<span class="validate-announc">
+                    Please enter Role
+                </span>*@
+                    </div>
+                </div>
+                @*<div class="row mb-2">
+                    <div class="col-3">
+                        <span style="vertical-align: sub;">BirthDay</span>
+                    </div>
+                    <div class="col-9">
+                        @(Html.Kendo().DatePicker()
+                        .Name("datepicker")
+                        .Value(DateTime.Now)
+                        .Format("dd/MM/yyyy")
+                        .HtmlAttributes(new { style = "width: 100%;height: 90%;" })
+                       )
+                    </div>
+                </div>*@
+                <div class="row mb-2">
+                    <div class="col-3">
+                        <span style="vertical-align: sub;">Address</span>
+                    </div>
+                    <div class="col-9">
+                        @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new { placeholder = "Address", style = "width: 100%" })
+                    .Name("address")
+                    )
+                        @*<span class="validate-announc">
+                    Please enter address
+                </span>*@
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-3">
+                        <span style="vertical-align: sub;">Email</span>
+                    </div>
+                    <div class="col-9">
+                        @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new { placeholder = "Email", style = "width: 100%" })
+                    .Name("email")
+                    )
+                        @*<span class="validate-announc">
+                    Please enter email
+                </span>*@
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-3">
+                        <span style="vertical-align: sub;">Phone Number</span>
+                    </div>
+                    <div class="col-9">
+                        @(Html.Kendo().TextBox()
+                    .HtmlAttributes(new { placeholder = "Phone Number", style = "width: 100%" })
+                    .Name("phoneNumber")
+                    )
+                        @*<span class="validate-announc">
+                    Please enter phone number
+                </span>*@
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-3">
+                        <span style="vertical-align: sub;">Gender</span>
+                    </div>
+                    <div class="col-9">
+
+                        <div style="margin-left: -7px" class="radio-group">
+                            <div class="d-flex" data-bind="source:applicantTypeItems" data-template="DoctoralLevelId"></div>
+                            <script id="DoctoralLevelId" type="text/x-kendo-template">
+                                <div class="col-3">
+                                    <input class="k-radio" type="radio" name="DoctoralLevelId" data-bind="attr:{value:value},checked:DoctoralLevelId" />
+                                    <label class="k-radio-label" data-bind="text:caption"></label>
+                                </div>
+                                
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col-3">
+                        <span style="vertical-align: sub;">Status</span>
+                    </div>
+                    <div class="col-9">
+                        @*@(Html.Kendo().RadioButton().Name("active").Checked(true).HtmlAttributes(new { @name = "status" }).Label("Active"))
+                        @(Html.Kendo().RadioButton().Name("inactive").HtmlAttributes(new { @name = "status" }).Label("In Active"))*@
+                        <div style="margin-left: -7px" class="radio-group-stt">
+                            <div class="d-flex" data-bind="source:applicantTypeItemsStt" data-template="DoctoralLevelSttId"></div>
+                            <script id="DoctoralLevelSttId" type="text/x-kendo-template">
+                                <div class="col-4">
+                                    <input class="k-radio" type="radio" name="DoctoralLevelSttId" data-bind="attr:{value:value},checked:DoctoralLevelSttId" />
+                                    <label class="k-radio-label" data-bind="text:caption"></label>
+                                </div>
+
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    #example {
+        min-height: 350px;
+    }
+    .validate-announc {
+        color: red;
+    }
+    .form-group {
+        margin-bottom: 0 !important
+    }
+    .k-radio-label {
+        font-weight: 100 !important;
+    }
+</style>
+
+<script>
+
+$(document).ready(function () {
+
+    var applicantVm =kendo.observable({
+        updated: false,
+        PersonId: self.personId,
+        Id: self.selectedId,
+
+        DoctoralLevelId: 'Nam',
+        name: "DoctoralLevelId",
+        applicantTypeItems: [
+            { caption: "Nam", value: 'Nam'},
+            { caption: "Nữ", value: 'Nữ' },
+            { caption: "Khác", value: 'Khác' },
+        ]
+    });
+
+    kendo.bind($(".radio-group"), applicantVm);
+    var applicantVmStt = kendo.observable({
+        updated: false,
+        PersonId: self.personId,
+        Id: self.selectedId,
+
+        DoctoralLevelSttId: 'Active',
+        name: "DoctoralLevelSttId",
+        applicantTypeItemsStt: [
+            { caption: "Active", value: 'Active' },
+            { caption: "In Active", value: 'In Active' },
+        ]
+    });
+
+    kendo.bind($(".radio-group-stt"), applicantVmStt);
+})
+</script>

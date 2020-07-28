@@ -1,4 +1,6 @@
 ﻿using DRLab.Data.EntityConfigurations;
+using DRLab.Data.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace DRLab.Data.Entities
@@ -18,8 +20,23 @@ namespace DRLab.Data.Entities
                 .ApplyConfiguration(new E08T_Testing_InfoConfiguration())
                 .ApplyConfiguration(new E08T_WorkingOrder_ItemConfiguration())
                 .ApplyConfiguration(new E08T_WorkingOrder_InfoConfiguration())
-                .ApplyConfiguration(new E00T_Customer_ItemConfiguration());            
-            base.OnModelCreating(modelBuilder);
+                .ApplyConfiguration(new E08T_TemplateMarkConfiguration())
+                .ApplyConfiguration(new AssignmentConfiguration())
+                .ApplyConfiguration(new FieldAutoTableCofiguration())
+                .ApplyConfiguration(new GenaralData_ReportConfiguration())
+                .ApplyConfiguration(new E00T_Customer_ItemConfiguration());
+            modelBuilder.Entity<IdentityUserClaim<int>>().ToTable("AppUserClaims").HasKey(x => x.Id);
+
+            modelBuilder.Entity<IdentityRoleClaim<int>>().ToTable("AppRoleClaims")
+                .HasKey(x => x.Id);
+
+            modelBuilder.Entity<IdentityUserLogin<int>>().ToTable("AppUserLogins").HasKey(x => x.UserId);
+
+            modelBuilder.Entity<IdentityUserRole<int>>().ToTable("AppUserRoles")
+                .HasKey(x => new { x.UserId, x.RoleId });
+
+            modelBuilder.Entity<IdentityUserToken<int>>().ToTable("AppUserTokens")
+               .HasKey(x => new { x.UserId });
         }
         public DbSet<E08T_WorkingOrder_Info> E08T_WorkingOrder_Info { get; set; }
         public DbSet<E08T_WorkingOrder_Item> E08T_WorkingOrder_Item { get; set; }
@@ -31,5 +48,11 @@ namespace DRLab.Data.Entities
         public DbSet<E00T_Customer_Item> E00T_Customer_Item { get; set; }
         public DbSet<E08T_Testing_Info> E08T_Testing_Info { get; set; }
         public DbSet<E00T_Specification> E00T_Specification { get; set; }
+        public DbSet<E08T_TemplateMark> E08T_TemplateMark { get; set; }
+        public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<AppRole> AppRoles { get; set; }
+        public DbSet<Assignment> Assignment { get; set; }
+        public DbSet<FieldAutoTable> FieldAutoTable { get; set; }
+        public DbSet<GenaralData_Report> GenaralData_Report { get; set; }
     }
 }

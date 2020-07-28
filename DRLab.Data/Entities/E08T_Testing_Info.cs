@@ -21,11 +21,12 @@ namespace DRLab.Data.Entities
           
         }
        
-        public E08T_Testing_Info(string analysisCode, long? specID, string specification, string method, string unit, double turnAroundTime, bool reformTestResult, string note)
+        public E08T_Testing_Info(string analysisCode, long? specID, string specification, string specCode,string method, string unit, double turnAroundTime, bool reformTestResult, string note)
         {
             this.analysisCode = analysisCode;
             this.specID = specID;
             this.specification = specification;
+            this.specCode = specCode;
             this.method = method;
             this.unit = unit;
             this.turnAroundTime = turnAroundTime;
@@ -36,6 +37,7 @@ namespace DRLab.Data.Entities
         public string analysisCode { get; set; }
         public Nullable<long> specID { get; set; }
         public string specification { get; set; }
+        public string specCode { get; set; }
         public string method { get; set; }
         public string unit { get; set; }
         public double turnAroundTime { get; set; }

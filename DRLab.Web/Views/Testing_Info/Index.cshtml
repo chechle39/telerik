@@ -6,12 +6,13 @@
         //.Title("Specification").Width(300);
         columns.Bound(p => p.analysisCode).Hidden();
         columns.Bound(p => p.specification).Width(330);
-        columns.Bound(p => p.unit).Filterable(false).Width(100);
+        columns.Bound(p => p.specCode).Filterable(false).Width(100);
+        columns.Bound(p => p.unit).Filterable(false).Width(90);
         columns.Bound(p => p.method).Width(330);
-        columns.Bound(p => p.turnAroundTime).Filterable(false).Width(100).Title("TAT").HtmlAttributes(new { @style = "text-align:center; vertical-align:middle" });
-        columns.Bound(p => p.reformTestResult).Width(100).Title("Reform").ClientTemplate("<input type='checkbox' #= reformTestResult ? checked='checked' :'' # />").Filterable(false).HtmlAttributes(new { @style = "text-align:center; vertical-align:middle" });
-        columns.Bound(p => p.note).Filterable(false).Width(300);
-        columns.Command(command => { command.Destroy().IconClass("k-icon k-i-trash").Text("Delete"); }).Width(100);
+        columns.Bound(p => p.turnAroundTime).Filterable(false).Width(50).Title("TAT").HtmlAttributes(new { @style = "text-align:center; vertical-align:middle" });
+        columns.Bound(p => p.reformTestResult).Width(50).Title("Reform").ClientTemplate("<input type='checkbox' #= reformTestResult ? checked='checked' :'' # />").Filterable(false).HtmlAttributes(new { @style = "text-align:center; vertical-align:middle" });
+        columns.Bound(p => p.note).Filterable(false).Width(200);
+        columns.Command(command => { command.Custom("Delete").Click("openWindow").IconClass("k-icon k-i-trash").Text("Delete"); }).Width(80);
     })
     .ToolBar(toolbar =>
     {
@@ -19,7 +20,7 @@
         toolbar.Create();
         toolbar.Save();
     })
-    .Editable(editable => editable.Mode(GridEditMode.InCell))
+    .Editable(editable => editable.Mode(GridEditMode.InCell).DisplayDeleteConfirmation(false))
     .Pageable()
     .Navigatable()
     .Sortable()
@@ -36,6 +37,7 @@
             model.Id(p => p.analysisCode);
             model.Field(p => p.analysisCode);
             model.Field(p => p.specification);
+            model.Field(p => p.specCode);
             model.Field(p => p.method);
             model.Field(p => p.unit);
             model.Field(p => p.turnAroundTime);
@@ -48,6 +50,11 @@
         .Destroy(read => read.Action("TestingInfo_Destroy", "Testing_Info"))
     )
 )
+    <div id="modalWindow" style="display:none">
+        <h2 style="font-size:14px">Are you sure you want to delete this record?</h2>
+        <button id="yes" class="k-button">Yes</button>
+        <button id="no" class="k-button">No</button>
+    </div>
 @(Html.Kendo().Notification()
     .Name("noti")
     .Position(p => p.Pinned(true).Top(30).Right(30))
@@ -71,6 +78,29 @@
             });
             alert(message);
         }
+    }
+    function openWindow(e) {
+        wnd = $("#modalWindow").kendoWindow({
+            title: "Delete confirmation",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+        e.preventDefault();
+
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+        wnd.center().open();
+
+        $("#yes").click(function () {
+            grid.removeRow(row);
+            wnd.close();
+        });
+
+        $("#no").click(function () {
+            wnd.close();
+        });
     }
     function onRequestEnd(e) {
         //Check request type
@@ -118,6 +148,9 @@
         <img src="@Url.Content("~/Shared/success-icon.png")" />
         <h3>#= message #</h3>
     </div>
+</script>
+<script id="delete-confirmation" type="text/x-kendo-template">
+    <p class="delete-message">Are you sure you want to delete this record?</p>
 </script>
 <style>
     .k-window-title k-dialog-title::before {

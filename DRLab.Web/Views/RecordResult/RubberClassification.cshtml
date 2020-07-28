@@ -1,0 +1,94 @@
+﻿@addTagHelper *, Kendo.Mvc
+<div id="exampleRubber">
+    <div id="dialogRubber">
+        <div id="horizontal-form">
+
+            <form id="userFormEdit" class="k-form k-form-vertical">
+                <div style=" margin-left: 1px; padding-bottom: 10px;" class="row">
+                    <span>HẠNG DK SVR</span>
+                    @(Html.Kendo().DropDownList()
+                                        .Name("chiTieu")
+                                        .DataTextField("Text")
+                                        .DataValueField("Value")
+                                        .Events(e => e.Change("change"))
+                                        .BindTo(new List<SelectListItem>() {
+                                            new SelectListItem() {
+                                            Text = "Chọn hạng DK SVR",
+                                            Value = "0"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "L",
+                                            Value = "1"
+                                        },
+                                        new SelectListItem() {
+                                                Text = "3L",
+                                                Value = "3"
+                                        },
+                                         new SelectListItem() {
+                                                Text = "5",
+                                                Value = "5"
+                                        },
+                                          new SelectListItem() {
+                                                Text = "10",
+                                                Value = "6"
+                                        },
+                                           new SelectListItem() {
+                                                Text = "3SD",
+                                                Value = "7"
+                                        },
+                                           new SelectListItem() {
+                                                Text = "CV50",
+                                                Value = "8"
+                                        },
+                                           new SelectListItem() {
+                                                Text = "CV60",
+                                                Value = "9"
+                                        },
+                                           new SelectListItem() {
+                                                Text = "5S",
+                                                Value = "10"
+                                        },
+                                           new SelectListItem() {
+                                                Text = "20",
+                                                Value = "11"
+                                        },
+                                        })
+                                    .Value("0")
+                                    .HtmlAttributes(new { style = "width: 15%;margin-left: 2%;height: 26px" })
+                                        )
+                </div>
+                
+                <div id="GridRubber"></div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    #example {
+        min-height: 350px;
+    }
+
+    .validate-announc {
+        color: red;
+    }
+
+    .form-group {
+        margin-bottom: 0 !important
+    }
+
+    .k-radio-label {
+        font-weight: 100 !important;
+    }
+    #GridRubber .k-grid-content {
+        min-height: 100px;
+        max-height: 400px;
+    }
+</style>
+<script>
+    function change(e) {
+
+    };
+</script>

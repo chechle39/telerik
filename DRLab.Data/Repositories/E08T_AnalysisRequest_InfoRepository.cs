@@ -52,15 +52,7 @@ namespace DRLab.Data.Repositories
             {
                 DateTime start;
                 start = DateTime.Parse(request.StartDate, new CultureInfo("vi-VN"));
-                //if (Convert.ToInt32(request.StartDate.Split("/")[0]) > 12)
-                //{
-                //    start = DateTime.Parse(request.StartDate, new CultureInfo("vi-VN"));
-                //} else
-                //{
-                //    start = DateTime.Parse(request.StartDate);
-                //}
-                //DateTime dt = DateTime.ParseExact(request.StartDate, "dd/MM/yyyy",
-                //                  CultureInfo.InvariantCulture);
+                
                 listGridManagementViewModel = listGridManagementViewModel.Where(x => x.receivceDate >= start).ToList();
             }
             if (!string.IsNullOrEmpty(request.EndDate))
@@ -167,6 +159,18 @@ namespace DRLab.Data.Repositories
                 numberSample = data[0].numberSample
             };
             return rs;
+        }
+
+        public async Task<bool> UpdateListAnalysisRequestInfo(List<E08T_AnalysisRequest_InfoViewModel> SaveAnalysisRequestInforequest)
+        {
+           foreach(var item in SaveAnalysisRequestInforequest)
+           {
+                var saveAnalysisRequestInforequest = Mapper.Map<E08T_AnalysisRequest_InfoViewModel, E08T_AnalysisRequest_Info>(item);
+                var itemUpdate = await Entities.Where(x => x.requestNo == item.requestNo).ToListAsync();
+                itemUpdate[0].status = item.status;
+                Entities.Update(itemUpdate[0]);
+           }
+            return await Task.FromResult(true);
         }
     }
 }

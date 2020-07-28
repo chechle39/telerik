@@ -4,14 +4,14 @@
     .Columns(columns =>
     {
         columns.Bound(p => p.customerCode).Hidden();
-        columns.Bound(p => p.companyName).Title(("Company Name"));        
+        columns.Bound(p => p.companyName).Title(("Company Name"));
         columns.Bound(p => p.contactName).Title(("Contact Name"));
         columns.Bound(p => p.companyAddress).Filterable(false).Title(("Company Address"));
         columns.Bound(p => p.contactEmail).Title(("Contact Email"));
         columns.Bound(p => p.city).Filterable(false).Title(("City"));
         columns.Bound(p => p.note).Filterable(false).Title(("Note"));
-        columns.Command(command => { command.Destroy().IconClass("k-icon k-i-trash").Text("Delete"); command.Custom("RefreshRecord").IconClass("k-icon k-i-edit").Text("Contact").Click("customCom"); }).Width(200);
-       
+        columns.Command(command => { command.Custom("Delete").Click("openWindow").IconClass("k-icon k-i-trash").Text("Delete"); command.Custom("RefreshRecord").IconClass("k-icon k-i-edit").Text("Contact").Click("customCom"); }).Width(200);
+
     })
     .ToolBar(toolbar =>
     {
@@ -19,7 +19,7 @@
         toolbar.Save();
         //toolbar.Custom().Text("Create Item").HtmlAttributes(new { onclick = "customCom()" });
     })
-    .Editable(editable => editable.Mode(GridEditMode.InCell))
+    .Editable(editable => editable.Mode(GridEditMode.InCell).DisplayDeleteConfirmation(false))
     .Pageable()
     .Navigatable()
     .Sortable()
@@ -49,7 +49,11 @@
     .Destroy(read => read.Action("Destroy_Customer", "CustomerList"))
     )
     )
-
+<div id="modalWindow" style="display:none">
+    <h2 style="font-size:14px">Are you sure you want to delete this record?</h2>
+    <button id="yes" class="k-button">Yes</button>
+    <button id="no" class="k-button">No</button>
+</div>
 @await Html.PartialAsync("../CustomerItem/Index", "CustomerItem")
 
 @(Html.Kendo().Notification()
@@ -62,73 +66,98 @@
         t.Add().Type("error").ClientTemplateID("errorTemplate");
     })
 )
-    <script type="text/javascript">
-        var Datagrid = [];
-        var Datacode = [];
-        function customCom(e) {
-            var grid = e.sender;
-            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-            var a = dataItem.customerCode;
-            var grid = $("#gridCustomer").data("kendoGrid");
+<script type="text/javascript">
+    var Datagrid = [];
+    var Datacode = [];
+    function customCom(e) {
+        var grid = e.sender;
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        var a = dataItem.customerCode;
+        var grid = $("#gridCustomer").data("kendoGrid");
 
-            $.ajax({
-                type: "GET",
-                url: "/CustomerRequest/GetCustomersItemByCode",
-                data: { id: a },
-                dataType: "Json",
-                success: function (response) {
-                    data = response;
-                    schemaTotal(data);
-                    autoSync: true;
-                    Datagrid = response;
-                    Datacode = a;
-                    var dataSource = new kendo.data.DataSource({
-                        data: response,
-                        pageSize: 20,
-                    });
-                    grid.setDataSource(dataSource);
-                },
-                error: function () {
-                }
-            });
+        $.ajax({
+            type: "GET",
+            url: "/CustomerRequest/GetCustomersItemByCode",
+            data: { id: a },
+            dataType: "Json",
+            success: function (response) {
+                data = response;
+                schemaTotal(data);
+                autoSync: true;
+                Datagrid = response;
+                Datacode = a;
+                var dataSource = new kendo.data.DataSource({
+                    data: response,
+                    pageSize: 20,
+                });
+                grid.setDataSource(dataSource);
+            },
+            error: function () {
+            }
+        });
 
-            $("#CustomerItem").data("kendoWindow").center();
-            $("#CustomerItem").data("kendoWindow").open();
-        }
-        function onRequestEnd(e) {
-            //Check request type
-            if (e.type == "create") {
-                //check for errors in the response
-                if (e.response != null || e.response.Errors == null) {
-                    var notification = $("#notiCustomer").data("kendoNotification");
-                    notification.show({
-                        message: "Insert Successful"
-                    }, "success");
-                } if (e.response.Errors != null) {
-                    var notification = $("#notiCustomer").data("kendoNotification");
-                    notification.show({
-                        title: "Wrong Save",
-                        message: "Uppdate error"
-                    }, "error");
-                }
+        $("#CustomerItem").data("kendoWindow").center();
+        $("#CustomerItem").data("kendoWindow").open();
+    }
+    function openWindow(e) {
+        wnd = $("#modalWindow").kendoWindow({
+            title: "Delete confirmation",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+        e.preventDefault();
+
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+        wnd.center().open();
+
+        $("#yes").click(function () {
+            grid.removeRow(row);
+            wnd.close();
+        });
+
+        $("#no").click(function () {
+            wnd.close();
+        });
+    }
+    function onRequestEnd(e) {
+        //Check request type
+        if (e.type == "create") {
+            //check for errors in the response
+            if (e.response != null || e.response.Errors == null) {
+                var notification = $("#notiCustomer").data("kendoNotification");
+                notification.show({
+                    message: "Insert Successful"
+                }, "success");
+            } if (e.response.Errors != null) {
+                var notification = $("#notiCustomer").data("kendoNotification");
+                notification.show({
+                    title: "Wrong Save",
+                    message: "Insert Error"
+                }, "error");
             }
-            if (e.type == "update") {
-                //check for errors in the response
-                if (e.response != null || e.response.Errors == null) {
-                    var notification = $("#notiCustomer").data("kendoNotification");
-                    notification.show({
-                        message: "Insert Successful"
-                    }, "success");
-                } if (e.response.Errors != null) {
-                    var notification = $("#notiCustomer").data("kendoNotification");
-                    notification.show({
-                        title: "Wrong Save",
-                        message: "Uppdate error"
-                    }, "error");
-                }
+        }
+        if (e.type == "update") {
+            //check for errors in the response
+            if (e.response != null || e.response.Errors == null) {
+                var notification = $("#notiCustomer").data("kendoNotification");
+                notification.show({
+                    message: "Update Successful"
+                }, "success");
+            } if (e.response.Errors != null) {
+                var notification = $("#notiCustomer").data("kendoNotification");
+                notification.show({
+                    title: "Wrong Update",
+                    message: "Uppdate Error"
+                }, "error");
             }
         }
-    </script>
+
+
+    }
+</script>
 
 <script id="errorTemplate" type="text/x-kendo-template">
     <div class="wrong-pass">
@@ -142,6 +171,9 @@
         <img src="@Url.Content("~/Shared/success-icon.png")" />
         <h3>#= message #</h3>
     </div>
+</script>
+<script id="delete-confirmation" type="text/x-kendo-template">
+    <p class="delete-message">Are you sure?</p>
 </script>
 <style>
     .product-photo {

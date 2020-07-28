@@ -14,5 +14,6 @@ namespace DRLab.Data.ViewModels
         [Display(Name = "Specification")]
         [Required]
         public string specification { get; set; }
+        public string specCode{ get; set; }
     }
 }

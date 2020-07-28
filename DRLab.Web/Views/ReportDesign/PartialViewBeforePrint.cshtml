@@ -1,0 +1,340 @@
+﻿@(Html.Kendo().Notification()
+    .Name("notificationEdit")
+    .Position(p => p.Pinned(true).Top(30).Right(30))
+    .Stacking(NotificationStackingSettings.Down)
+    .Templates(t =>
+    {
+        t.Add().Type("success").ClientTemplateID("successTemplate");
+        t.Add().Type("error").ClientTemplateID("errorTemplate");
+    })
+)
+@model string
+<kendo-dialog name="@Model" class="Drlab__dialogprint" title="Print Request" width="650" modal="true" visible="false" style="">
+    <content>
+        <form asp-controller="SampleMatrix" asp-action="SampleMatrix_Create" id="createSample_MatrixForm" method="post">
+            <div class="row mb-2" style="margin-left:-15px">
+                <div class="col-2">
+                    <span style="vertical-align: sub;border:none;">Request No#</span>
+                </div>
+                <div class="col-3">
+                    @(Html.Kendo().ComboBox()
+            .Name("requestNoPrint")
+            .Placeholder("Select Request No")
+            .Filter("startswith")
+            .HtmlAttributes(new { style = "width: 100%;" })
+            .Events(e =>
+            {
+                e.Change("onChangeRequestNo");
+            })
+
+        )
+                   
+                </div>
+                <div class="col-7">
+                    @(Html.Kendo().TextBox()
+                    .Name("CompanyNamePrint")
+                    .HtmlAttributes(new { @readonly = "readonly", style = "width: 100%;border:none" })
+                    )
+                </div>
+            </div>
+            <div class="row mb-2" style="margin-left:-15px">
+                <div class="col-2">
+                    <span style="vertical-align: sub;">Sample Code</span>
+                </div>
+                <div class="col-3">
+                    @(Html.Kendo().ComboBox()
+                                .Name("sampleCodePrint")
+                                .Placeholder("Select Sample Code")
+                                .Filter("startswith")
+                                .HtmlAttributes(new { required = "required",style = "width: 100%;" })
+                                 .Events(e =>
+                                {
+                                    e.Change("onChangeSampleCode");
+                                })
+                            )
+                </div>
+                <div class="col-7">
+                    @(Html.Kendo().TextBox()
+                    .Name("SampleNamePrint")
+                    .HtmlAttributes(new  {@readonly ="readonly", style = "width: 100%;border:none" })
+
+                    )
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-2">
+                    @(Html.Kendo().Grid<DRLab.Data.ViewModels.RecordResultGridViewModel>()
+                                        .Name("GridPrint")
+                                        .HtmlAttributes(new { style = "height:auto;" })
+                                        .Columns(columns =>
+                                        {
+                                            columns.Select().Width(50);
+                                            columns.Bound(p => p.specification).Title("Specification");
+                                            columns.Bound(p => p.method).Title("Method");
+                                            columns.Bound(p => p.unit).Title("Unit").Width("10%");
+                                            columns.Bound(p => p.Result).Title("Result").Width("10%");
+                                            columns.Bound(p => p.ResultText).Title("ResultText").Width("10%");
+
+                                        })
+                                        .Navigatable()
+
+                                        .Pageable()
+                                        .Sortable()
+                                        .Events(ev => ev.Change("onChange").DataBound("onDataBound1"))
+                                        .Scrollable()
+                                        .DataSource(dataSource => dataSource
+                                        .Custom()
+                                        .PageSize(6)
+                                        .Batch(true)
+                                        .Schema(schema =>
+                                        {
+                                            schema.Model(model =>
+                                            {
+                                                model.Field(p => p.specification).From("specification").Editable(false);
+                                                model.Field(p => p.method).From("method").Editable(false);
+                                                model.Field(p => p.unit).From("Unit").Editable(false);
+                                                model.Field(p => p.Result).From("Result").Editable(false);
+                                                model.Field(p => p.ResultText).From("ResultText").Editable(false);
+                                            })
+                                            .Data(d => "schemaData")
+                                            .Total(t => "schemaTotal");
+                                        })))
+
+                </div>
+            </div>
+           
+        </form>
+    </content>
+    <actions>
+        <action text="Cancel">
+        </action>
+        <action text="Print" title="Save" action="onPrintRequest" primary="true">
+        </action>
+    </actions>
+    <popup-animation>
+        <open duration="500" effects="fade:in" />
+        <close duration="500" effects="fade:out" />
+    </popup-animation>
+</kendo-dialog>
+<script>
+    function onPrintRequest() {
+        var samplename = $('#sampleCodePrint').val();
+        if (samplename === undefined || samplename === "" || samplename===null) {
+            var notification = $("#notification").data("kendoNotification");
+            notification.show({
+                title: "Wrong Open",
+                message: "Please choose one sample."
+            }, "error");
+            return
+        }
+        var grid = $("#GridPrint").data("kendoGrid");
+        var selected = [];
+        grid.select().each(function () {
+            selected.push(grid.dataItem(this));
+        });            
+        var companyname = $('#CompanyNamePrint').val();        
+        var requestno = $('#requestNoPrint').val();
+        var address = "21/2 quach van tuan";
+      
+        var nameofsample = $('#SampleNamePrint').val();
+        for (i = 0; i < dataPrint.length; i++) {
+            if (nameofsample == dataPrint[i].sampleName) {
+                var sampledescription = dataPrint[i].sampleDescription;
+                var Matrix = dataPrint[i].SampleMatrix;               
+            }
+        }
+        for (i = 0; i < girdData.length; i++) {
+            if (nameofsample == girdData[i].sampleName) {              
+                var receivceDate = girdData[i].receivceDate;
+                var dateofResuft = girdData[i].expectedDate;
+                var analysingDate = girdData[i].completedOn;
+            }
+        }
+        var ListdataDetail = [];
+        for (i = 0; i < selected.length; i++) {
+            const dataDetail = {
+                Parameter : selected[i].specification,
+                Result: selected[i].Result, 
+                Unit : selected[i].unit,
+                testMethod: selected[i].method,
+                ResultText : selected[i].ResultText,
+            }
+            ListdataDetail.push(dataDetail);
+        }             
+       
+            $.ajax({
+                type: "Post",
+                url: '/ManagementSample/SaveDataJson',
+                dataType: "Json",
+
+                data: {
+                    companyName: companyname,
+                    requestNo: requestno,
+                    Address: address,
+                    nameofSample: nameofsample,
+                    sampleName: samplename,
+                    sampledescription: sampledescription,
+                    Matrix: Matrix,
+                    receivceDate: receivceDate,
+                    dateofResuft: dateofResuft,
+                    analysingDate: analysingDate,
+                    dataDetail: ListdataDetail
+                },
+                success: function (rp) {
+                },
+                error: function () {
+                }
+            });       
+       
+            let reportName = "ManagementSample";
+            let urlBuilder = `/ReportDesign?requestNumber=${requestno}&reportName=${reportName}`;
+            window.location = urlBuilder;
+            $.ajax({
+                type: "POST",
+                url: urlBuilder,
+                dataType: "json",
+                contentType: "application/json",
+                success: function () {
+                    window.location = urlBuilder;
+                },
+                error: function () {
+
+                }
+            });
+       
+       
+    }    
+   
+
+
+
+    function onChangeSampleCode(e) {
+        codeSample = $('#sampleCodePrint').val();
+        nameSample = $('#SampleNamePrint').val();
+        codeRequest = $('#requestNoPrint').val();
+        var grid = $("#GridPrint").data("kendoGrid");
+        $.ajax({
+            type: "GET",
+            url: '/RecordResult/GetRecordResultList/?' + "requestNo=" + codeRequest,
+            dataType: "Json",
+            success: function (responseData) {
+                data = responseData;             
+                schemaTotal(data);
+                arrResult = [];
+                for (var i = 0; i < responseData.length; i++) {
+                    if (codeSample == responseData[i].sampleCode) {
+                        arrResult.push(responseData[i].Data)
+                        $('#SampleNamePrint').val(responseData[i].sampleName);
+                    }
+                }
+                var dataSource = new kendo.data.DataSource({
+                    data: arrResult[0],
+                    pageSize: 20,
+                });
+                grid.setDataSource(dataSource);
+            
+            },
+            error: function () {
+            }
+        });
+    }
+
+    function onChangeRequestNo(e) {
+        var codeRequest = null;
+        var codeRequest = $('#requestNoPrint').val();
+        $.ajax({
+            type: "GET",
+            url: 'ManagementSample/GetDataReport/?' + "requestNo=" + codeRequest,
+            dataType: "Json",
+            success: function (response) {
+                data = response;
+                arrSample = []
+                for (var i = 0; i < response.length; i++) {
+                    arrSample.push(response[i].sampleCode);
+                }
+                //set datasource CodePrintCombobox
+                $('#sampleCodePrint').data("kendoComboBox").value("");                
+                // set value to combobox
+                var dataSourceSC = new kendo.data.DataSource({
+                    data: arrSample
+                });
+               
+                var combobox = $("#sampleCodePrint").data("kendoComboBox");
+                combobox.setDataSource(dataSourceSC);       
+                $('#SampleNamePrint').val('');
+                // sclear datagrid
+                var grid = $("#GridPrint").data("kendoGrid");                     
+                var dataSource = new kendo.data.DataSource({
+                    data: [],
+                    pageSize: 6,
+                });
+                grid.setDataSource(dataSource);
+                for (i = 0; i < girdData.length; i++) {
+                    if (codeRequest == girdData[i].requestNo) {
+                        $('#CompanyNamePrint').val(girdData[i].companyName);
+                        return;
+                    }
+                }
+            },
+            error: function () {
+            }
+        });
+    }
+
+    function schemaData() {
+        return Datagrid;
+    }
+    function schemaTotal(response) {
+        return Datagrid.length;
+    }
+    function onChange(e) {
+        var rows = e.sender.select();
+        rows.each(function (e) {
+            var grid = $("#grid").data("kendoGrid");
+            var dataItem = grid.dataItem(this);         
+        })
+    };
+    function onDataBound1(e) {
+        var grid = this;
+        var rows = grid.items();
+
+        $(rows).each(function (e) {
+            var row = this;
+            var dataItem = grid.dataItem(row);
+
+            grid.select(row);
+
+        });
+    }
+    function onOpen() {
+        console.log("event: open");
+    }
+   
+</script>
+<style>
+    .card-body {
+        padding: 0;
+        font-size: 10px;
+    }
+    .Drlab__dialogprint .k-grid-content.k-auto-scrollable {
+        height: 230px !important;       
+    }
+    #sampleCodePrint-list~.k-widget.k-window.k-dialog {
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%);
+    }
+</style>
+<script id="errorTemplate" type="text/x-kendo-template">
+    <div class="wrong-pass">
+        <img src="@Url.Content("~/Shared/error-icon.png")" />
+        <h3>#= title #</h3>
+        <p>#= message #</p>
+    </div>
+</script>
+<script id="successTemplate" type="text/x-kendo-template">
+    <div class="upload-success">
+        <img src="@Url.Content("~/Shared/success-icon.png")" />
+        <h3>#= message #</h3>
+    </div>
+</script>

@@ -7,5 +7,6 @@ namespace DRLab.Services.Interfaces
     public interface ISampleManagementDapperService
     {
         Task<IEnumerable<SampleManagementViewModel>> GetSampleManagement(SerchSampleManagement rq);
+        Task<IEnumerable<SampleManagementExportViewModel>> GetSampleManagementExport(SerchSampleManagement rq); 
     }
 }

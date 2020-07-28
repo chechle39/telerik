@@ -51,7 +51,10 @@
                                             Text = "Record Result",
                                             Value = "1"
                                         },
-
+                                         new SelectListItem() {
+                                            Text = "Record Review",
+                                            Value = "2"
+                                        },
                                         })
                                     .Value("0")
                                     .HtmlAttributes(new { style = "width: 100%", @class = "k-dropdown--clear" })
@@ -169,8 +172,9 @@
         grid.table.find("tr").each(function () {
 
             var dataItem = grid.dataItem(this);
-            var type = dataItem.RequestStatus === 1 ? 'info' : dataItem.RequestStatus === 2 ? 'success' : 'warning';
-            var text = dataItem.RequestStatus === 1 ? 'New' : dataItem.RequestStatus === 2 ? 'CONFIRMED' : 'PROCESSING';
+            var type = dataItem.RequestStatus === 1 ? 'success' : dataItem.RequestStatus === 2 ? 'success' : 'warning';
+            var text = dataItem.RequestStatus === 1 ? 'CONFIRMED' : dataItem.RequestStatus === 2 ? 'CONFIRMED' : 'PROCESSING';
+
             $(this).find('script').each(function () {
                 eval($(this).html());
             });
@@ -225,6 +229,10 @@
                 window.location.href = '/RecordResult/?' + "requestNo=" + selectedRequestNo;
 
             }
+        } else if (dataItem.Value === "2") {
+            if (selectedRequestNo === null || selectedRequestNo === undefined || selectedRequestNo === "")
+                return;
+            window.location.href = '/RecordResult/RiviewRequest/?' + "requestNo=" + selectedRequestNo;
         }
     }
     function onClicSearch() {

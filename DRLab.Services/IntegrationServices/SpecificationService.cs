@@ -58,6 +58,12 @@ namespace DRLab.Services.IntegrationServices
                 _uow.SaveChanges();
                 return await Task.FromResult(true);     
         }
+        public async Task<bool> Update(E00T_SpecificationViewModel Data)
+        {
+            await _e00T_SpecificationRepository.UpdateSpecification(Data);
+            _uow.SaveChanges();
+            return await Task.FromResult(true);
+        }
     }
     
 }

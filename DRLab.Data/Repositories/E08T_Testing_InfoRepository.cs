@@ -20,6 +20,11 @@ namespace DRLab.Data.Repositories
 
         }
 
+        public async Task<List<E08T_Testing_InfoViewModel>> Getdata()
+        {
+            return await Entities.ProjectTo<E08T_Testing_InfoViewModel>().ToListAsync();
+        }
+
         public async Task<List<E00T_CustomerGridViewModel>> GetE08TTestingInfoBySpecId(string analysisCode)
         {
             var analysisCodeData = await Entities.Where(x => x.analysisCode == analysisCode).ToListAsync();
@@ -35,7 +40,7 @@ namespace DRLab.Data.Repositories
                     method = item.method,   
                     Price = 0,
                     specification = item.specification,
-                    TAT = "",
+                    TurnAroundDay = 0,
                     unit = item.unit,
                     Urgent = 0
                 };

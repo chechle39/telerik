@@ -1,0 +1,195 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="all">
+    <div class="tableUser">
+        <table>
+            <tr>
+                <th><h5>User: </h5> </th>
+                <th>
+                    @(Html.Kendo().ComboBox()
+                    .Name("fabric")
+                    .Filter(FilterType.Contains)
+                    .Placeholder("Select User...")
+                    .DataTextField("UserName")
+                    .DataValueField("Id")
+                    .Events(e =>
+                    {
+                        e.Change("onChangecombobox").Select("onSelect");
+                    })
+                       .DataSource(source =>
+                                {
+                              source.Read(read =>
+                               {
+                               read.Action("Getdatauser", "Assignment");
+                               }).ServerFiltering(true);
+                                })
+                    .SelectedIndex(-1)
+                    .Suggest(true)
+                    .HtmlAttributes(new { style = "width:100%;" })
+                        )
+                </th>
+            </tr>
+        </table>
+    </div>
+        @(Html.Kendo().Grid<DRLab.Data.Entities.E08T_Testing_Info>()
+        .Name("Grid")
+        .Columns(columns => {
+            columns.Select().Width(20);
+            columns.Bound(p => p.specID).Title("Spec ID").Hidden().Width(1);
+            columns.Bound(p => p.specification).Title("Specification").Width("93%").Filterable(ftb => ftb.Mode(GridFilterMode.Menu));
+        })
+        .Pageable()
+        .Sortable()    
+        .Filterable()
+        .Events(events => events
+        .Change("onChangeGrid")
+        .DataBound("onDataBound")
+        )
+        .PersistSelection()
+        //.Filterable(ftb => ftb.Mode(GridFilterMode.Menu))
+        .DataSource(dataSource => dataSource
+        .Ajax()
+        .Model(model => model.Id(p => p.specID))
+        .Read(read => read.Action("GetDataTesting_Info","Assignment")))
+        )
+
+    <div class="button">
+        @(Html.Kendo().Button()
+        .Name("textButton")
+        .Content("Save")
+        .HtmlAttributes(new { type = "button",style = "width:10%;height:30px;" })
+        .Events(ev => ev.Click("onClickbutton")))
+    </div>
+</div>
+<script>
+    var arraylist = [];
+    function onChangecombobox() {       
+        $.ajax({
+            type: "GET",
+            url: "/Assignment/GetDataFormTestingInfo",
+            beforeSend: function () {
+            },
+            success: function (response) {
+                var grid = $("#Grid").data("kendoGrid");    
+                var dataSource = new kendo.data.DataSource({
+                    data:response, 
+                    schema: {
+                        model: {
+                            id: "specID",
+                        },
+                    },
+                    change: onChange,
+                    dataBound: onDataBound,
+                    selectable: "multiple cell",
+                    pageable: true,
+                    sortable: true,
+                    filterable: true,
+                    scrollable: true,
+                    batch: true,
+                    pageSize:15,
+                });
+              //  grid.clearSelection();
+                grid.setDataSource(dataSource);
+            },
+            error: function (status) {
+            }
+        });
+    }
+    function onDataBound(arg) {
+        var combobox = $('#fabric').val();
+        var grid = this;
+        grid.clearSelection();
+        var rows = grid.items();
+        if (combobox != "") {
+            $.ajax({    
+                type: "GET",
+                url: "/Assignment/GetUserAndSpec",
+                data: { F_userid: combobox },
+                beforeSend: function () {
+                },
+                success: function (response1) {
+                    if (response1 != null) {
+                        $(rows).each(function (e) {
+                            var row = this;
+                            var dataItem = grid.dataItem(row);
+                            for (var i = 0; i < response1.length; i++) {
+                                if (dataItem.specID == response1[i].specID) {
+                                    grid.select(row);
+                                }
+                            }
+                        });
+                    }
+                },
+                error: function (status) {
+                }
+            });
+        }
+        else {
+            grid.clearSelection();
+        }
+    }
+    function onChange(e) {
+       
+    }
+    function onChangeGrid(e) {
+        arraylist = this.selectedKeyNames();
+    }
+    function onSelect() {
+
+    }
+    function onClickbutton() {
+        var comboboxuser = $('#fabric').val(); 
+        if (comboboxuser == "") {
+            alert("Please select User");
+        }
+        else {
+            $.ajax({
+                type: "GET",
+                url: "/Assignment/InsertAssiment",
+                data: {
+                    F_userid: comboboxuser,
+                    Ds_Spec: JSON.stringify(arraylist)
+                },
+                beforeSend: function () {
+                },
+                success: function (response) {
+                    alert("Success!");
+                },
+                error: function (status) {
+                }
+            });
+        }
+        return true;
+    }
+</script>
+<style>
+    .tableUser {       
+        padding-right: 15%;
+        padding-bottom:20px;
+    }
+
+    .user {
+        width: 15px;
+        font-size: 11px;
+        margin-top: 20px;
+    }
+
+    .combobox {
+        width: 100%;
+    }
+    .button {
+      padding-top:20px;
+    }    
+    .h5, h5 {
+        font-size: 0.9rem;
+        margin-top: 6px;
+    }
+    .all {
+        padding-left: 30%;
+        padding-right: 30%;
+    }
+</style>
+

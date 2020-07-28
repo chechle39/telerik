@@ -205,6 +205,8 @@
     var selected;
     var itemSelected;
     function onChangecustomer() {
+        $('#NewSpec').modal('hide');
+        $('#NewSpec').css('display', 'none');
     }
     function onSelectcustomer(e) {
         var dataItem = this.dataItem(e.item.index());

@@ -106,8 +106,7 @@ var ManagementRequestController = function () {
             dataType: "json",
             beforeSend: function () {
             },
-            success: function (response) {
-                console.log(response);
+            success: function (response) {              
                 var grid = $("#Grid").data("kendoGrid");
                 var dataSource = new kendo.data.DataSource({
                     data: response,

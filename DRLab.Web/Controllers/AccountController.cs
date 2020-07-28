@@ -3,16 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using DRLab.Common.Exceptions;
+using DRLab.Data.Identity;
 using DRLab.Data.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace DRLab.Web.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly ILogger _logger;
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager
+            , ILogger<AccountController> logger)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _logger = logger;
+        }
         public IActionResult Login(string ReturnUrl)
         {
             LoginViewModel model = new LoginViewModel() { ReturnUrl = String.IsNullOrEmpty(ReturnUrl) ? "" : ReturnUrl };
@@ -21,41 +35,24 @@ namespace DRLab.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromForm]LoginViewModel model)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return View(model);
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, true, lockoutOnFailure: false);
+                if (result.Succeeded)
+                {
+                    return LocalRedirect("/");
+                }
+                if (result.IsLockedOut)
+                {
+                    _logger.LogWarning("User account locked out.");
+                    return new ObjectResult(new GenericResult(false, "Tài khoản đã bị khoá"));
+                }
+                else
+                {
+                    return new ObjectResult(new GenericResult(false, "Đăng nhập sai"));
+                }
             }
-            if (!this.loginValidation(model))
-            {
-                ViewBag.LoginFail = true;
-                return View(model);
-            }
-
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, model.Email)
-            };
-
-            var claimsIdentity = new ClaimsIdentity(
-                claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-            var authProperties = new AuthenticationProperties{ };
-
-            if (model.IsRemember)
-            {
-                authProperties.IsPersistent = true;
-                authProperties.IssuedUtc = DateTimeOffset.UtcNow.AddYears(1);
-            }
-
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
-                authProperties);
-
-            if(Url.IsLocalUrl(model.ReturnUrl))
-                return LocalRedirect(model.ReturnUrl);
-
-            return LocalRedirect("/");
+            return View(model);
         }
 
         [Authorize]
