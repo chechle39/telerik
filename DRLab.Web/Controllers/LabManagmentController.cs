@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using DRLab.Data.Interfaces;
 using DRLab.Data.ViewModels;
 using DRLab.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;

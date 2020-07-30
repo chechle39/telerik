@@ -92,6 +92,7 @@ namespace DRLab.Web
             services.AddTransient<IE00T_Customer_ItemRepository, E00T_Customer_ItemRepository>();
             services.AddTransient<IE00T_SpecificationRepository, E00T_SpecificationRepository>();
             services.AddTransient<IE08T_AnalysisRequest_InfoRepository, E08T_AnalysisRequest_InfoRepository>();
+            services.AddTransient<IGenaralData_ReportRepository, GenaralData_ReportRepository>();
             services.AddTransient<IE00T_CustomerService, E00T_CustomerService>();
             services.AddTransient<IE00T_Customer_ItemService, E00T_Customer_ItemService>();
             services.AddTransient<ITesting_InfoService, Testing_InfoService>();
@@ -115,6 +116,8 @@ namespace DRLab.Web
             services.AddTransient<IE08T_TemplateMarkRepository, E08T_TemplateMarkRepository>();
             services.AddTransient<IE08T_TemplateMarkService, E08T_TemplateMarkService>();
             services.AddTransient<IAssignmentRepository, AssignmentRepository>();
+            services.AddTransient<IE08T_Testing_DataRepository, E08T_Testing_DataRepository>();
+
             services.AddTransient<IUserService, UserService>();
             services.AddScoped<UserManager<AppUser>, UserManager<AppUser>>();
             services.AddScoped<RoleManager<AppRole>, RoleManager<AppRole>>();

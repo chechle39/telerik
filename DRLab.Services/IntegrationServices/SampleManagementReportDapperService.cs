@@ -30,15 +30,16 @@ namespace DRLab.Services.IntegrationServices
                          "GetReportRequestManagement", dynamicParameters, commandType: CommandType.StoredProcedure);
             }
         }
-        public async Task<IEnumerable<SampleManagementPrintViewModel>> GetSampleManagementReport(string requestNo)
+        public async Task<IEnumerable<SampleManagementExportViewModel>> GetSampleManagementReport(string requestNo)
         {
             using (var sqlConnection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 await sqlConnection.OpenAsync();
                 var dynamicParameters = new DynamicParameters();
                 dynamicParameters.Add("@requestNumber", requestNo);
-                return await sqlConnection.QueryAsync<SampleManagementPrintViewModel>(
+               return await sqlConnection.QueryAsync<SampleManagementExportViewModel>(
                          "GetReportSampleManagement", dynamicParameters, commandType: CommandType.StoredProcedure);
+              
             }
         }
 

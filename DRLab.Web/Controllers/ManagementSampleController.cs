@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -81,48 +82,52 @@ namespace DRLab.Web.Controllers
                     int count = 1;
                     int A = 7;
                     int CountData = data.Count();
-                    foreach (var item in data)
-                    {
+                    if (data.Count() > 0) {
+                        foreach (var item in data)
+                        {
 
-                        var coppyFrom = "A7" + ":" + "AA7";
-                        var coppyTo = "A" + A.ToString() + ":" + "AA" + A.ToString();
-                        sheet.Cells[coppyFrom].Copy(sheet.Cells[coppyTo]);
-                        A++;
-
-                        sheet.Cells[rowIndex, 1].Value = ((DateTime)item.receivceDate).ToString("dd/MM/yyyy");
-                        sheet.Cells[rowIndex, 2].Value = item.requestNo;
-                        sheet.Cells[rowIndex, 3].Value = item.sampleCode;
-                        sheet.Cells[rowIndex, 4].Value = item.sampleMatrix;
-                        sheet.Cells[rowIndex, 5].Value = item.sampleName;
-                        sheet.Cells[rowIndex, 6].Value = item.DirtX;
-                        sheet.Cells[rowIndex, 7].Value = item.Dirt3sd;
-                        sheet.Cells[rowIndex, 7].Value = item.DirtSum;
-                        sheet.Cells[rowIndex, 7].Value = item.AshSum;
-                        sheet.Cells[rowIndex, 8].Value = item.AshX;
-                        sheet.Cells[rowIndex, 9].Value = item.Ash3sd;
-                        sheet.Cells[rowIndex, 10].Value = item.AshSum;
-                        sheet.Cells[rowIndex, 11].Value = item.VolatileX;
-                        sheet.Cells[rowIndex, 12].Value = item.VolatileXmax;
-                        sheet.Cells[rowIndex, 13].Value = item.NitoX;
-                        sheet.Cells[rowIndex, 14].Value = item.NitoXmax;
-                        sheet.Cells[rowIndex, 1].Value = item.P0Xmin;
-                        sheet.Cells[rowIndex, 2].Value = item.P0X;
-                        sheet.Cells[rowIndex, 3].Value = item.P0Xmax;
-                        sheet.Cells[rowIndex, 4].Value = item.PRIXmin;
-                        sheet.Cells[rowIndex, 5].Value = item.PRIX;
-                        sheet.Cells[rowIndex, 5].Value = item.PRIXmax;
-                        sheet.Cells[rowIndex, 4].Value = item.ColorXmin;
-                        sheet.Cells[rowIndex, 5].Value = item.ColorX;
-                        sheet.Cells[rowIndex, 5].Value = item.ColorXmax;
-                        sheet.Cells[rowIndex, 4].Value = item.MLXmin;
-                        sheet.Cells[rowIndex, 5].Value = item.MLX;
-                        sheet.Cells[rowIndex, 5].Value = item.MLXmax;
-                        sheet.Cells[rowIndex, 5].Value = item.Rank;
-                        rowIndex++;
-                        count++;
+                            var coppyFrom = "A7" + ":" + "AA7";
+                            var coppyTo = "A" + A.ToString() + ":" + "AA" + A.ToString();
+                            sheet.Cells[coppyFrom].Copy(sheet.Cells[coppyTo]);
+                            A++;
+                          
+                            if (rowIndex==7 || sheet.Cells[rowIndex, 1].Value != sheet.Cells[rowIndex - 1, 1].Value)
+                            {
+                                sheet.Cells[rowIndex, 1].Value = ((DateTime)item.receivceDate).ToString("dd/MM/yyyy");
+                            }
+                            sheet.Cells[rowIndex, 2].Value = item.requestNo;
+                            sheet.Cells[rowIndex, 3].Value = item.sampleCode;
+                            sheet.Cells[rowIndex, 4].Value = item.sampleMatrix;                           
+                            sheet.Cells[rowIndex, 5].Value = item.DirtX;
+                            sheet.Cells[rowIndex, 6].Value = item.Dirt3sd;
+                            sheet.Cells[rowIndex, 7].Value = item.DirtSum;                            
+                            sheet.Cells[rowIndex, 8].Value = item.AshX;
+                            sheet.Cells[rowIndex, 9].Value = item.Ash3sd;
+                            sheet.Cells[rowIndex, 10].Value = item.AshSum;
+                            sheet.Cells[rowIndex, 11].Value = item.VolatileX;
+                            sheet.Cells[rowIndex, 12].Value = item.VolatileXmax;
+                            sheet.Cells[rowIndex, 13].Value = item.NitoX;
+                            sheet.Cells[rowIndex, 14].Value = item.NitoXmax;
+                            sheet.Cells[rowIndex, 15].Value = item.P0Xmin;
+                            sheet.Cells[rowIndex, 16].Value = item.P0X;
+                            sheet.Cells[rowIndex, 17].Value = item.P0Xmax;
+                            sheet.Cells[rowIndex, 18].Value = item.PRIXmin;
+                            sheet.Cells[rowIndex, 19].Value = item.PRIX;
+                            sheet.Cells[rowIndex, 20].Value = item.PRIXmax;
+                            sheet.Cells[rowIndex, 21].Value = item.ColorXmin;
+                            sheet.Cells[rowIndex, 22].Value = item.ColorX;
+                            sheet.Cells[rowIndex, 23].Value = item.ColorXmax;
+                            sheet.Cells[rowIndex, 24].Value = item.MLX;
+                            sheet.Cells[rowIndex, 25].Value = item.MLXmin;
+                            sheet.Cells[rowIndex, 26].Value = item.MLXmax;
+                            sheet.Cells[rowIndex, 27].Value = item.Rank;
+                            rowIndex++;
+                            count++;
+                        }
+                     
+                        package.SaveAs(file);
                     }
-                    sheet.DeleteRow(sheet.Dimension.End.Row);
-                    package.SaveAs(file);
+                
 
                 }
             }
@@ -173,8 +178,8 @@ namespace DRLab.Web.Controllers
                     using (ExcelPackage package = new ExcelPackage(temp))
                     {
                         ExcelWorksheet worksheet = package.Workbook.Worksheets["TestingReport"];
-                        if (worksheet.Cells[51, 1].Value != null) {
-                            int tempNo = Int32.Parse(worksheet.Cells[51, 1].Value.ToString());
+                        if (worksheet.Cells[15, 14].Value != null) {
+                            int tempNo = Int32.Parse(worksheet.Cells[15, 14].Value.ToString());
                             if (tempNo != null)
                             {
                                 No = tempNo + 1;
@@ -190,87 +195,55 @@ namespace DRLab.Web.Controllers
             }
             using (FileStream templateDocumentStream = System.IO.File.OpenRead(templateDocument))
             {
+               
+
                 using (ExcelPackage package = new ExcelPackage(templateDocumentStream))
                 {
                     ExcelWorksheet sheet = package.Workbook.Worksheets["TestingReport"];
-                    var data = new List<SampleManagementPrintViewModel>();
-                    data = (List<SampleManagementPrintViewModel>)await _sampleManagementReportDapper.GetSampleManagementReport(requestNo);
-                    var results = new List<SampleManagementPrintGroupViewModel>();
-                    List<SampleManagementPrintViewModel> salesReportViewodel = data.ToList();
-                    var results1 = from p in salesReportViewodel
-                                   group p by p.Specification into g
-                                   select new { Specification = g.Key, ListData = g.ToList() };
-                    foreach (var item in results1)
-                    {
-                        var yy = new SampleManagementPrintGroupViewModel()
-                        {
-                            Specification = item.Specification,
-                            ListData = item.ListData,
-                        };
-                        results.Add(yy);
-                    }
+                    var data = new List<SampleManagementExportViewModel>();
+                    data = (List<SampleManagementExportViewModel>)await _sampleManagementReportDapper.GetSampleManagementReport(requestNo);
+                  
                     var sa = sheet.Cells[15, 1].Value;
                     string sampleName = "";
                     int rowIndex = 21;
                     int A = 21;
+                    int B =5;
                     int CountData = data.Count();
-                   
-                    sheet.InsertColumn(8, results[0].ListData.Count() - 1, 4);
-                    sheet.Cells[51,1].Value = No;
-                    sheet.Cells[15, results[0].ListData.Count() + 10].Value = No.ToString()+'/'+ date.ToString("MM") + '/'+ results[0].ListData[0].contactName;
-                    sheet.Cells[17, results[0].ListData.Count() + 10].Value = date.ToString("MM/dd/yyyy");
-                    sheet.Cells[16, 14].Value = results[0].ListData[0].dateOfSendingResult.ToString("MM/dd/yyyy");
-                    sheet.Cells[19, results[0].ListData.Count() + 7].Value = results[0].ListData[0].sampleMatrix;
-                    for (int i = 0; i < results.Count(); i++)
+                    sheet.Cells[15, 14].Value = No;
+                    sheet.Cells[15, 12].Value = No.ToString() + '/' + date.ToString("MM") + '/' + data[0].contactName;
+                    sheet.Cells[17,12].Value = date.ToString("MM/dd/yyyy");                 
+                    sheet.Cells[19, 9].Value = data[0].sampleMatrix;                    
+
+                    for (int i = 0; i < data.Count(); i++)
                     {
                         var coppyFrom = "A21" + ":" + "P21";
                         var coppyTo = "A" + A.ToString() + 1 + ":" + "P" + A.ToString() + 1;
                         sheet.Cells[coppyFrom].Copy(sheet.Cells[coppyTo]);
-
+                        sampleName = sampleName + data[i].sampleCode + ',' + "  "; 
                         A = A + 2;
-                        sheet.Cells[rowIndex, 1].Value = results[i].Specification;
-                        sheet.Cells[rowIndex, 5].Value = results[i].ListData[0].Unit;                                   
-                        sheet.Cells[rowIndex, results[0].ListData.Count() + 9].Value = results[i].ListData[0].Method;
-                        if (i < 4)
-                        {
-                            sheet.Cells[rowIndex, results[0].ListData.Count() + 7].Value = Math.Round(results[i].ListData[0].Max, 2);
-                        }
-                        else {
-                            sheet.Cells[rowIndex, results[0].ListData.Count() + 7].Value = Math.Round(results[i].ListData[0].Min, 2);
-                        }                          
-                        int B = 7;
-                        for (int j = 0; j < results[i].ListData.Count(); j++)
-                        {                            
-                            if (i == 0)
-                            {
-                                sheet.Cells[rowIndex - 1, B].Value = results[i].ListData[j].sampleName;
-                                sheet.Cells[rowIndex - 1, B].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                                sampleName = sampleName + results[i].ListData[j].sampleName + ',' + ' ';
-                            }
-                            if (i < 4)
-                            {
-                                sheet.Cells[rowIndex, B].Value = Math.Round(results[i].ListData[j].Result, 2);
-                                sheet.Cells[rowIndex, B].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                            }
-                            else
-                            {
-                                float max = results[i].ListData[j].Max;
-                                float min = results[i].ListData[j].Min;
-                                string result = results[i].ListData[j].Max.ToString() + "        " + results[i].ListData[j].Min.ToString();
-                                sheet.Cells[rowIndex, B].Value = Math.Round((results[i].ListData[j].Max + results[i].ListData[j].Min) / 2);
-                                sheet.Cells[rowIndex, B].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                                sheet.Cells[rowIndex + 1, B].Value = result;
-                                sheet.Cells[rowIndex + 1, B].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                            }
-                           
-                            B++;
-                        }
-
-                        rowIndex = rowIndex + 2;
-
+                     
+                        sheet.Cells[20, B].Value = data[i].sampleCode;                       
+                        sheet.Cells[21, B].Value = data[i].DirtSum;
+                        sheet.Cells[23, B].Value = data[i].AshSum;
+                        sheet.Cells[25, B].Value = data[i].VolatileXmax;
+                        sheet.Cells[27, B].Value = data[i].NitoXmax;                        
+                        sheet.Cells[29, B].Value = Math.Round((data[i].P0X));
+                        sheet.Cells[29, B].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        sheet.Cells[30, B].Value = data[i].P0Xmin.ToString() + "   " + data[i].P0Xmax.ToString(); ;
+                        sheet.Cells[30, B].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        sheet.Cells[31, B].Value = Math.Round((data[i].PRIX));
+                        sheet.Cells[31, B].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        sheet.Cells[32, B].Value = data[i].PRIXmin.ToString() + "   " + data[i].PRIXmax.ToString(); ;
+                        sheet.Cells[32, B].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        sheet.Cells[33, B].Value = Math.Round((data[i].MLX));
+                        sheet.Cells[33, B].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        sheet.Cells[34, B].Value = data[i].MLXmin.ToString() + "   " + data[i].MLXmax.ToString(); ;
+                        sheet.Cells[34, B].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        B += 1;
                     }
-                    sheet.Cells["H39"].Value = sheet.Cells["D16"].Value = sampleName;
-                    sheet.DeleteRow(sheet.Dimension.End.Row);
+                    
+                    sheet.Cells["G37"].Value = sheet.Cells["D16"].Value = sampleName;
+                    //sheet.DeleteRow(sheet.Dimension.End.Row);
                     package.SaveAs(file);
 
                 }

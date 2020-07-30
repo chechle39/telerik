@@ -23,7 +23,7 @@ namespace DRLab.Data.Entities
                 .ApplyConfiguration(new E08T_TemplateMarkConfiguration())
                 .ApplyConfiguration(new AssignmentConfiguration())
                 .ApplyConfiguration(new FieldAutoTableCofiguration())
-                .ApplyConfiguration(new GenaralData_ReportConfiguration())
+                .ApplyConfiguration(new GeneralData_ReportConfiguration())
                 .ApplyConfiguration(new E00T_Customer_ItemConfiguration());
             modelBuilder.Entity<IdentityUserClaim<int>>().ToTable("AppUserClaims").HasKey(x => x.Id);
 
@@ -53,6 +53,6 @@ namespace DRLab.Data.Entities
         public DbSet<AppRole> AppRoles { get; set; }
         public DbSet<Assignment> Assignment { get; set; }
         public DbSet<FieldAutoTable> FieldAutoTable { get; set; }
-        public DbSet<GenaralData_Report> GenaralData_Report { get; set; }
+        public DbSet<GeneralData_Report> GeneralData_Report { get; set; }
     }
 }

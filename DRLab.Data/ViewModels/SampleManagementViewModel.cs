@@ -68,7 +68,8 @@ namespace DRLab.Data.ViewModels
         public float MLXmin { get; set; }
         public float MLX { get; set; }
         public float MLXmax { get; set; }
-        public string Rank { get; set; }
+        public string Rank { get; set; }        
+        public string contactName { get; set; }
     }
     public class SerchSampleManagementReport
     {      

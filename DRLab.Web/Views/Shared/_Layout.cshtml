@@ -59,9 +59,14 @@
         <link href="~/lib/telerik/Drlab-theme.css" rel="stylesheet" type="text/css" />
         <link href="~/lib/telerik/index.css" rel="stylesheet" type="text/css" />
         @RenderSection("Styles", required: false)
-        <script src="https://kendo.cdn.telerik.com/2020.1.406/js/jquery.min.js"></script>
+        @*<script src="https://kendo.cdn.telerik.com/2020.1.406/js/jquery.min.js"></script>
         <script src="https://kendo.cdn.telerik.com/2020.1.406/js/kendo.all.min.js"></script>
-        <script src="https://kendo.cdn.telerik.com/2020.1.406/js/kendo.aspnetmvc.min.js"></script>
+        <script src="https://kendo.cdn.telerik.com/2020.1.406/js/kendo.aspnetmvc.min.js"></script>*@
+
+        <script src="/lib/telerik/jquery.min.js"></script>
+        <script src="/lib/telerik/kendo.all.min.js"></script>
+        <script src="/lib/telerik/kendo.aspnetmvc.min.js"></script>
+
         <!--End Load Reource-->
         <!-- Navbar -->
         @await Html.PartialAsync("_Header")

@@ -64,7 +64,7 @@ namespace DRLab.Services.IntegrationServices
                 dynamicParameters.Add("@fromDate", from);
                 dynamicParameters.Add("@toDate", end);
                 return  await sqlConnection.QueryAsync<SampleManagementExportViewModel>(
-                         "GenaralData", dynamicParameters, commandType: CommandType.StoredProcedure);                
+                         "GeneralData", dynamicParameters, commandType: CommandType.StoredProcedure);                
             }
         }
     }

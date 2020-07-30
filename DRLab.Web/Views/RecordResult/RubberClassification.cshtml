@@ -10,7 +10,7 @@
                                         .Name("chiTieu")
                                         .DataTextField("Text")
                                         .DataValueField("Value")
-                                        .Events(e => e.Change("change"))
+                                        .Events(e => e.Change("change").Select("onSelectAction"))
                                         .BindTo(new List<SelectListItem>() {
                                             new SelectListItem() {
                                             Text = "Chọn hạng DK SVR",
@@ -91,4 +91,10 @@
     function change(e) {
 
     };
+    function onSelectAction(e) {
+        var dataItem = this.dataItem(e.item);
+        if (dataItem.Value === "0") {
+            
+        }
+    }
 </script>

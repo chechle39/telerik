@@ -33,6 +33,36 @@
     });
     function onRubber() {
         var combobox = $("#chiTieu").data("kendoDropDownList");
+        if (combobox._old === "0") {
+            var kendoWindow = $("<div />").kendoDialog({
+                title: "Confirm",
+                resizable: false,
+                modal: true,
+                actions: [
+                    { text: 'No', primary: true, },
+                    {
+                        text: 'Yes',
+                    }
+                ],
+            });
+
+            kendoWindow.data("kendoDialog")
+                .content($("#select-confirmation").html()).open();
+
+            kendoWindow
+                .find(".delete-confirm,.delete-cancel")
+                .click(function () {
+                    if ($(this).hasClass("delete-confirm")) {
+
+                    }
+
+                    kendoWindow.data("kendoDialog").close();
+                })
+                .end()
+        }
+        if (combobox._old === "0") {
+            return;
+        }
         var arr = [];
         var gridx = $("#GridRubber").data("kendoGrid");
         for (var i = 0; i < gridx.columns.length; i++) {
@@ -62,6 +92,8 @@
             processData: false,
             success: function (response) {
                 var data = handerDataGridDeleted(response);
+
+
                 $.ajax({
                     type: "POST",
                     url: "/RecordResult/UpdateEntity",
@@ -69,8 +101,54 @@
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (response) {
-       
-                        initForm();
+                        const checkUrl = window.location.pathname;
+                        var grid = $("#Grid").data("kendoGrid");
+                        var dataSource = new kendo.data.DataSource({
+                            data: data,
+                            pageSize: 20,
+                            schema: {
+
+                                model: {
+                                    id: "AnalysisCode",
+                                    fields: {
+                                        specification: {
+                                            editable: false
+                                        },
+                                        Mark: {
+                                            editable: false
+                                        },
+                                        method: {
+                                            editable: false
+
+                                        },
+                                        LOD: {
+                                            editable: false
+
+                                        },
+
+                                        unit: {
+                                            editable: false
+
+                                        },
+
+                                        ExpectationDate: {
+                                            editable: false
+
+                                        },
+                                        ReviewResult: {
+                                            editable: false
+                                        },
+                                        Result: {
+                                            editable: checkUrl === '/RecordResult/RiviewRequest/' ? false : true
+                                        },
+                                        ResultText: {
+                                            editable: checkUrl === '/RecordResult/RiviewRequest/' ? false : true
+                                        },
+                                    }
+                                }
+                            }
+                        });
+                        grid.setDataSource(dataSource);
                     },
                     error: function () {
 
@@ -384,142 +462,142 @@
 
     function handerDataGridDeleted(request) {
         var myGrid = [];
-        var grid = $("#Grid").data("kendoGrid");
-        for (var i = 0; i < grid._data.length; i++) {
-            switch (grid._data[i].SpecCode) {
+        var data = handerDataGrid();
+        for (var i = 0; i < data.length; i++) {
+            switch (data[i].SpecCode) {
                 case "ML":
                     var object = {
-                        ExpectationDate: grid._data[i].ExpectationDate,
-                        LOD: grid._data[i].LOD,
-                        Mark: grid._data[i].Mark,
-                        method: grid._data[i].method,
+                        ExpectationDate: data[i].ExpectationDate,
+                        LOD: data[i].LOD,
+                        Mark: data[i].Mark,
+                        method: data[i].method,
                         Result: request.ML,
-                        ResultText: grid._data[i].ResultText,
-                        ReviewResult: grid._data[i].ReviewResult,
-                        WOID: grid._data[i].WOID,
-                        specification: grid._data[i].specification,
-                        unit: grid._data[i].unit,
-                        LVNCode: grid._data[i].LVNCode,
-                        AnalysisCode: grid._data[i].AnalysisCode
+                        ResultText: data[i].ResultText,
+                        ReviewResult: data[i].ReviewResult,
+                        WOID: data[i].WOID,
+                        specification: data[i].specification,
+                        unit: data[i].unit,
+                        LVNCode: data[i].LVNCode,
+                        AnalysisCode: data[i].AnalysisCode
                     };
                     myGrid.push(object);
                     break;
                 case "Color":
                     var object = {
-                        ExpectationDate: grid._data[i].ExpectationDate,
-                        LOD: grid._data[i].LOD,
-                        Mark: grid._data[i].Mark,
-                        method: grid._data[i].method,
+                        ExpectationDate: data[i].ExpectationDate,
+                        LOD: data[i].LOD,
+                        Mark: data[i].Mark,
+                        method: data[i].method,
                         Result: request.Color,
-                        ResultText: grid._data[i].ResultText,
-                        ReviewResult: grid._data[i].ReviewResult,
-                        WOID: grid._data[i].WOID,
-                        specification: grid._data[i].specification,
-                        unit: grid._data[i].unit,
-                        LVNCode: grid._data[i].LVNCode,
-                        AnalysisCode: grid._data[i].AnalysisCode
+                        ResultText: data[i].ResultText,
+                        ReviewResult: data[i].ReviewResult,
+                        WOID: data[i].WOID,
+                        specification: data[i].specification,
+                        unit: data[i].unit,
+                        LVNCode: data[i].LVNCode,
+                        AnalysisCode: data[i].AnalysisCode
                     };
                     myGrid.push(object);
                     break;
                 case "PRI":
                     var object = {
-                        ExpectationDate: grid._data[i].ExpectationDate,
-                        LOD: grid._data[i].LOD,
-                        Mark: grid._data[i].Mark,
-                        method: grid._data[i].method,
+                        ExpectationDate: data[i].ExpectationDate,
+                        LOD: data[i].LOD,
+                        Mark: data[i].Mark,
+                        method: data[i].method,
                         Result: request.PRI,
-                        ResultText: grid._data[i].ResultText,
-                        ReviewResult: grid._data[i].ReviewResult,
-                        WOID: grid._data[i].WOID,
-                        specification: grid._data[i].specification,
-                        unit: grid._data[i].unit,
-                        LVNCode: grid._data[i].LVNCode,
-                        AnalysisCode: grid._data[i].AnalysisCode
+                        ResultText: data[i].ResultText,
+                        ReviewResult: data[i].ReviewResult,
+                        WOID: data[i].WOID,
+                        specification: data[i].specification,
+                        unit: data[i].unit,
+                        LVNCode: data[i].LVNCode,
+                        AnalysisCode: data[i].AnalysisCode
                     };
                     myGrid.push(object);
                     break;
                 case "P0":
                     var object = {
-                        ExpectationDate: grid._data[i].ExpectationDate,
-                        LOD: grid._data[i].LOD,
-                        Mark: grid._data[i].Mark,
-                        method: grid._data[i].method,
+                        ExpectationDate: data[i].ExpectationDate,
+                        LOD: data[i].LOD,
+                        Mark: data[i].Mark,
+                        method: data[i].method,
                         Result: request.P0,
-                        ResultText: grid._data[i].ResultText,
-                        ReviewResult: grid._data[i].ReviewResult,
-                        WOID: grid._data[i].WOID,
-                        specification: grid._data[i].specification,
-                        unit: grid._data[i].unit,
-                        LVNCode: grid._data[i].LVNCode,
-                        AnalysisCode: grid._data[i].AnalysisCode
+                        ResultText: data[i].ResultText,
+                        ReviewResult: data[i].ReviewResult,
+                        WOID: data[i].WOID,
+                        specification: data[i].specification,
+                        unit: data[i].unit,
+                        LVNCode: data[i].LVNCode,
+                        AnalysisCode: data[i].AnalysisCode
                     };
                     myGrid.push(object);
                     break;
                 case "Nitrogen":
                     var object = {
-                        ExpectationDate: grid._data[i].ExpectationDate,
-                        LOD: grid._data[i].LOD,
-                        Mark: grid._data[i].Mark,
-                        method: grid._data[i].method,
+                        ExpectationDate: data[i].ExpectationDate,
+                        LOD: data[i].LOD,
+                        Mark: data[i].Mark,
+                        method: data[i].method,
                         Result: request.Nitro,
-                        ResultText: grid._data[i].ResultText,
-                        ReviewResult: grid._data[i].ReviewResult,
-                        WOID: grid._data[i].WOID,
-                        specification: grid._data[i].specification,
-                        unit: grid._data[i].unit,
-                        LVNCode: grid._data[i].LVNCode,
-                        AnalysisCode: grid._data[i].AnalysisCode
+                        ResultText: data[i].ResultText,
+                        ReviewResult: data[i].ReviewResult,
+                        WOID: data[i].WOID,
+                        specification: data[i].specification,
+                        unit: data[i].unit,
+                        LVNCode: data[i].LVNCode,
+                        AnalysisCode: data[i].AnalysisCode
                     };
                     myGrid.push(object);
                     break;
                 case "Volatile matter":
                     var object = {
-                        ExpectationDate: grid._data[i].ExpectationDate,
-                        LOD: grid._data[i].LOD,
-                        Mark: grid._data[i].Mark,
-                        method: grid._data[i].method,
+                        ExpectationDate: data[i].ExpectationDate,
+                        LOD: data[i].LOD,
+                        Mark: data[i].Mark,
+                        method: data[i].method,
                         Result: request.Volatilematter,
-                        ResultText: grid._data[i].ResultText,
-                        ReviewResult: grid._data[i].ReviewResult,
-                        WOID: grid._data[i].WOID,
-                        specification: grid._data[i].specification,
-                        unit: grid._data[i].unit,
-                        LVNCode: grid._data[i].LVNCode,
-                        AnalysisCode: grid._data[i].AnalysisCode
+                        ResultText: data[i].ResultText,
+                        ReviewResult: data[i].ReviewResult,
+                        WOID: data[i].WOID,
+                        specification: data[i].specification,
+                        unit: data[i].unit,
+                        LVNCode: data[i].LVNCode,
+                        AnalysisCode: data[i].AnalysisCode
                     };
                     myGrid.push(object);
                     break;
                 case "Ash":
                     var object = {
-                        ExpectationDate: grid._data[i].ExpectationDate,
-                        LOD: grid._data[i].LOD,
-                        Mark: grid._data[i].Mark,
-                        method: grid._data[i].method,
+                        ExpectationDate: data[i].ExpectationDate,
+                        LOD: data[i].LOD,
+                        Mark: data[i].Mark,
+                        method: data[i].method,
                         Result: request.Ash,
-                        ResultText: grid._data[i].ResultText,
-                        ReviewResult: grid._data[i].ReviewResult,
-                        WOID: grid._data[i].WOID,
-                        specification: grid._data[i].specification,
-                        unit: grid._data[i].unit,
-                        LVNCode: grid._data[i].LVNCode,
-                        AnalysisCode: grid._data[i].AnalysisCode
+                        ResultText: data[i].ResultText,
+                        ReviewResult: data[i].ReviewResult,
+                        WOID: data[i].WOID,
+                        specification: data[i].specification,
+                        unit: data[i].unit,
+                        LVNCode: data[i].LVNCode,
+                        AnalysisCode: data[i].AnalysisCode
                     };
                     myGrid.push(object);
                     break;
                 case "Dirt":
                     var object = {
-                        ExpectationDate: grid._data[i].ExpectationDate,
-                        LOD: grid._data[i].LOD,
-                        Mark: grid._data[i].Mark,
-                        method: grid._data[i].method,
+                        ExpectationDate: data[i].ExpectationDate,
+                        LOD: data[i].LOD,
+                        Mark: data[i].Mark,
+                        method: data[i].method,
                         Result: request.Dirt,
-                        ResultText: grid._data[i].ResultText,
-                        ReviewResult: grid._data[i].ReviewResult,
-                        WOID: grid._data[i].WOID,
-                        specification: grid._data[i].specification,
-                        unit: grid._data[i].unit,
-                        LVNCode: grid._data[i].LVNCode,
-                        AnalysisCode: grid._data[i].AnalysisCode
+                        ResultText: data[i].ResultText,
+                        ReviewResult: data[i].ReviewResult,
+                        WOID: data[i].WOID,
+                        specification: data[i].specification,
+                        unit: data[i].unit,
+                        LVNCode: data[i].LVNCode,
+                        AnalysisCode: data[i].AnalysisCode
                     };
                     myGrid.push(object);
                     break;

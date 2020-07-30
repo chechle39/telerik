@@ -12,6 +12,7 @@ namespace DRLab.Data.Entities
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public partial class E08T_Testing_Data
     {
@@ -37,8 +38,10 @@ namespace DRLab.Data.Entities
         public double min { get; set; }
         public double max { get; set; }
         public double precision { get; set; }
-        public string LOD { get; set; }    
+        public string LOD { get; set; }
+        [ForeignKey("matrixID")]
         public virtual E00T_SampleMatrix E00T_SampleMatrix { get; set; }
+        [ForeignKey("specID")]
         public virtual E00T_Specification E00T_Specification { get; set; }
     }
 }

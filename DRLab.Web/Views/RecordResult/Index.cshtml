@@ -93,7 +93,7 @@
 
                                         <div class="box pagination">
                                         </div>
-                                        <button onclick="addRubber()" style="height: 28px;" class="k-button k-primary px-3 py-2">Save</button>
+                                        <button onclick="addRubber()" style="height: 28px;" class="k-button k-primary px-3 py-2">Classification</button>
 
 
                                     </div>
@@ -1061,7 +1061,8 @@
                 specification: grid._data[i].specification,
                 unit: grid._data[i].unit,
                 LVNCode: grid._data[i].LVNCode,
-                AnalysisCode: grid._data[i].AnalysisCode
+                AnalysisCode: grid._data[i].AnalysisCode,
+                SpecCode: grid._data[i].SpecCode
             };
             myGrid.push(object);
         }
@@ -1071,8 +1072,8 @@
 
         var saveRequest = [];
         if (response.length > 0) {
-            var x = checkClass(document.getElementsByClassName('active'))
-            var cr = parseInt(x[0].innerText);
+                var x = checkClass(document.getElementsByClassName('active'))
+                var cr = parseInt(x[0].innerText);
             var grid = $("#Grid").data("kendoGrid");
             response[cr - 1].data = handerDataGrid();
             for (var i = 0; i < response.length; i++) {
@@ -1485,6 +1486,11 @@
         <img src="@Url.Content("~/Shared/success-icon.png")" />
         <h3>#= message #</h3>
     </div>
+</script>
+<script id="select-confirmation" type="text/x-kendo-template">
+    <p class="delete-message">Vui lòng chọn HẠNG DK SVR
+</p>
+
 </script>
 <script id="table-template" type="x-tmpl-mustache">
     <div class="info-custummer">
